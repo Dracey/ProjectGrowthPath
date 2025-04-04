@@ -1,15 +1,27 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ProjectGrowthPath.Domain.Entities;
 
 
 namespace ProjectGrowthPath.Infrastructure.Persistence
 {
-    class AppDbContext : DbContext
+    public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-        {
+        private readonly ILogger<AppDbContext> _logger;
 
+        public AppDbContext(DbContextOptions<AppDbContext> options, ILogger<AppDbContext> logger) : base(options)
+        {
+            _logger = logger;
+
+            if (Database.CanConnect())
+            {
+                _logger.LogInformation("Databaseverbinding succesvol!");
+            }
+            else
+            {
+                _logger.LogError("Databaseverbinding mislukt! ");
+            }
         }
 
         public DbSet<User> Users { get; set; }

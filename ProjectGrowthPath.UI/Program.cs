@@ -1,4 +1,8 @@
 using ProjectGrowthPath.UI.Components;
+using Microsoft.EntityFrameworkCore;
+using ProjectGrowthPath.Infrastructure.Persistence;
+using System;
+using System.Linq.Expressions;
 
 namespace ProjectGrowthPath.UI;
 
@@ -11,6 +15,10 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
+
+        builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
 
         var app = builder.Build();
 
