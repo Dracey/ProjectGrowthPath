@@ -5,6 +5,8 @@ using ProjectGrowthPath.Infrastructure.Identity;
 using System;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Identity;
+using ProjectGrowthPath.Application.Interfaces;
+using ProjectGrowthPath.Infrastructure.Repositories;
 
 namespace ProjectGrowthPath.UI;
 
@@ -30,6 +32,8 @@ public class Program
             .AddEntityFrameworkStores<AppIdentityDbContext>()
             .AddDefaultTokenProviders();
 
+        builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+        builder.Services.AddScoped<IIdentityService, IdentityService>();
 
 
 
