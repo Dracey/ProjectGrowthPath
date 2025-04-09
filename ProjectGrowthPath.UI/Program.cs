@@ -20,13 +20,18 @@ public class Program
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
 
+        builder.Services.AddHttpContextAccessor();
+
+        builder.Services.AddControllersWithViews();
+
+
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         
         // Identity Service
         builder.Services.AddDbContext<AppIdentityDbContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+            options.UseNpgsql(builder.Configuration.GetConnectionString("IdentityConnections")));
 
         builder.Services.AddIdentity<IdentityUser, IdentityRole>()
             .AddEntityFrameworkStores<AppIdentityDbContext>()
@@ -50,6 +55,7 @@ public class Program
         app.UseHttpsRedirection();
 
         app.UseAntiforgery();
+
         app.UseAuthentication();
         app.UseAuthorization();
 
@@ -57,6 +63,7 @@ public class Program
         app.MapStaticAssets();
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
+
 
         app.Run();
     }

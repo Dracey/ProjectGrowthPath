@@ -14,7 +14,6 @@ namespace ProjectGrowthPath.Infrastructure.Identity
         {
             var optionsBuilder = new DbContextOptionsBuilder<AppIdentityDbContext>();
 
-            // Zorg ervoor dat je hier de juiste verbindingstring gebruikt
             var connectionString = "Host=localhost;Port=5432;Database=IdentityDB;Username=postgres;Password=kenzie123!";
 
             optionsBuilder.UseNpgsql(connectionString);
