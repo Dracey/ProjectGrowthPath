@@ -1,8 +1,10 @@
 using ProjectGrowthPath.UI.Components;
 using Microsoft.EntityFrameworkCore;
 using ProjectGrowthPath.Infrastructure.Persistence;
+using ProjectGrowthPath.Infrastructure.Identity;
 using System;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Identity;
 
 namespace ProjectGrowthPath.UI;
 
@@ -16,7 +18,18 @@ public class Program
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
 
-        builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+        
+        // Identity Service
+        builder.Services.AddDbContext<AppIdentityDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+        builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+            .AddEntityFrameworkStores<AppIdentityDbContext>()
+            .AddDefaultTokenProviders();
+
 
 
 
@@ -33,6 +46,9 @@ public class Program
         app.UseHttpsRedirection();
 
         app.UseAntiforgery();
+        app.UseAuthentication();
+        app.UseAuthorization();
+
 
         app.MapStaticAssets();
         app.MapRazorComponents<App>()

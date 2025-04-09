@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjectGrowthPath.Domain.Entities
+namespace ProjectGrowthPath.Domain.ValueObjects
 {
-    public class User
+    class Badge
     {
-        public int Id { get; set;}
+
     }
 }
