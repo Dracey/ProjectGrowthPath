@@ -2,7 +2,7 @@
 <br />
 <div align="center">
   <a href="[https://github.com/github_username/repo_name](https://github.com/Dracey/ProjectGrowthPath)">
-    <img src="![image](https://github.com/user-attachments/assets/fb4c28ef-c97d-46c1-87cb-6abc71261079)" alt="Logo" width="90" height="80">
+    <img src="https://github.com/user-attachments/assets/fb4c28ef-c97d-46c1-87cb-6abc71261079" alt="Logo" width="90" height="80">
   </a>
 
 <h3 align="center">Project GrowthPath</h3>
