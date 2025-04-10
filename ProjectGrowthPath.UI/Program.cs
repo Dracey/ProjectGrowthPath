@@ -30,15 +30,14 @@ public class Program
 
         
         // Identity Service
-        builder.Services.AddDbContext<AppIdentityDbContext>(options =>
+        builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("IdentityConnections")));
 
         builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-            .AddEntityFrameworkStores<AppIdentityDbContext>()
+            .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
             .AddDefaultTokenProviders();
 
         builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
-        builder.Services.AddScoped<IIdentityService, IdentityService>();
 
 
 
