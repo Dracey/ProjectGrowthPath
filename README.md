@@ -44,20 +44,22 @@ Wat is er allemaal nodig om het project lokaal te kunnen draaien:
    git clone https://github.com/gebruikersnaam/ProjectGrowthPath.git
    ```
 2. Installeer de benodigde tools (zie benodigheden)
-3. Maak een nieuwe database aan `GrowthPathDB` in PostgreSQL
-4. Update de connectiestring in `appsettings.json`:
+3. Maak een nieuwe database aan `GrowthPathDB` en `IdentityDB` in PostgreSQL
+4. Update de connectiestrings in `appsettings.json`:
    ```js
    "ConnectionStrings": {
     "DefaultConnection": "Host=localhost;Port=5432;Database=GrowthPathDB;Username=postgres;Password=yourpassword"
+     "DefaultConnections": "Host=localhost;Port=5432;Database=IdentityDB;Username=postgres;Password=yourpassword"
     }
    ```
 5. Voer een database migratie uit:
    ```sh
-   dotnet ef database update
+   dotnet ef database update --context AppDbContext
+   dotnet ef database update --context ApplicationIdentityDbContext
    ```
 6. Voer de applicatie uit:
    ```sh
-   dotnet run --project ProjectGrowthPath.UI
+   dotnet run --project ProjectGrowthPath.UserInterface
    ```
 ## Architectuur
 De applicatie is opgezet met behulp van Clean Architecture. 
@@ -65,5 +67,5 @@ Bestaat uit de volgende lagen:
 * Domain: bevat de kernlogica van de applicatie, inclusief de eniteiten.
 * Application: bevat de use cases van het systeem
 * Infrastructure: bevat de externe services en database connectie
-* UI: Blazor Server componenten voor gebruikersinterface. 
+* UserInterface: Blazor Server componenten voor gebruikersinterface. 
 
