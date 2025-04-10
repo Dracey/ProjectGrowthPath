@@ -1,0 +1,65 @@
+﻿@page "/register"
+@inject IIdentityService IdentityService
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.Build.Framework
+@using ProjectGrowthPath.Application.Interfaces
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+
+<EditForm Model="@this.registerModel" OnValidSubmit="HandleRegister" FormName="registerForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Email:</label>
+        <InputText @bind-Value="this.registerModel.Email" />
+    </div>
+
+    <div>
+        <label>Password:</label>
+        <InputText type="password" placeholder="Password" @bind-Value="@this.registerModel.Password" />
+    </div>
+
+    <button type="submit">Register</button>
+</EditForm>
+
+
+
+@code {
+    private RegisterModel registerModel = new RegisterModel();
+
+    private async Task HandleRegister()
+    {
+        Console.WriteLine("HAAAAAAAAAAAAAAAAAI HIER BEN IK!!!!");
+        Console.WriteLine($"Email: {registerModel.Email}, Password: {registerModel.Password}");
+
+
+        var result = await IdentityService.CreateUserAsync(registerModel.Email, registerModel.Password);
+        Console.WriteLine($"Email: {registerModel.Email}, Password: {registerModel.Password}");
+
+        if (result.success)
+        {
+            // Success - redirect to login or dashboard
+            NavigationManager.NavigateTo("/Account/login");
+        }
+        else
+        {
+            // Show error messages
+            foreach (var error in result.errors)
+            {
+                // You can display these errors in the UI
+                Console.WriteLine(error);
+            }
+        }
+    }
+
+    public class RegisterModel
+    {
+        [Required]
+        public string Email { get; set; }
+
+        [Required]
+        public string Password { get; set; }
+    }
+}

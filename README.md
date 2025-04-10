@@ -2,7 +2,7 @@
 <br />
 <div align="center">
   <a href="[https://github.com/github_username/repo_name](https://github.com/Dracey/ProjectGrowthPath)">
-    <img src="https://cdn.discordapp.com/attachments/1283046799627784254/1357700906971303976/image.png?ex=67f12901&is=67efd781&hm=3174412aa7e2a68e26e21a2d3bb33a88ea8b6920b91938f196c07e78d9a102fc" alt="Logo" width="90" height="80">
+    <img src="https://github.com/user-attachments/assets/fb4c28ef-c97d-46c1-87cb-6abc71261079" alt="Logo" width="90" height="80">
   </a>
 
 <h3 align="center">Project GrowthPath</h3>

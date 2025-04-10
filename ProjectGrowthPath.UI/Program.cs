@@ -1,8 +1,12 @@
 using ProjectGrowthPath.UI.Components;
 using Microsoft.EntityFrameworkCore;
 using ProjectGrowthPath.Infrastructure.Persistence;
+using ProjectGrowthPath.Infrastructure.Identity;
 using System;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Identity;
+using ProjectGrowthPath.Application.Interfaces;
+using ProjectGrowthPath.Infrastructure.Repositories;
 
 namespace ProjectGrowthPath.UI;
 
@@ -16,7 +20,24 @@ public class Program
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
 
-        builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.AddHttpContextAccessor();
+
+        builder.Services.AddControllersWithViews();
+
+
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+        
+        // Identity Service
+        builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
+            options.UseNpgsql(builder.Configuration.GetConnectionString("IdentityConnections")));
+
+        builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
+            .AddDefaultTokenProviders();
+
+        builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 
 
 
@@ -34,9 +55,14 @@ public class Program
 
         app.UseAntiforgery();
 
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+
         app.MapStaticAssets();
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
+
 
         app.Run();
     }
