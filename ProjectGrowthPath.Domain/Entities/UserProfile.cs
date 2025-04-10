@@ -10,6 +10,7 @@ namespace ProjectGrowthPath.Domain.Entities
     public class UserProfile
     {
         public Guid UserID { get; set; }
+        public string ApplicationUserId { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public int Level { get; set; }
         public int Points { get; set; }
@@ -21,5 +22,4 @@ namespace ProjectGrowthPath.Domain.Entities
         public ICollection<UserBadge> Badges { get; set; } = new List<UserBadge>();
         public ICollection<Goal> Goals { get; set; } = new List<Goal>();
     }
-    
 }

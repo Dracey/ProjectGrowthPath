@@ -12,8 +12,8 @@ using ProjectGrowthPath.Infrastructure.Persistence;
 namespace ProjectGrowthPath.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250409122452_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20250410123422_NewUserAddition")]
+    partial class NewUserAddition
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -193,6 +193,10 @@ namespace ProjectGrowthPath.Infrastructure.Migrations
                     b.Property<Guid>("UserID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("Level")
                         .HasColumnType("integer");
