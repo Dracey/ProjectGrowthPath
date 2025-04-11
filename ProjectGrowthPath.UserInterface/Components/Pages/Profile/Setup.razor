@@ -1,0 +1,53 @@
+﻿@page "/profile/setup"
+@using Microsoft.AspNetCore.Identity
+@using ProjectGrowthPath.Application.Interfaces
+@using ProjectGrowthPath.Infrastructure.Identity
+@using System.Security.Claims
+@using Microsoft.Build.Framework
+@inject UserManager<ApplicationUser> UserManager
+@inject IUserProfileService ProfileService
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthProvider
+@rendermode InteractiveServer
+
+<EditForm Model="model" OnValidSubmit="CreateProfile" FormName="AddName">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText @bind-Value="model.Name" placeholder="Voer je naam in" />
+    <button type="submit">Profiel aanmaken</button>
+</EditForm>
+
+@code {
+    private ProfileModel model = new();
+
+    private async Task CreateProfile()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var userId = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        if (!string.IsNullOrEmpty(userId))
+        {
+            // Check of er niet al een profiel bestaat
+            var hasProfile = await ProfileService.HasProfileAsync(userId);
+
+            if (!hasProfile)
+            {
+                // Profiel aanmaken
+                await ProfileService.CreateProfileAsync(userId, model.Name);
+                Navigation.NavigateTo("/"); 
+            }
+            else
+            {
+                Navigation.NavigateTo("/");
+            }
+        }
+    }
+
+    private class ProfileModel
+    {
+        [Required]
+        public string Name { get; set; }
+    }
+}

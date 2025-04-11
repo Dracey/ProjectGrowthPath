@@ -39,6 +39,10 @@ namespace ProjectGrowthPath.Infrastructure.Persistence
             modelBuilder.Entity<UserProfile>()
                 .HasKey(u => u.UserID);
 
+            modelBuilder.Entity<UserProfile>()
+                .Property(u => u.ApplicationUserId)
+                .IsRequired();
+
             // Configure UserBadge
             modelBuilder.Entity<UserBadge>()
                 .HasKey(b => b.UserBadgeID);

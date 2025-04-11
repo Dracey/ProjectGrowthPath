@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using ProjectGrowthPath.Application.Interfaces;
 using ProjectGrowthPath.Infrastructure.Identity;
 using ProjectGrowthPath.Infrastructure.Persistence;
-using ProjectGrowthPath.Infrastructure.Repositories;
+using ProjectGrowthPath.Infrastructure.Services;
 using ProjectGrowthPath.UserInterface.Components;
 using ProjectGrowthPath.UserInterface.Components.Account;
 
@@ -50,7 +50,14 @@ public class Program
             .AddDefaultTokenProviders();
 
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
-        
+
+        // Application Services 
+        builder.Services.AddScoped<IUserProfileService, UserProfileService>();
+        builder.Services.AddScoped<IProfileCheckService, ProfileCheckService>();
+
+
+        // Application Repositories
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
