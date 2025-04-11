@@ -25,12 +25,7 @@ public class Program
         builder.Services.AddScoped<IdentityRedirectManager>();
         builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
-        builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-            })
-            .AddIdentityCookies();
+        
 
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found."
@@ -44,7 +39,7 @@ public class Program
 
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
             .AddSignInManager()
             .AddDefaultTokenProviders();
@@ -59,6 +54,17 @@ public class Program
         // Application Repositories
 
         var app = builder.Build();
+
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+            // Seed roles and admin user
+            SeedRoles(roleManager).Wait();
+            SeedAdmin(userManager).Wait();
+        }
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -85,4 +91,40 @@ public class Program
 
         app.Run();
     }
+
+    private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
+    {
+        var roles = new string[] { "Beheerder", "Medewerker" };
+        foreach (var role in roles)
+        {
+            var roleExist = await roleManager.RoleExistsAsync(role);
+            if (!roleExist)
+            {
+                await roleManager.CreateAsync(new IdentityRole(role));
+            }
+        }
+    }
+
+    private static async Task SeedAdmin(UserManager<ApplicationUser> userManager)
+    {
+        var adminEmail = "admin@voorbeeld.nl";
+        var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+        if (adminUser == null)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
+                EmailConfirmed = true,
+
+            };
+            var result = await userManager.CreateAsync(user, "AdminPassword123!");
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(user, "Beheerder");
+            }
+        }
+    }
 }
+
