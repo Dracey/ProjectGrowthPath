@@ -4,14 +4,18 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
 @using ProjectGrowthPath.Infrastructure.Identity;
+@using ProjectGrowthPath.UserInterface.Components.Layout
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IdentityRedirectManager RedirectManager
+@layout LoginAndRegister
 
-<PageTitle>Confirm email</PageTitle>
 
-<h1>Confirm email</h1>
+<PageTitle>Bevestigen</PageTitle>
+
+<h1>Bevestig e-mail</h1>
 <StatusMessage Message="@statusMessage" />
+<a href="/account/login">Klik hier om in te loggen</a>
 
 @code {
     private string? statusMessage;
@@ -42,7 +46,7 @@
         {
             var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(Code));
             var result = await UserManager.ConfirmEmailAsync(user, code);
-            statusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
+            statusMessage = result.Succeeded ? "Bedankt voor het bevestigen van jouw e-mail" : "Fout met het bevestigen van jouw e-mail";
         }
     }
 }
