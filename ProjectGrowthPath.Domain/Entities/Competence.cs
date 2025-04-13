@@ -9,7 +9,15 @@ namespace ProjectGrowthPath.Domain.Entities
     // Einiteit voor de competenties die worden toegevoegd aan het systeem.
     public class Competence
     {
-        public Guid CompetenceID { get; set; }
+        public int CompetenceID { get; set; }
         public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public CompetenceCategory Category { get; set; } = CompetenceCategory.SoftSkill;
+
+        public enum CompetenceCategory
+        {
+            SoftSkill = 0,
+            HardSkill = 1,
+        }
     }
 }

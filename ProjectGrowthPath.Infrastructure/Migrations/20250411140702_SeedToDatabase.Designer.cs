@@ -12,8 +12,8 @@ using ProjectGrowthPath.Infrastructure.Persistence;
 namespace ProjectGrowthPath.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250410123422_NewUserAddition")]
-    partial class NewUserAddition
+    [Migration("20250411140702_SeedToDatabase")]
+    partial class SeedToDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,9 +27,19 @@ namespace ProjectGrowthPath.Infrastructure.Migrations
 
             modelBuilder.Entity("ProjectGrowthPath.Domain.Entities.Competence", b =>
                 {
-                    b.Property<Guid>("CompetenceID")
+                    b.Property<int>("CompetenceID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CompetenceID"));
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -38,13 +48,129 @@ namespace ProjectGrowthPath.Infrastructure.Migrations
                     b.HasKey("CompetenceID");
 
                     b.ToTable("Competences");
+
+                    b.HasData(
+                        new
+                        {
+                            CompetenceID = 1,
+                            Category = "SoftSkill",
+                            Description = "Effectief samenwerken met collega’s en teams.",
+                            Name = "Samenwerken"
+                        },
+                        new
+                        {
+                            CompetenceID = 2,
+                            Category = "SoftSkill",
+                            Description = "Duidelijk en effectief communiceren, zowel schriftelijk als mondeling.",
+                            Name = "Communicatie"
+                        },
+                        new
+                        {
+                            CompetenceID = 3,
+                            Category = "SoftSkill",
+                            Description = "In staat zijn om gestructureerd problemen te analyseren en op te lossen.",
+                            Name = "Probleemoplossend vermogen"
+                        },
+                        new
+                        {
+                            CompetenceID = 4,
+                            Category = "SoftSkill",
+                            Description = "Plannen, structureren en prioriteiten stellen in taken en projecten.",
+                            Name = "Organiseren"
+                        },
+                        new
+                        {
+                            CompetenceID = 5,
+                            Category = "HardSkill",
+                            Description = "Schrijven en onderhouden van softwareapplicaties met C# en .NET.",
+                            Name = "C# Ontwikkeling"
+                        },
+                        new
+                        {
+                            CompetenceID = 6,
+                            Category = "HardSkill",
+                            Description = "Werken met relationele databases, SQL en datamodellering.",
+                            Name = "Databasebeheer"
+                        },
+                        new
+                        {
+                            CompetenceID = 7,
+                            Category = "HardSkill",
+                            Description = "Begrijpen van beveiligingsprincipes, zoals authenticatie, autorisatie en veilige codering.",
+                            Name = "Security awareness"
+                        },
+                        new
+                        {
+                            CompetenceID = 8,
+                            Category = "HardSkill",
+                            Description = "Basiskennis van cloudplatformen zoals Azure of AWS.",
+                            Name = "Cloud computing"
+                        },
+                        new
+                        {
+                            CompetenceID = 9,
+                            Category = "HardSkill",
+                            Description = "Ontwerpen van schaalbare, onderhoudbare software volgens design patterns en principes.",
+                            Name = "Softwarearchitectuur"
+                        },
+                        new
+                        {
+                            CompetenceID = 10,
+                            Category = "SoftSkill",
+                            Description = "Anderen aansturen, inspireren en richting geven aan een team of project.",
+                            Name = "Leiderschap"
+                        },
+                        new
+                        {
+                            CompetenceID = 11,
+                            Category = "HardSkill",
+                            Description = "Kennis van de Scrum-methodiek en ervaring met werken in Agile teams.",
+                            Name = "Scrum"
+                        },
+                        new
+                        {
+                            CompetenceID = 12,
+                            Category = "SoftSkill",
+                            Description = "Het systematisch plannen, uitvoeren en opleveren van projecten.",
+                            Name = "Projectmatig werken"
+                        },
+                        new
+                        {
+                            CompetenceID = 13,
+                            Category = "HardSkill",
+                            Description = "Het ontwerpen en structureren van software volgens Clean Architecture principes.",
+                            Name = "Clean Architecture"
+                        },
+                        new
+                        {
+                            CompetenceID = 14,
+                            Category = "HardSkill",
+                            Description = "Kennis van het bouwen van interactieve webapplicaties met Blazor WebAssembly.",
+                            Name = "Blazor ontwikkeling"
+                        },
+                        new
+                        {
+                            CompetenceID = 15,
+                            Category = "HardSkill",
+                            Description = "Inzicht in CI/CD, automatisering van deployments en samenwerking tussen Dev en Ops.",
+                            Name = "DevOps basiskennis"
+                        },
+                        new
+                        {
+                            CompetenceID = 16,
+                            Category = "HardSkill",
+                            Description = "Versiebeheer beheersen met Git, inclusief branching, commits en pull requests.",
+                            Name = "Git & versiebeheer"
+                        });
                 });
 
             modelBuilder.Entity("ProjectGrowthPath.Domain.Entities.Goal", b =>
                 {
-                    b.Property<Guid>("GoalID")
+                    b.Property<int>("GoalID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("GoalID"));
 
                     b.Property<int>("Amount")
                         .HasColumnType("integer");
@@ -74,18 +200,20 @@ namespace ProjectGrowthPath.Infrastructure.Migrations
 
             modelBuilder.Entity("ProjectGrowthPath.Domain.Entities.GoalLearningTool", b =>
                 {
-                    b.Property<Guid>("GoalToolID")
+                    b.Property<int>("GoalToolID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
 
-                    b.Property<Guid>("GoalID")
-                        .HasColumnType("uuid");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("GoalToolID"));
+
+                    b.Property<int>("GoalID")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("LearningToolID")
-                        .HasColumnType("uuid");
+                    b.Property<int>("LearningToolID")
+                        .HasColumnType("integer");
 
                     b.HasKey("GoalToolID");
 
@@ -98,9 +226,11 @@ namespace ProjectGrowthPath.Infrastructure.Migrations
 
             modelBuilder.Entity("ProjectGrowthPath.Domain.Entities.LearningTool", b =>
                 {
-                    b.Property<Guid>("LearningToolID")
+                    b.Property<int>("LearningToolID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LearningToolID"));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -119,19 +249,21 @@ namespace ProjectGrowthPath.Infrastructure.Migrations
                     b.ToTable("LearningTools");
                 });
 
-            modelBuilder.Entity("ProjectGrowthPath.Domain.Entities.ToolCompetence", b =>
+            modelBuilder.Entity("ProjectGrowthPath.Domain.Entities.LearningToolCompetence", b =>
                 {
-                    b.Property<Guid>("ToolCompID")
+                    b.Property<int>("LearningToolCompID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
 
-                    b.Property<Guid>("CompetenceID")
-                        .HasColumnType("uuid");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LearningToolCompID"));
 
-                    b.Property<Guid>("LearningToolID")
-                        .HasColumnType("uuid");
+                    b.Property<int>("CompetenceID")
+                        .HasColumnType("integer");
 
-                    b.HasKey("ToolCompID");
+                    b.Property<int>("LearningToolID")
+                        .HasColumnType("integer");
+
+                    b.HasKey("LearningToolCompID");
 
                     b.HasIndex("CompetenceID");
 
@@ -142,9 +274,11 @@ namespace ProjectGrowthPath.Infrastructure.Migrations
 
             modelBuilder.Entity("ProjectGrowthPath.Domain.Entities.UserBadge", b =>
                 {
-                    b.Property<Guid>("UserBadgeID")
+                    b.Property<int>("UserBadgeID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserBadgeID"));
 
                     b.Property<string>("BadgeName")
                         .IsRequired()
@@ -165,12 +299,14 @@ namespace ProjectGrowthPath.Infrastructure.Migrations
 
             modelBuilder.Entity("ProjectGrowthPath.Domain.Entities.UserCompetence", b =>
                 {
-                    b.Property<Guid>("UserCompID")
+                    b.Property<int>("UserCompID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
 
-                    b.Property<Guid>("CompetenceID")
-                        .HasColumnType("uuid");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserCompID"));
+
+                    b.Property<int>("CompetenceID")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -246,7 +382,7 @@ namespace ProjectGrowthPath.Infrastructure.Migrations
                     b.Navigation("LearningTool");
                 });
 
-            modelBuilder.Entity("ProjectGrowthPath.Domain.Entities.ToolCompetence", b =>
+            modelBuilder.Entity("ProjectGrowthPath.Domain.Entities.LearningToolCompetence", b =>
                 {
                     b.HasOne("ProjectGrowthPath.Domain.Entities.Competence", "Competence")
                         .WithMany()

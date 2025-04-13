@@ -9,7 +9,7 @@ namespace ProjectGrowthPath.Domain.Entities
     // Entiteit class voor de goals die een gebruiker kan aanmaken. 
     public class Goal
     {
-        public Guid GoalID { get; set; }
+        public int GoalID { get; set; }
         public Guid UserID { get; set; }
         public string Description { get; set; } = string.Empty;
         public bool IsCompleted { get; set; }
