@@ -86,12 +86,13 @@ public class Program
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
 
-        // Add additional endpoints required by the Identity /Account Razor components.
         app.MapAdditionalIdentityEndpoints();
 
         app.Run();
     }
 
+
+    // Eerste seed data voor development. Weg laten in productie.
     private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
     {
         var roles = new string[] { "Beheerder", "Medewerker" };
@@ -105,6 +106,7 @@ public class Program
         }
     }
 
+    // Eerste seed data voor development. Weg laten in productie.
     private static async Task SeedAdmin(UserManager<ApplicationUser> userManager)
     {
         var adminEmail = "admin@voorbeeld.nl";
