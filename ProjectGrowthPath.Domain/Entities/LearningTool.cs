@@ -9,7 +9,7 @@ namespace ProjectGrowthPath.Domain.Entities
     // Eniteit Class voor de leermiddelen in het systeem. 
     public class LearningTool
     {
-        public Guid LearningToolID { get; set; }
+        public int LearningToolID { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Link { get; set; } = string.Empty;

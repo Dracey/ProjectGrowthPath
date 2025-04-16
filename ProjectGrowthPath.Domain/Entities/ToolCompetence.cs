@@ -8,9 +8,9 @@ namespace ProjectGrowthPath.Domain.Entities
 {
     public class ToolCompetence
     {
-        public Guid ToolCompID { get; set; }
-        public Guid LearningToolID { get; set; }
-        public Guid CompetenceID { get; set; }
+        public int ToolCompID { get; set; }
+        public int LearningToolID { get; set; }
+        public int CompetenceID { get; set; }
 
 
         // Navigatie eigenschap 
