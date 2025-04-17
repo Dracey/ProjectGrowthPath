@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ProjectGrowthPath.Domain.Entities;
 
 namespace ProjectGrowthPath.Application.Interfaces
 {
@@ -10,6 +11,6 @@ namespace ProjectGrowthPath.Application.Interfaces
     {
 
         Task<bool> HasProfileAsync(string userId);
-        Task CreateProfileAsync(string userId, string name);
+        Task CreateProfileAsync(UserProfile newUser);
     }
 }

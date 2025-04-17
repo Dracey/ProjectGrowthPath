@@ -4,6 +4,8 @@
 @using ProjectGrowthPath.Infrastructure.Identity
 @using System.Security.Claims
 @using Microsoft.Build.Framework
+@using ProjectGrowthPath.Domain.Entities
+@using ProjectGrowthPath.Infrastructure.Migrations
 @using ProjectGrowthPath.UserInterface.Components.Layout
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserProfileService ProfileService
@@ -39,10 +41,20 @@
             // Check of er niet al een profiel bestaat
             var hasProfile = await ProfileService.HasProfileAsync(userId);
 
+            var userProfile = new UserProfile()
+            {
+                    ApplicationUserId = userId,
+                    Name = model.Name
+            };
+            
+
             if (!hasProfile)
             {
+
+                userProfile.ApplicationUserId = userId;
+                userProfile.Name = model.Name;  
                 // Profiel aanmaken
-                await ProfileService.CreateProfileAsync(userId, model.Name);
+                await ProfileService.CreateProfileAsync(userProfile);
                 Navigation.NavigateTo("/"); 
             }
             else
