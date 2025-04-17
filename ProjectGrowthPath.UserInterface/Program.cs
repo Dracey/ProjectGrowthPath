@@ -62,13 +62,8 @@ public class Program
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
             // Seed roles and admin user
-<<<<<<< HEAD
-            //SeedRoles(roleManager).Wait();
-            // SeedAdmin(userManager).Wait();
-=======
             SeedRoles(roleManager).Wait();
             SeedAdmin(userManager).Wait();
->>>>>>> e65e385defb07e54630a21a4f7603355db8b0046
         }
 
         // Configure the HTTP request pipeline.
