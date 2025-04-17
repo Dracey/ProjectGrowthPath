@@ -11,7 +11,7 @@ namespace ProjectGrowthPath.Domain.Entities
         public int UserCompID { get; set; }
         public Guid UserID { get; set; }
         public int CompetenceID { get; set; }
-        public CompetenceType Type { get; set; } // Enum
+        public CompetenceType Type { get; set; } = CompetenceType.Interest;
 
         public UserProfile User { get; set; }
         public Competence Competence { get; set; }
@@ -19,8 +19,8 @@ namespace ProjectGrowthPath.Domain.Entities
 
     public enum CompetenceType
     {
-        Interest,
-        Skill
+        Interest = 0,
+        Skill = 1
     }
 
 }

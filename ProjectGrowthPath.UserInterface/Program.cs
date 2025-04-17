@@ -25,12 +25,7 @@ public class Program
         builder.Services.AddScoped<IdentityRedirectManager>();
         builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
-        builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-            })
-            .AddIdentityCookies();
+        
 
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found."
@@ -44,7 +39,7 @@ public class Program
 
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
             .AddSignInManager()
             .AddDefaultTokenProviders();
@@ -67,8 +62,13 @@ public class Program
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
             // Seed roles and admin user
+<<<<<<< HEAD
             //SeedRoles(roleManager).Wait();
             // SeedAdmin(userManager).Wait();
+=======
+            SeedRoles(roleManager).Wait();
+            SeedAdmin(userManager).Wait();
+>>>>>>> e65e385defb07e54630a21a4f7603355db8b0046
         }
 
         // Configure the HTTP request pipeline.
@@ -91,9 +91,47 @@ public class Program
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
 
-        // Add additional endpoints required by the Identity /Account Razor components.
         app.MapAdditionalIdentityEndpoints();
 
         app.Run();
     }
+
+
+    // Eerste seed data voor development. Weg laten in productie.
+    private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
+    {
+        var roles = new string[] { "Beheerder", "Medewerker" };
+        foreach (var role in roles)
+        {
+            var roleExist = await roleManager.RoleExistsAsync(role);
+            if (!roleExist)
+            {
+                await roleManager.CreateAsync(new IdentityRole(role));
+            }
+        }
+    }
+
+    // Eerste seed data voor development. Weg laten in productie.
+    private static async Task SeedAdmin(UserManager<ApplicationUser> userManager)
+    {
+        var adminEmail = "admin@voorbeeld.nl";
+        var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+        if (adminUser == null)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
+                EmailConfirmed = true,
+
+            };
+            var result = await userManager.CreateAsync(user, "AdminPassword123!");
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(user, "Beheerder");
+            }
+        }
+    }
 }
+

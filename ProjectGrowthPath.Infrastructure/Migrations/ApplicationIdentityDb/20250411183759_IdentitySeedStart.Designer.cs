@@ -12,8 +12,8 @@ using ProjectGrowthPath.Infrastructure.Identity;
 namespace ProjectGrowthPath.Infrastructure.Migrations.ApplicationIdentityDb
 {
     [DbContext(typeof(ApplicationIdentityDbContext))]
-    [Migration("20250410080927_InitialIdentityMigration")]
-    partial class InitialIdentityMigration
+    [Migration("20250411183759_IdentitySeedStart")]
+    partial class IdentitySeedStart
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

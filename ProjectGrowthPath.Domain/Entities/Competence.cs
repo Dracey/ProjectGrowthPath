@@ -11,5 +11,13 @@ namespace ProjectGrowthPath.Domain.Entities
     {
         public int CompetenceID { get; set; }
         public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public CompetenceCategory Category { get; set; } = CompetenceCategory.SoftSkill;
+
+        public enum CompetenceCategory
+        {
+            SoftSkill = 0,
+            HardSkill = 1,
+        }
     }
 }

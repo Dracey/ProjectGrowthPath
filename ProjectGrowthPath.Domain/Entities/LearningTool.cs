@@ -15,7 +15,7 @@ namespace ProjectGrowthPath.Domain.Entities
         public string Link { get; set; } = string.Empty;
 
         public ICollection<GoalLearningTool> GoalLearningTools { get; set; } = new List<GoalLearningTool>();
-        public ICollection<ToolCompetence> ToolCompetences { get; set; } = new List<ToolCompetence>();
+        public ICollection<LearningToolCompetence> ToolCompetences { get; set; } = new List<LearningToolCompetence>();
 
     }
 }
