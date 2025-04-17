@@ -1,13 +1,7 @@
 ﻿using ProjectGrowthPath.Domain.Entities;
-using ProjectGrowthPath.Domain.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
 using ProjectGrowthPath.Application.Interfaces;
 using ProjectGrowthPath.Application.State;
+using ProjectGrowthPath.Domain.ValueObjects;
 
 namespace ProjectGrowthPath.Application.Service
 {
@@ -16,11 +10,14 @@ namespace ProjectGrowthPath.Application.Service
         private readonly SetupStateStore _store;
         private readonly IUserProfileService _profileService;
 
+
         public FirstTimeSetupService(SetupStateStore store, IUserProfileService repo)
         {
             _store = store;
             _profileService = repo;
         }
+
+        public SetupState CurrentState => _store.CurrentState;
 
         public void StartSetup(Guid userId) { /* eventueel ophalen of aanmaken */ }
 
@@ -28,9 +25,9 @@ namespace ProjectGrowthPath.Application.Service
 
         public void SelectCompetence(List<Competence> interests) { /* etc. */ }
 
-        public void FinalizeSetup()
+        public async Task FinalizeSetupAsync()
         {
-            var newUser = new UserProfile()
+            var newUser = new UserProfile
             {
                 Name = _store.CurrentState.NewUser.Name,
                 Level = 1,
@@ -38,7 +35,7 @@ namespace ProjectGrowthPath.Application.Service
                 ProfilePicture = _store.CurrentState.NewUser.ProfilePicture,
             };
 
-            _profileService.CreateProfileAsync(newUser);
+            await _profileService.CreateProfileAsync(newUser);
             _store.Clear();
         }
     }

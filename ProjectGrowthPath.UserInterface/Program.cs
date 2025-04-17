@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ProjectGrowthPath.Application.Interfaces;
+using ProjectGrowthPath.Application.Service;
+using ProjectGrowthPath.Application.State;
 using ProjectGrowthPath.Infrastructure.Identity;
 using ProjectGrowthPath.Infrastructure.Persistence;
 using ProjectGrowthPath.Infrastructure.Services;
@@ -24,8 +27,18 @@ public class Program
         builder.Services.AddScoped<IdentityUserAccessor>();
         builder.Services.AddScoped<IdentityRedirectManager>();
         builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+        builder.Services.AddScoped<ProtectedLocalStorage>();
 
-        
+
+        // Voor sessies
+        builder.Services.AddDistributedMemoryCache();
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(30);
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+        });
 
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found."
@@ -49,6 +62,9 @@ public class Program
         // Application Services 
         builder.Services.AddScoped<IUserProfileService, UserProfileService>();
         builder.Services.AddScoped<IProfileCheckService, ProfileCheckService>();
+        builder.Services.AddScoped<ISetupStatePersistence, SetupStatePersistence>();
+        builder.Services.AddScoped<SetupStateStore>();
+        builder.Services.AddScoped<FirstTimeSetupService>();
 
 
         // Application Repositories
@@ -77,6 +93,8 @@ public class Program
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
+
+        app.UseSession();
 
         app.UseHttpsRedirection();
 

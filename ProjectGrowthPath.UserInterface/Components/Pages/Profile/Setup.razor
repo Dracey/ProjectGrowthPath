@@ -4,10 +4,11 @@
 @using ProjectGrowthPath.Infrastructure.Identity
 @using System.Security.Claims
 @using Microsoft.Build.Framework
+@using ProjectGrowthPath.Application.Service
 @using ProjectGrowthPath.Domain.Entities
-@using ProjectGrowthPath.Infrastructure.Migrations
 @using ProjectGrowthPath.UserInterface.Components.Layout
-@inject UserManager<ApplicationUser> UserManager
+
+@inject FirstTimeSetupService SetupService
 @inject IUserProfileService ProfileService
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthProvider
@@ -19,7 +20,7 @@
 
 </div>
 
-<EditForm Model="model" OnValidSubmit="CreateProfile" FormName="AddName">
+<EditForm Model="model" OnValidSubmit="HandleSubmit" FormName="AddName">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -28,45 +29,34 @@
 </EditForm>
 
 @code {
-    private ProfileModel model = new();
+    private NameModel model = new();
 
-    private async Task CreateProfile()
+
+    protected override async Task OnInitializedAsync()
     {
         var authState = await AuthProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        var userId = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        var userId = authState.User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
         if (!string.IsNullOrEmpty(userId))
         {
-            // Check of er niet al een profiel bestaat
-            var hasProfile = await ProfileService.HasProfileAsync(userId);
-
-            var userProfile = new UserProfile()
-            {
-                    ApplicationUserId = userId,
-                    Name = model.Name
-            };
-            
-
-            if (!hasProfile)
-            {
-
-                userProfile.ApplicationUserId = userId;
-                userProfile.Name = model.Name;  
-                // Profiel aanmaken
-                await ProfileService.CreateProfileAsync(userProfile);
-                Navigation.NavigateTo("/"); 
-            }
-            else
-            {
-                Navigation.NavigateTo("/");
-            }
+            SetupService.StartSetup(Guid.Parse(userId)); // of sla het op in SetupStateStore
         }
+
+        // Optioneel: herladen bij refresh?
+        model.Name = SetupService.CurrentState?.NewUser?.Name ?? "";
     }
 
-    private class ProfileModel
+    private async Task HandleSubmit()
     {
-        [Required]
+        SetupService.UpdateName(model.Name);
+
+        // Navigeren naar volgende stap in wizard, bijv. Competenties kiezen
+        Navigation.NavigateTo("/profile/setup/interests");
+    }
+
+    private class NameModel
+    {
+        [System.ComponentModel.DataAnnotations.Required]
         public string Name { get; set; }
     }
 }
