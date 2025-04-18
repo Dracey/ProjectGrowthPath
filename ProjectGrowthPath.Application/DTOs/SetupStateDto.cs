@@ -1,17 +1,15 @@
-﻿using ProjectGrowthPath.Domain.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using ProjectGrowthPath.Application.State;
 using ProjectGrowthPath.Domain.Entities;
-using System;
-using System.Collections.Generic;
+using ProjectGrowthPath.Domain.ValueObjects;
 
-namespace ProjectGrowthPath.Domain.ValueObjects
+namespace ProjectGrowthPath.Application.DTOs
 {
-    public class SetupState
+    public class SetupStateDto
     {
         public UserProfile NewUser { get; init; } = new UserProfile();
         public List<Competence> Interests { get; set; } = new();

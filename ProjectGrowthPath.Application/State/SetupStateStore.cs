@@ -7,13 +7,16 @@ namespace ProjectGrowthPath.Application.State
     public class SetupStateStore
     {
         private readonly ISetupStatePersistence _persistence;
-        public SetupState CurrentState { get; private set; } = new SetupState();
+        public SetupState CurrentState { get; private set; }
+
 
         public SetupStateStore(ISetupStatePersistence persistence)
         {
             _persistence = persistence;
+            CurrentState = new SetupState();
         }
 
+        // Persistence methodes
         public async Task LoadAsync()
         {
             var loaded = await _persistence.LoadAsync();
@@ -21,15 +24,7 @@ namespace ProjectGrowthPath.Application.State
         }
 
         public async Task SaveAsync()
-        {
-            await _persistence.SaveAsync(CurrentState);
-        }
-
-        public async Task UpdateNameAsync(string name)
-        {
-            CurrentState.NewUser.Name = name;
-            await SaveAsync();
-        }
+            => await _persistence.SaveAsync(CurrentState);
 
         public async Task ClearAsync()
         {
@@ -37,37 +32,48 @@ namespace ProjectGrowthPath.Application.State
             CurrentState = new SetupState();
         }
 
-        public void UpdateName(string name)
+
+        // Wizard update methodes
+        public async Task UpdateNameAsync(string name)
         {
             CurrentState.NewUser.Name = name;
+            await SaveAsync();
         }
 
-        public void AddCompetence(List<Competence> competences, string type)
-        {
-            if (type == "Interest")
-                CurrentState.AddInterest(competences.First());
-            else if (type == "Skill")
-                CurrentState.AddSkill(competences.First());
-        }
-
-        public void SetProfilePicture(byte[] blob)
+        public async Task SetProfilePictureAsync(byte[] blob)
         {
             CurrentState.NewUser.ProfilePicture = blob;
+            await SaveAsync();
         }
 
-        public void SetLearningTools(List<LearningTool> tools)
+        public async Task AddInterestAsync(Competence competence)
         {
-            CurrentState.SetLearningTools(tools);
+            CurrentState.Interests.Add(competence);
+            await SaveAsync();
         }
 
-        public void SetGoalCompetence(Competence competence)
+        public async Task AddSkillAsync(Competence competence)
         {
-            CurrentState.SetChosenCompetence(competence);
+            CurrentState.Skills.Add(competence);
+            await SaveAsync();
         }
 
-        public void SetTargetDate(DateTime date)
+        public async Task SetChosenCompetenceAsync(Competence competence)
         {
-            CurrentState.SetTargetDate(date);
+            CurrentState.ChosenCompetence = competence;
+            await SaveAsync();
+        }
+
+        public async Task SetLearningToolsAsync(List<LearningTool> tools)
+        {
+            CurrentState.SelectedTools = tools;
+            await SaveAsync();
+        }
+
+        public async Task SetTargetDateAsync(DateTime date)
+        {
+            CurrentState.TargetDate = date;
+            await SaveAsync();
         }
     }
 }

@@ -15,56 +15,63 @@ namespace ProjectGrowthPath.Application.Service
             _profileService = profileService;
         }
 
+
+        // Wizard update methodes
         public async Task UpdateNameAsync(string name)
         {
             await _store.UpdateNameAsync(name);
         }
 
-        public void SelectInterest(List<Competence> interestsList)
+        public async Task SelectInterestsAsync(List<Competence> interests)
         {
-            _store.AddCompetence(interestsList, "Interest");
-
+            foreach (var interest in interests)
+                await _store.AddInterestAsync(interest);
         }
 
-        public void SelectSkill(List<Competence> skillsList)
+        public async Task SelectSkillsAsync(List<Competence> skills)
         {
-            _store.AddCompetence(skillsList, "Skill");
-
+            foreach (var skill in skills)
+                await _store.AddSkillAsync(skill);
         }
 
-        public void SetProfilePicture(byte[] blob)
+        public async Task SetProfilePictureAsync(byte[] picture)
         {
-            _store.SetProfilePicture(blob);
+            await _store.SetProfilePictureAsync(picture);
         }
 
-        public void SetLearningTools(List<LearningTool> tools)
+        public async Task SetLearningToolsAsync(List<LearningTool> tools)
         {
-            _store.SetLearningTools(tools);
+            await _store.SetLearningToolsAsync(tools);
         }
 
-        public void SetGoalCompetence(Competence competence)
+        public async Task SetGoalCompetenceAsync(Competence competence)
         {
-            _store.SetGoalCompetence(competence);
+            await _store.SetChosenCompetenceAsync(competence);
         }
 
-        public void SetTargetDate(DateTime date)
+        public async Task SetTargetDateAsync(DateTime targetDate)
         {
-            _store.CurrentState.SetTargetDate(date);
+            await _store.SetTargetDateAsync(targetDate);
         }
 
-        public void ClearAll()
+        public async Task ClearWizardAsync()
         {
-            _store.CurrentState.ClearAll();
+            await _store.ClearAsync();
         }
 
+
+        // Eindmethode die alles bij elkaar brengt
         public async Task FinalizeSetupAsync()
         {
+            var user = _store.CurrentState.NewUser;
+
             var newUser = new UserProfile
             {
-                Name = _store.CurrentState.NewUser.Name,
+                Name = user.Name,
                 Level = 1,
                 Points = 0,
-                ProfilePicture = _store.CurrentState.NewUser.ProfilePicture,
+                ProfilePicture = user.ProfilePicture,
+                ApplicationUserId = user.ApplicationUserId
             };
 
             await _profileService.CreateProfileAsync(newUser);
