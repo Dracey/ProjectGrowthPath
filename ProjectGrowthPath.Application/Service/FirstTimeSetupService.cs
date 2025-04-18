@@ -1,7 +1,6 @@
-﻿using ProjectGrowthPath.Domain.Entities;
-using ProjectGrowthPath.Application.Interfaces;
+﻿using ProjectGrowthPath.Application.Interfaces;
 using ProjectGrowthPath.Application.State;
-using ProjectGrowthPath.Domain.ValueObjects;
+using ProjectGrowthPath.Domain.Entities;
 
 namespace ProjectGrowthPath.Application.Service
 {
@@ -10,20 +9,53 @@ namespace ProjectGrowthPath.Application.Service
         private readonly SetupStateStore _store;
         private readonly IUserProfileService _profileService;
 
-
-        public FirstTimeSetupService(SetupStateStore store, IUserProfileService repo)
+        public FirstTimeSetupService(SetupStateStore store, IUserProfileService profileService)
         {
             _store = store;
-            _profileService = repo;
+            _profileService = profileService;
         }
 
-        public SetupState CurrentState => _store.CurrentState;
+        public async Task UpdateNameAsync(string name)
+        {
+            await _store.UpdateNameAsync(name);
+        }
 
-        public void StartSetup(Guid userId) { /* eventueel ophalen of aanmaken */ }
+        public void SelectInterest(List<Competence> interestsList)
+        {
+            _store.AddCompetence(interestsList, "Interest");
 
-        public void UpdateName(string name) => _store.UpdateName(name);
+        }
 
-        public void SelectCompetence(List<Competence> interests) { /* etc. */ }
+        public void SelectSkill(List<Competence> skillsList)
+        {
+            _store.AddCompetence(skillsList, "Skill");
+
+        }
+
+        public void SetProfilePicture(byte[] blob)
+        {
+            _store.SetProfilePicture(blob);
+        }
+
+        public void SetLearningTools(List<LearningTool> tools)
+        {
+            _store.SetLearningTools(tools);
+        }
+
+        public void SetGoalCompetence(Competence competence)
+        {
+            _store.SetGoalCompetence(competence);
+        }
+
+        public void SetTargetDate(DateTime date)
+        {
+            _store.CurrentState.SetTargetDate(date);
+        }
+
+        public void ClearAll()
+        {
+            _store.CurrentState.ClearAll();
+        }
 
         public async Task FinalizeSetupAsync()
         {
@@ -36,8 +68,7 @@ namespace ProjectGrowthPath.Application.Service
             };
 
             await _profileService.CreateProfileAsync(newUser);
-            _store.Clear();
+            await _store.ClearAsync();
         }
     }
-
 }

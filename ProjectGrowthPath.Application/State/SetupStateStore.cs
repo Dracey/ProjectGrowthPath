@@ -1,17 +1,13 @@
-﻿using ProjectGrowthPath.Domain.Entities;
+﻿using ProjectGrowthPath.Application.Interfaces;
+using ProjectGrowthPath.Domain.Entities;
 using ProjectGrowthPath.Domain.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProjectGrowthPath.Application.State
 {
     public class SetupStateStore
     {
         private readonly ISetupStatePersistence _persistence;
-        public SetupState CurrentState { get; private set; } = new();
+        public SetupState CurrentState { get; private set; } = new SetupState();
 
         public SetupStateStore(ISetupStatePersistence persistence)
         {
@@ -29,24 +25,29 @@ namespace ProjectGrowthPath.Application.State
             await _persistence.SaveAsync(CurrentState);
         }
 
+        public async Task UpdateNameAsync(string name)
+        {
+            CurrentState.NewUser.Name = name;
+            await SaveAsync();
+        }
+
         public async Task ClearAsync()
         {
             await _persistence.ClearAsync();
             CurrentState = new SetupState();
         }
 
-        
         public void UpdateName(string name)
         {
             CurrentState.NewUser.Name = name;
         }
 
-        public void AddCompetence(Competence competence, string type)
+        public void AddCompetence(List<Competence> competences, string type)
         {
             if (type == "Interest")
-                CurrentState.AddInterest(competence);
+                CurrentState.AddInterest(competences.First());
             else if (type == "Skill")
-                CurrentState.AddSkill(competence);
+                CurrentState.AddSkill(competences.First());
         }
 
         public void SetProfilePicture(byte[] blob)
@@ -64,14 +65,9 @@ namespace ProjectGrowthPath.Application.State
             CurrentState.SetChosenCompetence(competence);
         }
 
-        public void SetTargetDate(System.DateTime date)
+        public void SetTargetDate(DateTime date)
         {
             CurrentState.SetTargetDate(date);
-        }
-
-        public void Clear()
-        {
-            CurrentState.ClearAll();
         }
     }
 }

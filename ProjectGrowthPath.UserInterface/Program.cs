@@ -62,7 +62,7 @@ public class Program
         // Application Services 
         builder.Services.AddScoped<IUserProfileService, UserProfileService>();
         builder.Services.AddScoped<IProfileCheckService, ProfileCheckService>();
-        builder.Services.AddScoped<ISetupStatePersistence, SetupStatePersistence>();
+        builder.Services.AddScoped<ISetupStatePersistence, SetupStatePersistenceJsInterop>();
         builder.Services.AddScoped<SetupStateStore>();
         builder.Services.AddScoped<FirstTimeSetupService>();
 
