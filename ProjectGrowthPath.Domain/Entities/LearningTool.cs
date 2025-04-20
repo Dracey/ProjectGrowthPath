@@ -14,6 +14,9 @@ namespace ProjectGrowthPath.Domain.Entities
         public string Description { get; set; } = string.Empty;
         public string Link { get; set; } = string.Empty;
         public DifficultyTool Difficulty { get; set; } = DifficultyTool.Easy;
+        public CategoryTool Category { get; set; } = CategoryTool.Other;
+        public int Duration { get; set; } // in minuten
+        public string Provider { get; set; } = string.Empty;
 
         public ICollection<GoalLearningTool> GoalLearningTools { get; set; } = new List<GoalLearningTool>();
         public ICollection<LearningToolCompetence> ToolCompetences { get; set; } = new List<LearningToolCompetence>();
@@ -23,6 +26,17 @@ namespace ProjectGrowthPath.Domain.Entities
             Easy = 0,
             Medium = 1,
             Hard = 2 
+        }
+
+        public enum CategoryTool
+        {
+            Other = 0,
+            Video = 1,
+            Article = 2,
+            Book = 3,
+            Course = 4,
+            Podcast = 5,
+            Game = 6
         }
     }
 }
