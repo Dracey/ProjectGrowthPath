@@ -7,6 +7,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Repositories\**" />
+	  <EmbeddedResource Remove="Repositories\**" />
+	  <None Remove="Repositories\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\ProjectGrowthPath.Domain\ProjectGrowthPath.Domain.csproj" />
 		<ProjectReference Include="..\ProjectGrowthPath.Application\ProjectGrowthPath.Application.csproj" />
 	</ItemGroup>
@@ -34,7 +40,6 @@
 	<ItemGroup>
 	  <Folder Include="Migrations\" />
 	  <Folder Include="Migrations\ApplicationIdentityDb\" />
-	  <Folder Include="Repositories\" />
 	</ItemGroup>
  
 </Project>

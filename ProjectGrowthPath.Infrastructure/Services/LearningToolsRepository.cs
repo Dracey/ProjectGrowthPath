@@ -1,10 +1,9 @@
 ﻿using ProjectGrowthPath.Application.DTOs.LearningTools;
-using ProjectGrowthPath.Application.Interfaces;
 using ProjectGrowthPath.Domain.Entities;
 
 namespace ProjectGrowthPath.Application.Service
 {
-    public class LearningToolsService : ILearningToolsService
+    public class LearningToolsRepository
     {
         public Task<LearningTool> Get(int id)
         {

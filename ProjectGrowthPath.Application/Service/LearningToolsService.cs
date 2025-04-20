@@ -6,12 +6,12 @@ namespace ProjectGrowthPath.Application.Service
 {
     public class LearningToolsService : ILearningToolsService
     {
-        public Task<LearningTool> Get(int id)
+        public Task<LearningToolDto> Get(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<LearningTool>> GetList()
+        public Task<List<LearningToolDto>> GetList()
         {
             throw new NotImplementedException();
         }
