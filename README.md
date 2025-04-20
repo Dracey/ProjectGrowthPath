@@ -44,21 +44,24 @@ Wat is er allemaal nodig om het project lokaal te kunnen draaien:
    ```sh
    git clone https://github.com/gebruikersnaam/ProjectGrowthPath.git
    ```
-2. Installeer de benodigde tools (zie benodigheden). Voor Entity Framework kan je dit uitvoeren in de console: dotnet tool install --global dotnet-ef
-3. Maak verbinding in datagrip met de PostgreSQL server met jouw credentials.
-4. Maak een nieuwe database aan `GrowthPathDB` en `IdentityDB` in Datagrip.
-5. Update de connectiestrings in `appsettings.json` te vinden in ProjectGrowthPath.Userinterface:
+2. Installeer de benodigde tools (zie benodigheden). Voor Entity Framework kan je dit uitvoeren in de console:
+   ```sh
+    dotnet tool install --global dotnet-ef
+   ``
+4. Maak verbinding in datagrip met de PostgreSQL server met jouw credentials.
+5. Maak een nieuwe database aan `GrowthPathDB` en `IdentityDB` in Datagrip.
+6. Update de connectiestrings in `appsettings.json` te vinden in ProjectGrowthPath.Userinterface:
    ```js
    "ConnectionStrings": {
     "DefaultConnection": "Host=localhost;Port=5432;Database=GrowthPathDB;Username=postgres;Password=yourpassword"
      "DefaultConnections": "Host=localhost;Port=5432;Database=IdentityDB;Username=postgres;Password=yourpassword"
     }
    ```
-6. Voer een database migratie uit (als er geen bestanden in ProjectGrowthPath.Infrastructure/Migrations staan)
+7. Voer een database migratie uit (als er geen bestanden in ProjectGrowthPath.Infrastructure/Migrations staan)
    ```sh
    dotnet ef migrations add SeedToDatabase --context AppDbContext
    ```
-  Daarna
+    Daarna voer je een database update uit om de tabellen te vullen. 
    ```sh
    dotnet ef database update --context AppDbContext
    dotnet ef database update --context ApplicationIdentityDbContext
