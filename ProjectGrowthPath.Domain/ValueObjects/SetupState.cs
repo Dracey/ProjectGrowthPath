@@ -6,6 +6,9 @@ namespace ProjectGrowthPath.Domain.ValueObjects
     {
         public UserProfile NewUser { get; init; } = new();
 
+        public string AvatarStyle { get; set; } = "avataaars";
+        public List<(string Seed, string Url)> GeneratedAvatars = new ();
+
         private readonly List<Competence> _interests = new();
         private readonly List<Competence> _skills = new();
         private readonly List<LearningTool> _selectedTools = new();
@@ -16,6 +19,7 @@ namespace ProjectGrowthPath.Domain.ValueObjects
 
         public Competence? ChosenCompetence { get; private set; }
         public DateTime? TargetDate { get; private set; }
+
 
         public void AddInterest(Competence competence)
         {

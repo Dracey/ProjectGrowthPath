@@ -24,6 +24,10 @@ namespace ProjectGrowthPath.Infrastructure.Persistence
             var dto = new SetupStateDto
             {
                 NewUser = state.NewUser,
+                AvatarStyle = state.AvatarStyle,
+                GeneratedAvatars = state.GeneratedAvatars
+                    .Select(a => new AvatarInfoDto { Seed = a.Seed, Url = a.Url })
+                    .ToList(),
                 Interests = state.Interests.ToList(),
                 Skills = state.Skills.ToList(),
                 SelectedTools = state.SelectedTools.ToList(),
@@ -53,6 +57,18 @@ namespace ProjectGrowthPath.Infrastructure.Persistence
             if (dto.TargetDate.HasValue)
             {
                 state.SetTargetDate(dto.TargetDate.Value);
+            }
+
+            if (dto.AvatarStyle != null)
+            {
+                state.AvatarStyle = dto.AvatarStyle;
+            }
+
+            if (dto.GeneratedAvatars != null)
+            {
+                state.GeneratedAvatars = dto.GeneratedAvatars
+                    .Select(a => (a.Seed, a.Url))
+                    .ToList();
             }
 
             if (dto.Interests != null)

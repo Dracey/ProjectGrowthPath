@@ -62,7 +62,7 @@
     [Parameter] public EventCallback OnNext { get; set; }
     [Parameter] public EventCallback OnBack { get; set; }
 
-    private string SelectedStyle { get; set; } = "bottts";
+    private string SelectedStyle { get; set; } = "avataaars";
     private bool AvatarSelected { get; set; } = false;
     private bool isInitialized = false;
     private string? SelectedSeed;
@@ -87,11 +87,22 @@
             await StateStorage.LoadAsync();
 
             DisplayName = StateStorage.CurrentState.NewUser.Name;
+            SelectedStyle = StateStorage.CurrentState.AvatarStyle ?? "avataaars";
+            
 
             isInitialized = true;
 
             StateHasChanged();
-            RegenerateAvatars();
+            if (StateStorage.CurrentState.GeneratedAvatars != null && StateStorage.CurrentState.GeneratedAvatars.Count > 0)
+            {
+                GeneratedAvatars = StateStorage.CurrentState.GeneratedAvatars;
+            }
+            else
+            {
+                await RegenerateAvatars();
+            }
+
+            StateHasChanged();
         }
     }
   
@@ -103,10 +114,16 @@
     }
 
     // Nieuwe avatars laden
-    private async void RegenerateAvatars()
+    private async Task RegenerateAvatars()
     {
         AvatarSelected = false;
         GeneratedAvatars = await AvatarService.GenerateMultipleAvatarUrlsAsync(SelectedStyle, 6);
+
+        StateStorage.CurrentState.AvatarStyle = SelectedStyle;
+        StateStorage.CurrentState.GeneratedAvatars = GeneratedAvatars;
+
+        await StateStorage.SaveAsync();
+
         StateHasChanged();
     }
 
