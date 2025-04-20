@@ -1,8 +1,8 @@
 ﻿@page "/learning-tools"
 @using ProjectGrowthPath.Application.DTOs.LearningTools
-@using ProjectGrowthPath.Application.Interfaces
+@using ProjectGrowthPath.Application.Service
 @attribute [StreamRendering]
-@inject ILearningToolsService LearningToolsService
+@inject LearningToolsService LearningToolsService
 
 <PageTitle>Learning Tools</PageTitle>
 
@@ -24,6 +24,8 @@ else
                 <th>Name</th>
                 <th>Description</th>
                 <th>Link</th>
+                <th>Difficulty</th>
+                <th>Category</th>
                 <th>Duration</th>
                 <th>Provider</th>
             </tr>
@@ -35,6 +37,8 @@ else
                     <td>@learningTool.Name</td>
                     <td>@learningTool.Description</td>
                     <td>@learningTool.Link</td>
+                    <td>@learningTool.Difficulty</td>
+                    <td>@learningTool.Category</td>
                     <td>@learningTool.Duration</td>
                     <td>@learningTool.Provider</td>
                 </tr>
@@ -48,6 +52,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var tools = await LearningToolsService.GetList();
+        learningTools = await LearningToolsService.GetList();
     }
 }

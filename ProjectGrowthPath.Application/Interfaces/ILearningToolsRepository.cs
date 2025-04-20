@@ -3,10 +3,10 @@ using ProjectGrowthPath.Domain.Entities;
 
 namespace ProjectGrowthPath.Application.Interfaces
 {
-    public interface ILearningToolsService
+    public interface ILearningToolsRepository
     {
-        Task<LearningToolDto> Get(int id);
-        Task<List<LearningToolDto>> GetList();
+        Task<LearningTool> Get(int id);
+        Task<List<LearningTool>> GetList();
         Task<LearningTool> Add(LearningToolCreateDto dto);
         Task Delete(int id);
         Task Update(int id, LearningToolDto dto);

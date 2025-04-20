@@ -1,27 +1,56 @@
-﻿using ProjectGrowthPath.Application.DTOs.LearningTools;
+﻿using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using ProjectGrowthPath.Application.DTOs.LearningTools;
+using ProjectGrowthPath.Application.Interfaces;
 using ProjectGrowthPath.Domain.Entities;
+using ProjectGrowthPath.Infrastructure.Identity;
+using ProjectGrowthPath.Infrastructure.Persistence;
 
 namespace ProjectGrowthPath.Application.Service
 {
-    public class LearningToolsRepository
+    public class LearningToolsRepository: ILearningToolsRepository
     {
-        public Task<LearningTool> Get(int id)
+        private readonly AppDbContext _dbContext;
+
+        public LearningToolsRepository(AppDbContext dbContext)
         {
-            throw new NotImplementedException();
+            _dbContext = dbContext;
         }
 
-        public Task<List<LearningTool>> GetList()
+        public async Task<LearningTool> Get(int id)
         {
-            throw new NotImplementedException();
-        }
-        public Task<LearningTool> Add(LearningToolCreateDto dto)
-        {
-            throw new NotImplementedException();
+            return await _dbContext.LearningTools.FirstOrDefaultAsync(x => x.LearningToolID == id);
         }
 
-        public Task Delete(int id)
+        public async Task<List<LearningTool>> GetList()
         {
-            throw new NotImplementedException();
+            return await _dbContext.LearningTools.ToListAsync();
+
+        }
+        public async Task<LearningTool> Add(LearningToolCreateDto dto)
+        {
+            var newLearningTool = new LearningTool
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                Link = dto.Link,
+                Difficulty = dto.Difficulty,
+                Category = dto.Category,
+                Duration = dto.Duration,
+                Provider = dto.Provider
+            };
+
+            var entityEntry = await _dbContext.LearningTools.AddAsync(newLearningTool);
+            await _dbContext.SaveChangesAsync(); // Ensure the changes are saved to the database
+            return entityEntry.Entity; // Return the LearningTool entity
+        }
+
+        public async Task Delete(int id)
+        {
+            await _dbContext.LearningTools
+                .Where(x => x.LearningToolID == id)
+                .ExecuteDeleteAsync();
         }
 
         public Task Update(int id, LearningToolDto dto)

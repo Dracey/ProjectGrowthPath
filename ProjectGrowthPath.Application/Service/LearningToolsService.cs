@@ -4,16 +4,57 @@ using ProjectGrowthPath.Domain.Entities;
 
 namespace ProjectGrowthPath.Application.Service
 {
-    public class LearningToolsService : ILearningToolsService
+    public class LearningToolsService
     {
-        public Task<LearningToolDto> Get(int id)
+        private ILearningToolsRepository _learningToolRepository;
+
+        public LearningToolsService(ILearningToolsRepository learningToolRepository)
         {
-            throw new NotImplementedException();
+            _learningToolRepository = learningToolRepository;
         }
 
-        public Task<List<LearningToolDto>> GetList()
+        public async Task<LearningToolDto> Get(int id)
         {
-            throw new NotImplementedException();
+            var learningTool = await _learningToolRepository.Get(id);
+
+            return new LearningToolDto
+            {
+                Id = learningTool.LearningToolID,
+                Name = learningTool.Name,
+                Description = learningTool.Description,
+                Link = learningTool.Link,
+                Difficulty = learningTool.Difficulty,
+                Category = learningTool.Category,
+                Duration = learningTool.Duration,
+                Provider = learningTool.Provider
+            };
+        }
+
+        public async Task<List<LearningToolDto>> GetList()
+        {
+            var learningTools = await _learningToolRepository.GetList();
+            var funnything = learningTools.Select(x => new LearningToolDto
+            {
+                Id = x.LearningToolID,
+                Name = x.Name,
+                Description = x.Description,
+                Link = x.Link,
+                Difficulty = x.Difficulty,
+                Category = x.Category,
+                Duration = x.Duration,
+                Provider = x.Provider
+            }).ToList();
+            return learningTools.Select(x => new LearningToolDto
+            {
+                Id = x.LearningToolID,
+                Name = x.Name,
+                Description = x.Description,
+                Link = x.Link,
+                Difficulty = x.Difficulty,
+                Category = x.Category,
+                Duration = x.Duration,
+                Provider = x.Provider
+            }).ToList();
         }
         public Task<LearningTool> Add(LearningToolCreateDto dto)
         {
