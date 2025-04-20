@@ -21,7 +21,7 @@
 
 ### Technologieën:
 Deze volgende stack en tools zijn gebruikt in dit project:
-* Fron-end: Blazor Server
+* Front-end: Blazor Server
 * Back-end: ASP.NET Core (.NET 9)
 * Database: PostgreSQL 17.0
 
@@ -36,28 +36,34 @@ To get a local copy up and running follow these simple example steps.
 Wat is er allemaal nodig om het project lokaal te kunnen draaien:
 * Visual Studio
 * .NET 9 SKD
-* PostgreSQL
+* PostgreSQL en een workbench zoals Datagrip om databases te beheren.
+* Entity framework
 
 ### Installatie
 1. Kopieer het project:
    ```sh
    git clone https://github.com/gebruikersnaam/ProjectGrowthPath.git
    ```
-2. Installeer de benodigde tools (zie benodigheden)
-3. Maak een nieuwe database aan `GrowthPathDB` en `IdentityDB` in PostgreSQL
-4. Update de connectiestrings in `appsettings.json`:
+2. Installeer de benodigde tools (zie benodigheden). Voor Entity Framework kan je dit uitvoeren in de console: dotnet tool install --global dotnet-ef
+3. Maak verbinding in datagrip met de PostgreSQL server met jouw credentials.
+4. Maak een nieuwe database aan `GrowthPathDB` en `IdentityDB` in Datagrip.
+5. Update de connectiestrings in `appsettings.json` te vinden in ProjectGrowthPath.Userinterface:
    ```js
    "ConnectionStrings": {
     "DefaultConnection": "Host=localhost;Port=5432;Database=GrowthPathDB;Username=postgres;Password=yourpassword"
      "DefaultConnections": "Host=localhost;Port=5432;Database=IdentityDB;Username=postgres;Password=yourpassword"
     }
    ```
-5. Voer een database migratie uit:
+6. Voer een database migratie uit (als er geen bestanden in ProjectGrowthPath.Infrastructure/Migrations staan)
+   ```sh
+   dotnet ef migrations add SeedToDatabase --context AppDbContext
+   ```
+  Daarna
    ```sh
    dotnet ef database update --context AppDbContext
    dotnet ef database update --context ApplicationIdentityDbContext
    ```
-6. Voer de applicatie uit:
+7. Voer de applicatie uit:
    ```sh
    dotnet run --project ProjectGrowthPath.UserInterface
    ```
