@@ -1,23 +1,56 @@
 ﻿@page "/profile/setup"
-@using Microsoft.AspNetCore.Identity
-@using ProjectGrowthPath.Application.Interfaces
-@using ProjectGrowthPath.Infrastructure.Identity
-@using System.Security.Claims
-@using Microsoft.Build.Framework
+@using ProjectGrowthPath.Application.Service
 @using ProjectGrowthPath.UserInterface.Components.Layout
-@inject UserManager<ApplicationUser> UserManager
-@inject IUserProfileService ProfileService
-@inject NavigationManager Navigation
-@inject AuthenticationStateProvider AuthProvider
-@layout LoginAndRegister
 
+@inject FirstTimeSetupService SetupService
+@inject NavigationManager Navigation
+
+@layout LoginAndRegister
 @rendermode InteractiveServer
+
 <PageTitle>Profile Set-up</PageTitle>
 <div>
 
 </div>
 
-<EditForm Model="model" OnValidSubmit="CreateProfile" FormName="AddName">
+
+<SetupLayout>
+    @if (stepIndex == 0)
+    {
+        <NameStep OnNext="NextStep"/>
+    }
+    else if (stepIndex == 1)
+    {
+        <InterestStep OnNext="NextStep" OnBack="PreviousStep" />
+    }
+    else if (stepIndex == 2)
+    {
+        <SkillStep OnNext="NextStep" OnBack="PreviousStep" />
+    }
+    else if (stepIndex == 3)
+    {
+        <LearningToolStep OnNext="NextStep" OnBack="PreviousStep" />
+    }
+    else if (stepIndex == 4)
+    {
+        <FinalizeStep OnFinish="FinishSetup" OnBack="PreviousStep" />
+    }
+</SetupLayout>
+
+@code {
+    private int stepIndex = 0;
+
+    private void NextStep() => stepIndex++;
+    private void PreviousStep() => stepIndex--;
+
+    private async Task FinishSetup()
+    {
+        await SetupService.FinalizeSetupAsync();
+        Navigation.NavigateTo("/dashboard");
+    }
+}
+
+@* <EditForm Model="model" OnValidSubmit="HandleSubmit" FormName="AddName">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -26,35 +59,33 @@
 </EditForm>
 
 @code {
-    private ProfileModel model = new();
+    private NameModel model = new();
 
-    private async Task CreateProfile()
+
+    protected override async Task OnInitializedAsync()
     {
         var authState = await AuthProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        var userId = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        var userId = authState.User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
         if (!string.IsNullOrEmpty(userId))
         {
-            // Check of er niet al een profiel bestaat
-            var hasProfile = await ProfileService.HasProfileAsync(userId);
-
-            if (!hasProfile)
-            {
-                // Profiel aanmaken
-                await ProfileService.CreateProfileAsync(userId, model.Name);
-                Navigation.NavigateTo("/"); 
-            }
-            else
-            {
-                Navigation.NavigateTo("/");
-            }
+            SetupService.StartSetup(Guid.Parse(userId)); // of sla het op in SetupStateStore
         }
+
+        // Optioneel: herladen bij refresh?
+        model.Name = SetupService.CurrentState?.NewUser?.Name ?? "";
     }
 
-    private class ProfileModel
+    private async Task HandleSubmit()
     {
-        [Required]
-        public string Name { get; set; }
+        SetupService.UpdateName(model.Name);
+
+        // Navigeren naar volgende stap in wizard, bijv. Competenties kiezen
+        Navigation.NavigateTo("/profile/setup/interests");
     }
-}
+
+    private class NameModel
+    {
+        [System.ComponentModel.DataAnnotations.Required]
+        public string Name { get; set; }
+    } *@
