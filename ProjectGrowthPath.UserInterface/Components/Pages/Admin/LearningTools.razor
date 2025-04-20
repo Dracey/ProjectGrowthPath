@@ -1,10 +1,53 @@
 ﻿@page "/learning-tools"
+@using ProjectGrowthPath.Application.DTOs.LearningTools
+@using ProjectGrowthPath.Application.Interfaces
 @attribute [StreamRendering]
+@inject ILearningToolsService LearningToolsService
 
 <PageTitle>Learning Tools</PageTitle>
 
-<span> base </span>
+<h1>Weather</h1>
+
+<p>This component demonstrates showing data.</p>
+
+<button>Add Learningtool</button>
+
+@if (learningTools == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Link</th>
+                <th>Duration</th>
+                <th>Provider</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var learningTool in learningTools)
+            {
+                <tr>
+                    <td>@learningTool.Name</td>
+                    <td>@learningTool.Description</td>
+                    <td>@learningTool.Link</td>
+                    <td>@learningTool.Duration</td>
+                    <td>@learningTool.Provider</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @code {
+    private List<LearningToolDto> learningTools;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var tools = await LearningToolsService.GetList();
+    }
 }

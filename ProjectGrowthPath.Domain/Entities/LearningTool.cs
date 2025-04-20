@@ -20,23 +20,23 @@ namespace ProjectGrowthPath.Domain.Entities
 
         public ICollection<GoalLearningTool> GoalLearningTools { get; set; } = new List<GoalLearningTool>();
         public ICollection<LearningToolCompetence> ToolCompetences { get; set; } = new List<LearningToolCompetence>();
+    }
 
-        public enum DifficultyTool
-        {
-            Easy = 0,
-            Medium = 1,
-            Hard = 2 
-        }
+    public enum DifficultyTool
+    {
+        Easy = 0,
+        Medium = 1,
+        Hard = 2
+    }
 
-        public enum CategoryTool
-        {
-            Other = 0,
-            Video = 1,
-            Article = 2,
-            Book = 3,
-            Course = 4,
-            Podcast = 5,
-            Game = 6
-        }
+    public enum CategoryTool
+    {
+        Other = 0,
+        Video = 1,
+        Article = 2,
+        Book = 3,
+        Course = 4,
+        Podcast = 5,
+        Game = 6
     }
 }
