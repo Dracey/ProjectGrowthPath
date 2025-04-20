@@ -1,6 +1,8 @@
 ﻿@using ProjectGrowthPath.Application.Service
 @using System.ComponentModel.DataAnnotations
+@using ProjectGrowthPath.Application.State
 @inject FirstTimeSetupService SetupService
+@inject SetupStateStore StateStorage
 
 <h3>Welkom bij GrowthPath</h3>
 
@@ -14,10 +16,24 @@
 
 @code {
     [Parameter] public EventCallback OnNext { get; set; }
-
     private NameStepModel model = new();
+    private bool isInitialized = false;
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await StateStorage.LoadAsync(); // Laad de gegevens pas na het renderen
 
+            // Hier zet je de naam terug als die al eerder was ingevuld:
+            model.Name = StateStorage.CurrentState.NewUser.Name;
+
+            isInitialized = true;
+
+            // Vraag een nieuwe render aan als er gegevens zijn geladen
+            StateHasChanged();
+        }
+    }
 
 
     private async Task Submit()

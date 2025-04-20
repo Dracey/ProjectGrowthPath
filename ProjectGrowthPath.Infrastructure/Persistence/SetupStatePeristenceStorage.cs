@@ -18,6 +18,7 @@ namespace ProjectGrowthPath.Infrastructure.Persistence
             _jsRuntime = jsRuntime;
         }
 
+        // Opslaan van session gegevens
         public async Task SaveAsync(SetupState state)
         {
             var dto = new SetupStateDto
@@ -34,23 +35,48 @@ namespace ProjectGrowthPath.Infrastructure.Persistence
             await _jsRuntime.InvokeVoidAsync("sessionStorage.setItem", StorageKey, json);
         }
 
+
+        // Laden van session gegevens. 
         public async Task<SetupState?> LoadAsync()
         {
             var json = await _jsRuntime.InvokeAsync<string>("sessionStorage.getItem", StorageKey);
-            if (string.IsNullOrWhiteSpace(json)) return null;
+            if (string.IsNullOrWhiteSpace(json)) return new SetupState();  
 
             var dto = JsonSerializer.Deserialize<SetupStateDto>(json);
-            if (dto == null) return null;
-            
+            if (dto == null) return new SetupState();  
+
             var state = new SetupState();
 
-            state.NewUser.SetName(dto.NewUser.Name);
-            state.SetChosenCompetence(dto.ChosenCompetence);
-            state.SetTargetDate(dto.TargetDate.Value);
-            foreach(var interest in dto.Interests) state.AddInterest(interest);
-            foreach (var skill in dto.Skills) state.AddSkill(skill);
-            state.SetLearningTools(dto.SelectedTools);
+            
+            state.NewUser.SetName(dto.NewUser?.Name ?? string.Empty);  
 
+            if (dto.TargetDate.HasValue)
+            {
+                state.SetTargetDate(dto.TargetDate.Value);
+            }
+
+            if (dto.Interests != null)
+            {
+                foreach (var interest in dto.Interests)
+                {
+                    state.AddInterest(interest);
+                }
+            }
+            if (dto.Skills != null)
+            {
+                foreach (var skill in dto.Skills)
+                {
+                    state.AddSkill(skill);
+                }
+            }
+            if (dto.SelectedTools != null)
+            {
+                state.SetLearningTools(dto.SelectedTools);
+            }
+            if (dto.ChosenCompetence != null)
+            {
+                state.SetChosenCompetence(dto.ChosenCompetence);
+            }
             return state;
         }
 

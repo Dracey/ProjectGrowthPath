@@ -1,21 +1,31 @@
 ﻿@using ProjectGrowthPath.Application.Service
 @using ProjectGrowthPath.Application.Interfaces
+@using ProjectGrowthPath.Application.State
+
 @inject FirstTimeSetupService SetupService
 @inject IAvatarGenerator AvatarService
+@inject SetupStateStore StateStorage
 
-<h3>Hi NAAM!</h3>
+
+<h3>Hi @DisplayName!</h3>
 <p>Kies een avatar die bij je past. Je kunt ook nieuwe avatars genereren.</p>
 
+
+<!-- Keuze voor stijlen -->
 <div class="mb-3">
     <label for="styleSelect">Stijl</label>
-    <select id="styleSelect" class="form-select" @onchange="OnStyleChanged">
+    <div class="btn-group w-100" role="group" aria-label="Avatar styles">
         @foreach (var style in AvailableStyles)
         {
-            <option value="@style">@style</option>
+            <button type="button" class="btn btn-outline-primary w-25 @GetButtonClass(style)"
+                    @onclick="() => OnStyleChanged(style)">
+                @style
+            </button>
         }
-    </select>
+    </div>
 </div>
 
+<!-- Avatars die zijn gegenereerd-->
 @if (GeneratedAvatars.Any())
 {
     <div class="row">
@@ -54,26 +64,45 @@
 
     private string SelectedStyle { get; set; } = "bottts";
     private bool AvatarSelected { get; set; } = false;
+    private bool isInitialized = false;
     private string? SelectedSeed;
+    public string DisplayName;
+
 
     private List<(string Seed, string Url)> GeneratedAvatars = new();
 
+
+    // Lijst van soorten avatars
     private readonly List<string> AvailableStyles = new()
     {
         "avataaars", "open-peeps", "micah", "bottts-neutral"
     };
 
-    protected override void OnInitialized()
+
+    // Nadat de pagina is geladen worden de volgende functies uitgevoerd.
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (firstRender)
+        {
+            await StateStorage.LoadAsync();
+
+            DisplayName = StateStorage.CurrentState.NewUser.Name;
+
+            isInitialized = true;
+
+            StateHasChanged();
+            RegenerateAvatars();
+        }
+    }
+  
+    // Als de gebruiker een nieuwe stijl uitkiest krijg hij of zij nieuwe avatars te zien
+    private void OnStyleChanged(string style)
+    {
+        SelectedStyle = style;
         RegenerateAvatars();
     }
 
-    private void OnStyleChanged(ChangeEventArgs e)
-    {
-        SelectedStyle = e.Value?.ToString() ?? "bottts";
-        RegenerateAvatars();
-    }
-
+    // Nieuwe avatars laden
     private async void RegenerateAvatars()
     {
         AvatarSelected = false;
@@ -81,6 +110,12 @@
         StateHasChanged();
     }
 
+    private string GetButtonClass(string style)
+    {
+        return style == SelectedStyle ? "active" : string.Empty;
+    }
+
+    // Gekozen avatar opslaan
     private async Task SelectAvatarAsync(string seed)
     {
         await SetupService.SetProfilePictureAsync(SelectedStyle, seed);
