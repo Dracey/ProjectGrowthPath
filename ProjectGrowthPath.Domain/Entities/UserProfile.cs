@@ -21,5 +21,20 @@ namespace ProjectGrowthPath.Domain.Entities
         public ICollection<UserCompetence> Competences { get; set; } = new List<UserCompetence>();
         public ICollection<UserBadge> Badges { get; set; } = new List<UserBadge>();
         public ICollection<Goal> Goals { get; set; } = new List<Goal>();
+
+        // Setup-mutators (voor SetupWizard)
+        public void SetName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Naam mag niet leeg zijn");
+            Name = name.Trim();
+        }
+
+        public void SetProfilePicture(byte[] blob)
+        {
+            if (blob == null || blob.Length == 0)
+                throw new ArgumentException("Profielfoto mag niet leeg zijn");
+            ProfilePicture = blob;
+        }
     }
 }

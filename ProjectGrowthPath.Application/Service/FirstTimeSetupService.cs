@@ -19,40 +19,40 @@ namespace ProjectGrowthPath.Application.Service
         // Wizard update methodes
         public async Task UpdateNameAsync(string name)
         {
-            await _store.UpdateNameAsync(name);
+            await _store.UpdateStateAsync(s => s.NewUser.Name = name, "Naam ingesteld");
         }
 
-        public async Task SelectInterestsAsync(List<Competence> interests)
-        {
-            foreach (var interest in interests)
-                await _store.AddInterestAsync(interest);
-        }
+        //public async Task SelectInterestsAsync(List<Competence> interests)
+        //{
+        //    foreach (var interest in interests)
+        //        await _store.AddInterestAsync(interest);
+        //}
 
-        public async Task SelectSkillsAsync(List<Competence> skills)
-        {
-            foreach (var skill in skills)
-                await _store.AddSkillAsync(skill);
-        }
+        //public async Task SelectSkillsAsync(List<Competence> skills)
+        //{
+        //    foreach (var skill in skills)
+        //        await _store.AddSkillAsync(skill);
+        //}
 
-        public async Task SetProfilePictureAsync(byte[] picture)
-        {
-            await _store.SetProfilePictureAsync(picture);
-        }
+        //public async Task SetProfilePictureAsync(byte[] picture)
+        //{
+        //    await _store.SetProfilePictureAsync(picture);
+        //}
 
-        public async Task SetLearningToolsAsync(List<LearningTool> tools)
-        {
-            await _store.SetLearningToolsAsync(tools);
-        }
+        //public async Task SetLearningToolsAsync(List<LearningTool> tools)
+        //{
+        //    await _store.SetLearningToolsAsync(tools);
+        //}
 
-        public async Task SetGoalCompetenceAsync(Competence competence)
-        {
-            await _store.SetChosenCompetenceAsync(competence);
-        }
+        //public async Task SetGoalCompetenceAsync(Competence competence)
+        //{
+        //    await _store.SetChosenCompetenceAsync(competence);
+        //}
 
-        public async Task SetTargetDateAsync(DateTime targetDate)
-        {
-            await _store.SetTargetDateAsync(targetDate);
-        }
+        //public async Task SetTargetDateAsync(DateTime targetDate)
+        //{
+        //    await _store.SetTargetDateAsync(targetDate);
+        //}
 
         public async Task ClearWizardAsync()
         {

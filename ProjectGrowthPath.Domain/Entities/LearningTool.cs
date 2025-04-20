@@ -13,9 +13,16 @@ namespace ProjectGrowthPath.Domain.Entities
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Link { get; set; } = string.Empty;
+        public DifficultyTool Difficulty { get; set; } = DifficultyTool.Easy;
 
         public ICollection<GoalLearningTool> GoalLearningTools { get; set; } = new List<GoalLearningTool>();
         public ICollection<LearningToolCompetence> ToolCompetences { get; set; } = new List<LearningToolCompetence>();
 
+        public enum DifficultyTool
+        {
+            Easy = 0,
+            Medium = 1,
+            Hard = 2 
+        }
     }
 }

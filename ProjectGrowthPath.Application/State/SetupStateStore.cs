@@ -1,5 +1,5 @@
-﻿using ProjectGrowthPath.Application.Interfaces;
-using ProjectGrowthPath.Domain.Entities;
+﻿using Microsoft.Extensions.Logging;
+using ProjectGrowthPath.Application.Interfaces;
 using ProjectGrowthPath.Domain.ValueObjects;
 
 namespace ProjectGrowthPath.Application.State
@@ -7,13 +7,17 @@ namespace ProjectGrowthPath.Application.State
     public class SetupStateStore
     {
         private readonly ISetupStatePersistence _persistence;
+        private readonly ILogger<SetupStateStore> _logger;
+
         public SetupState CurrentState { get; private set; }
 
 
-        public SetupStateStore(ISetupStatePersistence persistence)
+        public SetupStateStore(ISetupStatePersistence persistence, ILogger<SetupStateStore> logger)
         {
             _persistence = persistence;
             CurrentState = new SetupState();
+            _logger = logger;
+
         }
 
         // Persistence methodes
@@ -32,47 +36,10 @@ namespace ProjectGrowthPath.Application.State
             CurrentState = new SetupState();
         }
 
-
-        // Wizard update methodes
-        public async Task UpdateNameAsync(string name)
+        public async Task UpdateStateAsync(Action<SetupState> update, string? reason = null)
         {
-            CurrentState.NewUser.Name = name;
-            await SaveAsync();
-        }
-
-        public async Task SetProfilePictureAsync(byte[] blob)
-        {
-            CurrentState.NewUser.ProfilePicture = blob;
-            await SaveAsync();
-        }
-
-        public async Task AddInterestAsync(Competence competence)
-        {
-            CurrentState.Interests.Add(competence);
-            await SaveAsync();
-        }
-
-        public async Task AddSkillAsync(Competence competence)
-        {
-            CurrentState.Skills.Add(competence);
-            await SaveAsync();
-        }
-
-        public async Task SetChosenCompetenceAsync(Competence competence)
-        {
-            CurrentState.ChosenCompetence = competence;
-            await SaveAsync();
-        }
-
-        public async Task SetLearningToolsAsync(List<LearningTool> tools)
-        {
-            CurrentState.SelectedTools = tools;
-            await SaveAsync();
-        }
-
-        public async Task SetTargetDateAsync(DateTime date)
-        {
-            CurrentState.TargetDate = date;
+            update(CurrentState);
+            _logger.LogInformation("SetupState updated{Reason}", reason != null ? $" - {reason}" : "");
             await SaveAsync();
         }
     }

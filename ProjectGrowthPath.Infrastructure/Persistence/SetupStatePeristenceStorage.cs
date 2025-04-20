@@ -4,6 +4,7 @@ using ProjectGrowthPath.Application.Interfaces;
 using ProjectGrowthPath.Domain.Entities;
 using ProjectGrowthPath.Domain.ValueObjects;
 using System.Text.Json;
+using System.Xml;
 
 namespace ProjectGrowthPath.Infrastructure.Persistence
 {
@@ -40,16 +41,17 @@ namespace ProjectGrowthPath.Infrastructure.Persistence
 
             var dto = JsonSerializer.Deserialize<SetupStateDto>(json);
             if (dto == null) return null;
+            
+            var state = new SetupState();
 
-            return new SetupState
-            {
-                NewUser = dto.NewUser ?? new UserProfile(),
-                Interests = dto.Interests,
-                Skills = dto.Skills,
-                SelectedTools = dto.SelectedTools,
-                ChosenCompetence = dto.ChosenCompetence,
-                TargetDate = dto.TargetDate
-            };
+            state.NewUser.SetName(dto.NewUser.Name);
+            state.SetChosenCompetence(dto.ChosenCompetence);
+            state.SetTargetDate(dto.TargetDate.Value);
+            foreach(var interest in dto.Interests) state.AddInterest(interest);
+            foreach (var skill in dto.Skills) state.AddSkill(skill);
+            state.SetLearningTools(dto.SelectedTools);
+
+            return state;
         }
 
         public async Task ClearAsync()
