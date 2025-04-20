@@ -1,6 +1,7 @@
 ﻿@using ProjectGrowthPath.Application.Service
 @using ProjectGrowthPath.Application.Interfaces
 @using ProjectGrowthPath.Application.State
+@using Mono.TextTemplating
 
 @inject FirstTimeSetupService SetupService
 @inject IAvatarGenerator AvatarService
@@ -102,6 +103,12 @@
                 await RegenerateAvatars();
             }
 
+            if (!string.IsNullOrWhiteSpace(StateStorage.CurrentState.SelectedAvatarSeed))
+            {
+                SelectedSeed = StateStorage.CurrentState.SelectedAvatarSeed;
+                AvatarSelected = true; 
+            }
+
             StateHasChanged();
         }
     }
@@ -137,6 +144,7 @@
     {
         await SetupService.SetProfilePictureAsync(SelectedStyle, seed);
         SelectedSeed = seed;
+
         AvatarSelected = true;
     }
 }

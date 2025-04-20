@@ -25,6 +25,7 @@ namespace ProjectGrowthPath.Infrastructure.Persistence
             {
                 NewUser = state.NewUser,
                 AvatarStyle = state.AvatarStyle,
+                SelectedAvatarSeed = state.SelectedAvatarSeed,
                 GeneratedAvatars = state.GeneratedAvatars
                     .Select(a => new AvatarInfoDto { Seed = a.Seed, Url = a.Url })
                     .ToList(),
@@ -62,6 +63,11 @@ namespace ProjectGrowthPath.Infrastructure.Persistence
             if (dto.AvatarStyle != null)
             {
                 state.AvatarStyle = dto.AvatarStyle;
+            }
+
+            if (!string.IsNullOrWhiteSpace(dto.SelectedAvatarSeed))
+            {
+                state.SelectedAvatarSeed = dto.SelectedAvatarSeed;
             }
 
             if (dto.GeneratedAvatars != null)

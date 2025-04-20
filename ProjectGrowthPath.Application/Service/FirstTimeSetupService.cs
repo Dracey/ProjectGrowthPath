@@ -28,8 +28,11 @@ namespace ProjectGrowthPath.Application.Service
         {
             var avatarBytes = await _avatarGenerator.GenerateAvatarAsync(style, seed);
 
-            await _store.UpdateStateAsync(s => s.NewUser.SetProfilePicture(avatarBytes),
-                $"Avatar gekozen via DiceBear (style: {style}, seed: {seed})");
+            await _store.UpdateStateAsync(s =>
+                {
+                    s.NewUser.SetProfilePicture(avatarBytes);
+                    s.SelectedAvatarSeed = seed;
+                }, $"Avatar gekozen via DiceBear (style: {style}, seed: {seed})");
         }
 
         //public async Task SelectInterestsAsync(List<Competence> interests)

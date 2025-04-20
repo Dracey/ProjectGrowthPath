@@ -7,6 +7,8 @@ namespace ProjectGrowthPath.Domain.ValueObjects
         public UserProfile NewUser { get; init; } = new();
 
         public string AvatarStyle { get; set; } = "avataaars";
+        public string? SelectedAvatarSeed { get; set; }
+
         public List<(string Seed, string Url)> GeneratedAvatars = new ();
 
         private readonly List<Competence> _interests = new();
