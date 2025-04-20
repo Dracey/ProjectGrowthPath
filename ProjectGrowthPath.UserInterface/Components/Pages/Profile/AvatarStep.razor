@@ -1,0 +1,90 @@
+﻿@using ProjectGrowthPath.Application.Service
+@using ProjectGrowthPath.Application.Interfaces
+@inject FirstTimeSetupService SetupService
+@inject IAvatarGenerator AvatarService
+
+<h3>Hi NAAM!</h3>
+<p>Kies een avatar die bij je past. Je kunt ook nieuwe avatars genereren.</p>
+
+<div class="mb-3">
+    <label for="styleSelect">Stijl</label>
+    <select id="styleSelect" class="form-select" @onchange="OnStyleChanged">
+        @foreach (var style in AvailableStyles)
+        {
+            <option value="@style">@style</option>
+        }
+    </select>
+</div>
+
+@if (GeneratedAvatars.Any())
+{
+    <div class="row">
+        @foreach (var avatar in GeneratedAvatars)
+        {
+            <div class="col-4 text-center mb-4">
+                <div class="position-relative d-inline-block"
+                     style="border: @(SelectedSeed == avatar.Seed ? "3px solid dodgerblue" : "1px solid #ccc"); border-radius: 8px; padding: 4px; cursor: pointer;"
+                     @onclick="() => SelectAvatarAsync(avatar.Seed)">
+                    <img src="@avatar.Url" alt="Avatar" class="img-thumbnail" width="100" />
+                    @if (SelectedSeed == avatar.Seed)
+                    {
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+                            ✓
+                        </span>
+                    }
+                </div>
+                <p class="small text-muted">@avatar.Seed[..8]</p>
+            </div>
+        }
+    </div>
+}
+
+<div class="mb-3">
+    <button class="btn btn-secondary" @onclick="RegenerateAvatars">Genereer nieuwe avatars</button>
+</div>
+
+<div class="mt-4">
+    <button class="btn btn-outline-secondary me-2" @onclick="() => OnBack.InvokeAsync()">Terug</button>
+    <button class="btn btn-success" @onclick="() => OnNext.InvokeAsync()" disabled="@(!AvatarSelected)">Volgende</button>
+</div>
+
+@code {
+    [Parameter] public EventCallback OnNext { get; set; }
+    [Parameter] public EventCallback OnBack { get; set; }
+
+    private string SelectedStyle { get; set; } = "bottts";
+    private bool AvatarSelected { get; set; } = false;
+    private string? SelectedSeed;
+
+    private List<(string Seed, string Url)> GeneratedAvatars = new();
+
+    private readonly List<string> AvailableStyles = new()
+    {
+        "avataaars", "open-peeps", "micah", "bottts-neutral"
+    };
+
+    protected override void OnInitialized()
+    {
+        RegenerateAvatars();
+    }
+
+    private void OnStyleChanged(ChangeEventArgs e)
+    {
+        SelectedStyle = e.Value?.ToString() ?? "bottts";
+        RegenerateAvatars();
+    }
+
+    private async void RegenerateAvatars()
+    {
+        AvatarSelected = false;
+        GeneratedAvatars = await AvatarService.GenerateMultipleAvatarUrlsAsync(SelectedStyle, 6);
+        StateHasChanged();
+    }
+
+    private async Task SelectAvatarAsync(string seed)
+    {
+        await SetupService.SetProfilePictureAsync(SelectedStyle, seed);
+        SelectedSeed = seed;
+        AvatarSelected = true;
+    }
+}

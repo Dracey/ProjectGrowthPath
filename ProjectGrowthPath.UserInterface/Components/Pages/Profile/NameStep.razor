@@ -2,6 +2,9 @@
 @using System.ComponentModel.DataAnnotations
 @inject FirstTimeSetupService SetupService
 
+<h3>Welkom bij GrowthPath</h3>
+
+<p>Vul hieronder jouw naam in:</p>
 <EditForm Model="model" OnValidSubmit="Submit">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -13,6 +16,9 @@
     [Parameter] public EventCallback OnNext { get; set; }
 
     private NameStepModel model = new();
+
+
+
 
     private async Task Submit()
     {

@@ -17,18 +17,6 @@ namespace ProjectGrowthPath.Domain.ValueObjects
         public Competence? ChosenCompetence { get; private set; }
         public DateTime? TargetDate { get; private set; }
 
-        public void SetName(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Naam mag niet leeg zijn");
-            NewUser.SetName(name);
-        }
-
-        public void SetProfilePicture(byte[] blob)
-        {
-            NewUser.SetProfilePicture(blob);
-        }
-
         public void AddInterest(Competence competence)
         {
             if (!_interests.Contains(competence))

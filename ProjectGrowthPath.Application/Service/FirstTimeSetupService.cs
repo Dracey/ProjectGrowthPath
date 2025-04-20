@@ -8,18 +8,28 @@ namespace ProjectGrowthPath.Application.Service
     {
         private readonly SetupStateStore _store;
         private readonly IUserProfileService _profileService;
+        private readonly IAvatarGenerator _avatarGenerator;
 
-        public FirstTimeSetupService(SetupStateStore store, IUserProfileService profileService)
+        public FirstTimeSetupService(SetupStateStore store, IUserProfileService profileService, IAvatarGenerator avatarGenerator)
         {
             _store = store;
             _profileService = profileService;
+            _avatarGenerator = avatarGenerator;
         }
 
 
         // Wizard update methodes
         public async Task UpdateNameAsync(string name)
         {
-            await _store.UpdateStateAsync(s => s.NewUser.Name = name, "Naam ingesteld");
+            await _store.UpdateStateAsync(s => s.NewUser.SetName(name), "Naam ingesteld");
+        }
+
+        public async Task SetProfilePictureAsync(string style, string seed)
+        {
+            var avatarBytes = await _avatarGenerator.GenerateAvatarAsync(style, seed);
+
+            await _store.UpdateStateAsync(s => s.NewUser.SetProfilePicture(avatarBytes),
+                $"Avatar gekozen via DiceBear (style: {style}, seed: {seed})");
         }
 
         //public async Task SelectInterestsAsync(List<Competence> interests)
