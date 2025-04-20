@@ -33,17 +33,7 @@ namespace ProjectGrowthPath.Application.Service
         public async Task<List<LearningToolDto>> GetList()
         {
             var learningTools = await _learningToolRepository.GetList();
-            var funnything = learningTools.Select(x => new LearningToolDto
-            {
-                Id = x.LearningToolID,
-                Name = x.Name,
-                Description = x.Description,
-                Link = x.Link,
-                Difficulty = x.Difficulty,
-                Category = x.Category,
-                Duration = x.Duration,
-                Provider = x.Provider
-            }).ToList();
+
             return learningTools.Select(x => new LearningToolDto
             {
                 Id = x.LearningToolID,
