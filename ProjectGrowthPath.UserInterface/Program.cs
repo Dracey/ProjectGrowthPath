@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor.Services;
 using ProjectGrowthPath.Application.Interfaces;
 using ProjectGrowthPath.Application.Service;
 using ProjectGrowthPath.Application.State;
@@ -63,6 +64,7 @@ public class Program
         // Application Services 
         builder.Services.AddScoped<IUserProfileService, UserProfileService>();
         builder.Services.AddScoped<IProfileCheckService, ProfileCheckService>();
+        builder.Services.AddScoped<ICompetenceRepository, CompetenceRepository>();
         builder.Services.AddScoped<ISetupStatePersistence, SetupStatePersistenceJsInterop>();
         builder.Services.AddScoped<IAvatarGenerator, DiceBearAvatarGenerator>();
         builder.Services.AddScoped<SetupStateStore>();
@@ -72,6 +74,8 @@ public class Program
         // Application Repositories
 
         builder.Services.AddHttpClient();
+        builder.Services.AddMudServices();
+
 
         var app = builder.Build();
 

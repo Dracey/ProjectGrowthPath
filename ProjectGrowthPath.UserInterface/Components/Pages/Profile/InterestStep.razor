@@ -1,20 +1,106 @@
 ﻿@using ProjectGrowthPath.Application.Service
 @using System.ComponentModel.DataAnnotations
+@using ProjectGrowthPath.Application.Interfaces
 @using ProjectGrowthPath.Application.State
+@using ProjectGrowthPath.Domain.Entities
+@using MudBlazor
+
+
 @inject FirstTimeSetupService SetupService
 @inject SetupStateStore StateStorage
+@inject ICompetenceRepository CompetenceRepository
+@implements IDisposable
 
-<h3>InterestStep</h3>
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
 
-<div class="mt-4">
-    <button class="btn btn-outline-secondary me-2" @onclick="() => OnBack.InvokeAsync()">Terug</button>
-    <button class="btn btn-success" @onclick="() => OnNext.InvokeAsync()">Volgende</button>
-</div>
+@if (IsLoading)
+{
+    <MudProgressCircular Indeterminate="true" />
+}
+else
+{
+    <!-- Stap drie van de SetupWizard -->
+    <MudPaper Class="p4">
+        <h3>Kies maximaal 3 vaardigheden waarin je interesse hebt.</h3>
+        <p>Geen zorgen, dit kan je later aanpassen!</p>
+    
+        <MudAutocomplete T="Competence"
+                         Label="Voeg competentie toe"
+                         SearchFunc="SearchCompetences"
+                         ToStringFunc="c => c?.Name ?? string.Empty"
+                         ValueChanged="OnCompetenceSelected"
+                         Variant="Variant.Outlined"
+                         Class="my-3" />
+
+        <MudChipSet T="Competence">
+            @foreach (var comp in SelectedCompetences)
+            {
+                <MudChip T="Competence" @onclick="() => RemoveCompetence(comp)">@comp.Name</MudChip>
+            }
+        </MudChipSet>
+    </MudPaper>
+
+
+    <div class="mt-4">
+        <button class="btn btn-outline-secondary me-2" @onclick="() => OnBack.InvokeAsync()">Terug</button>
+        <button class="btn btn-success" @onclick="() => OnNext.InvokeAsync()">Volgende</button>
+    </div>
+
+}
 
 
 @code {
     [Parameter] public EventCallback OnNext { get; set; }
     [Parameter] public EventCallback OnBack { get; set; }
+    private bool _disposed;
+    private bool IsLoading = true;
+
+
+
+    private List<Competence> AllCompetences { get; set; } = new();
+    private List<Competence> SelectedCompetences { get; set; } = new();
+
+    public void Dispose()
+    {
+        _disposed = true;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var competences = await CompetenceRepository.GetAllAsync();
+
+        if (_disposed) return;
+
+        AllCompetences = competences;
+
+        IsLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private Task<IEnumerable<Competence>> SearchCompetences(string value, CancellationToken token)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return Task.FromResult(AllCompetences.AsEnumerable());
+
+        var filtered = AllCompetences
+            .Where(c => c.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase))
+            .ToList();
+
+        return Task.FromResult(filtered.AsEnumerable());
+    }
+
+    private async Task OnCompetenceSelected(Competence selected)
+    {
+        if (SelectedCompetences.Count < 3 && !SelectedCompetences.Contains(selected))
+            SelectedCompetences.Add(selected);
+    }
+    private void RemoveCompetence(Competence comp)
+    {
+        SelectedCompetences.Remove(comp);
+    }
 
 }
