@@ -46,14 +46,14 @@ namespace ProjectGrowthPath.Application.Service
                 Provider = x.Provider
             }).ToList();
         }
-        public Task<LearningTool> Add(LearningToolCreateDto dto)
+        public async Task<LearningTool> Add(LearningToolCreateDto dto)
         {
-            return _learningToolRepository.Add(dto);
+            return await _learningToolRepository.Add(dto);
         }
 
-        public Task Delete(int id)
+        public async Task Delete(int id)
         {
-            throw new NotImplementedException();
+            await _learningToolRepository.Delete(id);
         }
 
         public Task Update(int id, LearningToolDto dto)
