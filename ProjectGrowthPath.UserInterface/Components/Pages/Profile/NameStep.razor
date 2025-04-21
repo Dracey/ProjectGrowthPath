@@ -1,18 +1,46 @@
 ﻿@using ProjectGrowthPath.Application.Service
 @using System.ComponentModel.DataAnnotations
+@using ProjectGrowthPath.Application.State
 @inject FirstTimeSetupService SetupService
+@inject SetupStateStore StateStorage
 
-<EditForm Model="model" OnValidSubmit="Submit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <InputText @bind-Value="model.Name" placeholder="Je naam" class="form-control" />
-    <button type="submit">Volgende</button>
-</EditForm>
+<!-- Simpele naam invullen form -->
+<div class="mb-4">
+    <h3 class="mb-2">Welkom bij GrowthPath</h3>
+    <p class="text-muted">Vul hieronder jouw naam in om verder te gaan:</p>
 
+    <EditForm Model="model" OnValidSubmit="Submit">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="text-danger small mb-2" />
+
+        <div class="mb-3">
+            <InputText @bind-Value="model.Name" placeholder="Je naam" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Volgende</button>
+    </EditForm>
+</div>
 @code {
     [Parameter] public EventCallback OnNext { get; set; }
-
     private NameStepModel model = new();
+    private bool isInitialized = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await StateStorage.LoadAsync(); // Laad de gegevens pas na het renderen
+
+            // Hier zet je de naam terug als die al eerder was ingevuld:
+            model.Name = StateStorage.CurrentState.NewUser.Name;
+
+            isInitialized = true;
+
+            // Vraag een nieuwe render aan als er gegevens zijn geladen
+            StateHasChanged();
+        }
+    }
+
 
     private async Task Submit()
     {

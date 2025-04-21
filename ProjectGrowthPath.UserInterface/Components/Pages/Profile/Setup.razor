@@ -21,17 +21,21 @@
     }
     else if (stepIndex == 1)
     {
-        <InterestStep OnNext="NextStep" OnBack="PreviousStep" />
+        <AvatarStep OnNext="NextStep" OnBack="PreviousStep" />
     }
     else if (stepIndex == 2)
     {
-        <SkillStep OnNext="NextStep" OnBack="PreviousStep" />
+        <InterestStep OnNext="NextStep" OnBack="PreviousStep" />
     }
     else if (stepIndex == 3)
     {
-        <LearningToolStep OnNext="NextStep" OnBack="PreviousStep" />
+        <SkillStep OnNext="NextStep" OnBack="PreviousStep" />
     }
     else if (stepIndex == 4)
+    {
+        <LearningToolStep OnNext="NextStep" OnBack="PreviousStep" />
+    }
+    else if (stepIndex == 5)
     {
         <FinalizeStep OnFinish="FinishSetup" OnBack="PreviousStep" />
     }

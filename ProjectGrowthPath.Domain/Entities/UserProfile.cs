@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ProjectGrowthPath.Domain.Entities
 {
@@ -30,11 +31,11 @@ namespace ProjectGrowthPath.Domain.Entities
             Name = name.Trim();
         }
 
-        public void SetProfilePicture(byte[] blob)
+        public void SetProfilePicture(byte[] image)
         {
-            if (blob == null || blob.Length == 0)
-                throw new ArgumentException("Profielfoto mag niet leeg zijn");
-            ProfilePicture = blob;
+            if (image.Length > 500_000)
+                throw new ArgumentException("Afbeelding is te groot");
+            ProfilePicture = image;
         }
     }
 }

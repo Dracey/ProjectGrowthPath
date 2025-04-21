@@ -1,0 +1,20 @@
+﻿@using ProjectGrowthPath.Application.Service
+@using System.ComponentModel.DataAnnotations
+@using ProjectGrowthPath.Application.State
+@inject FirstTimeSetupService SetupService
+@inject SetupStateStore StateStorage
+
+<h3>InterestStep</h3>
+
+
+<div class="mt-4">
+    <button class="btn btn-outline-secondary me-2" @onclick="() => OnBack.InvokeAsync()">Terug</button>
+    <button class="btn btn-success" @onclick="() => OnNext.InvokeAsync()">Volgende</button>
+</div>
+
+
+@code {
+    [Parameter] public EventCallback OnNext { get; set; }
+    [Parameter] public EventCallback OnBack { get; set; }
+
+}

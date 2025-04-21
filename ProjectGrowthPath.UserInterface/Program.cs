@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ProjectGrowthPath.Application.Interfaces;
 using ProjectGrowthPath.Application.Service;
 using ProjectGrowthPath.Application.State;
+using ProjectGrowthPath.Infrastructure.API;
 using ProjectGrowthPath.Infrastructure.Identity;
 using ProjectGrowthPath.Infrastructure.Persistence;
 using ProjectGrowthPath.Infrastructure.Services;
@@ -63,11 +64,14 @@ public class Program
         builder.Services.AddScoped<IUserProfileService, UserProfileService>();
         builder.Services.AddScoped<IProfileCheckService, ProfileCheckService>();
         builder.Services.AddScoped<ISetupStatePersistence, SetupStatePersistenceJsInterop>();
+        builder.Services.AddScoped<IAvatarGenerator, DiceBearAvatarGenerator>();
         builder.Services.AddScoped<SetupStateStore>();
         builder.Services.AddScoped<FirstTimeSetupService>();
 
 
         // Application Repositories
+
+        builder.Services.AddHttpClient();
 
         var app = builder.Build();
 
