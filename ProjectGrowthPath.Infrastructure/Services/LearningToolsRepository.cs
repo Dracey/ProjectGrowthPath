@@ -2,6 +2,7 @@
 using ProjectGrowthPath.Application.DTOs.LearningTools;
 using ProjectGrowthPath.Application.Interfaces;
 using ProjectGrowthPath.Domain.Entities;
+using ProjectGrowthPath.Domain.Enums.LearningTools;
 using ProjectGrowthPath.Infrastructure.Persistence;
 
 namespace ProjectGrowthPath.Application.Service
@@ -32,8 +33,8 @@ namespace ProjectGrowthPath.Application.Service
                 Name = dto.Name,
                 Description = dto.Description,
                 Link = dto.Link,
-                Difficulty = dto.Difficulty,
-                Category = dto.Category,
+                Difficulty = (DifficultyTool)dto.Difficulty,
+                Category = (CategoryTool)dto.Category,
                 Duration = dto.Duration,
                 Provider = dto.Provider
             };

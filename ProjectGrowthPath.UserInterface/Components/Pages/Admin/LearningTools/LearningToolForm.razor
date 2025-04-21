@@ -1,5 +1,7 @@
-﻿@using ProjectGrowthPath.Application.DTOs.LearningTools
+﻿@using ProjectGrowthPath.Application.DTOs
+@using ProjectGrowthPath.Application.DTOs.LearningTools
 @using ProjectGrowthPath.Application.Service
+@using ProjectGrowthPath.Application.Service.Enums
 @using ProjectGrowthPath.Domain.Enums.LearningTools
 @inject LearningToolsService LearningToolsService
 
@@ -12,7 +14,7 @@
             <InputText id="name" class="form-control" @bind-Value="learningTool.Name" />
         </div>
     </div>
-    
+
     <div class="form-group row">
         <label for="description" class="col-sm-2 col-form-label">
             Description
@@ -36,10 +38,10 @@
             Difficulty
         </label>
         <div class="col-sm-10">
-            <InputSelect id="category" class="form-control" @bind-Value="learningTool.Difficulty">
-                @foreach (var difficulty in Enum.GetValues(typeof(DifficultyTool)))
+            <InputSelect id="difficulty" class="form-control" @bind-Value="learningTool.Difficulty">
+                @foreach (var difficulty in LearningToolDifficulties)
                 {
-                    <option value="@difficulty">@difficulty</option>
+                    <option value="@difficulty.Id">@difficulty.Name</option>
                 }
             </InputSelect>
         </div>
@@ -51,9 +53,9 @@
         </label>
         <div class="col-sm-10">
             <InputSelect id="category" class="form-control" @bind-Value="learningTool.Category">
-                @foreach (var category in Enum.GetValues(typeof(CategoryTool)))
+                @foreach (var category in LearningToolCategories)
                 {
-                    <option value="@category">@category</option>
+                    <option value="@category.Id">@category.Name</option>
                 }
             </InputSelect>
         </div>
@@ -77,20 +79,26 @@
         </div>
     </div>
 
-    <button class="btn btn-secondary" @onclick="OnCancel">Cancel</button>
+    <button class="btn btn-secondary" @onclick="ToggleForm">Cancel</button>
     <input type="submit" value="Submit" class="btn btn-primary" />
 </EditForm>
 
 @code {
     [Parameter]
-    public EventCallback OnSave { get; set; }
+    public EventCallback ToggleForm { get; set; }
+
     [Parameter]
-    public EventCallback OnCancel { get; set; }
+    public EventCallback OnSave { get; set; }
 
     LearningToolCreateDto learningTool = new LearningToolCreateDto();
 
+    List<EnumDto> LearningToolCategories => CategoryToolService.GetEnumList();
+    List<EnumDto> LearningToolDifficulties => DifficultyToolService.GetEnumList();
+
     public async Task FormSubmitted()
     {
-        var stuff = await LearningToolsService.Add(learningTool);
+        await LearningToolsService.Add(learningTool);
+        await OnSave.InvokeAsync();
     }
+
 }
