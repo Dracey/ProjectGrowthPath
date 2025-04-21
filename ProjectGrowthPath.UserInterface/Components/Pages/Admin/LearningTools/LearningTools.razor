@@ -1,6 +1,6 @@
 ﻿@page "/learning-tools"
-@using ProjectGrowthPath.Application.DTOs.LearningTools
 @using ProjectGrowthPath.Application.Service
+@using ProjectGrowthPath.Application.DTOs.LearningTools
 @attribute [StreamRendering]
 @inject LearningToolsService LearningToolsService
 @rendermode InteractiveServer
@@ -19,7 +19,6 @@ else
 {
     <LearningToolForm OnCancel="ToggleEditor" OnSave="ToggleEditor" />
 }
-
 
 @if (learningTools == null)
 {
@@ -61,6 +60,11 @@ else
     bool isEditorVisible = false;
 
     protected override async Task OnInitializedAsync()
+    {
+        await GetLearningTools();
+    }
+
+    private async Task GetLearningTools()
     {
         learningTools = await LearningToolsService.GetList();
     }

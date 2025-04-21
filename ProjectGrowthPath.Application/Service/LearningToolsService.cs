@@ -48,7 +48,7 @@ namespace ProjectGrowthPath.Application.Service
         }
         public Task<LearningTool> Add(LearningToolCreateDto dto)
         {
-            throw new NotImplementedException();
+            return _learningToolRepository.Add(dto);
         }
 
         public Task Delete(int id)
