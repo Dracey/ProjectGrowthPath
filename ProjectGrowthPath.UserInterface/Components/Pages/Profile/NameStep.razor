@@ -4,16 +4,22 @@
 @inject FirstTimeSetupService SetupService
 @inject SetupStateStore StateStorage
 
-<h3>Welkom bij GrowthPath</h3>
 
-<p>Vul hieronder jouw naam in:</p>
-<EditForm Model="model" OnValidSubmit="Submit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <InputText @bind-Value="model.Name" placeholder="Je naam" class="form-control" />
-    <button type="submit">Volgende</button>
-</EditForm>
+<div class="mb-4">
+    <h3 class="mb-2">Welkom bij GrowthPath</h3>
+    <p class="text-muted">Vul hieronder jouw naam in om verder te gaan:</p>
 
+    <EditForm Model="model" OnValidSubmit="Submit">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="text-danger small mb-2" />
+
+        <div class="mb-3">
+            <InputText @bind-Value="model.Name" placeholder="Je naam" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Volgende</button>
+    </EditForm>
+</div>
 @code {
     [Parameter] public EventCallback OnNext { get; set; }
     private NameStepModel model = new();

@@ -14,13 +14,13 @@
 
 <!-- Keuze voor stijlen -->
 <div class="mb-3">
-    <label for="styleSelect">Stijl</label>
+    <label for="styleSelect">Beschikbare stijlen:</label>
     <div class="btn-group w-100" role="group" aria-label="Avatar styles">
         @foreach (var style in AvailableStyles)
         {
             <button type="button" class="btn btn-outline-primary w-25 @GetButtonClass(style)"
                     @onclick="() => OnStyleChanged(style)">
-                @style
+                @StyleDisplayNames.GetValueOrDefault(style, style)
             </button>
         }
     </div>
@@ -44,18 +44,14 @@
                         </span>
                     }
                 </div>
-                <p class="small text-muted">@avatar.Seed[..8]</p>
             </div>
         }
     </div>
 }
 
-<div class="mb-3">
-    <button class="btn btn-secondary" @onclick="RegenerateAvatars">Genereer nieuwe avatars</button>
-</div>
-
-<div class="mt-4">
+<div class="mt-5 d-flex justify-content-center gap-5">
     <button class="btn btn-outline-secondary me-2" @onclick="() => OnBack.InvokeAsync()">Terug</button>
+    <button class="btn btn-secondary" @onclick="RegenerateAvatars">Genereer nieuwe avatars</button>
     <button class="btn btn-success" @onclick="() => OnNext.InvokeAsync()" disabled="@(!AvatarSelected)">Volgende</button>
 </div>
 
@@ -63,21 +59,24 @@
     [Parameter] public EventCallback OnNext { get; set; }
     [Parameter] public EventCallback OnBack { get; set; }
 
+    // Verschillende velden om de state bij te houden als er iets geselecteerd is. 
     private string SelectedStyle { get; set; } = "avataaars";
     private bool AvatarSelected { get; set; } = false;
     private bool isInitialized = false;
     private string? SelectedSeed;
     public string DisplayName;
-
-
     private List<(string Seed, string Url)> GeneratedAvatars = new();
 
 
     // Lijst van soorten avatars
-    private readonly List<string> AvailableStyles = new()
+    private readonly Dictionary<string, string> StyleDisplayNames = new()
     {
-        "avataaars", "open-peeps", "micah", "bottts-neutral"
+        { "avataaars", "Classic" },
+        { "open-peeps", "Cartoon" },
+        { "bottts-neutral", "Robot" }
     };
+
+    private IEnumerable<string> AvailableStyles => StyleDisplayNames.Keys;
 
 
     // Nadat de pagina is geladen worden de volgende functies uitgevoerd.
@@ -97,6 +96,8 @@
             if (StateStorage.CurrentState.GeneratedAvatars != null && StateStorage.CurrentState.GeneratedAvatars.Count > 0)
             {
                 GeneratedAvatars = StateStorage.CurrentState.GeneratedAvatars;
+                SelectedSeed = StateStorage.CurrentState.SelectedAvatarSeed;
+
             }
             else
             {
