@@ -1,4 +1,4 @@
-﻿using ProjectGrowthPath.Domain.Entities;
+﻿using ProjectGrowthPath.Domain.Enums.LearningTools;
 
 namespace ProjectGrowthPath.Application.DTOs.LearningTools
 {

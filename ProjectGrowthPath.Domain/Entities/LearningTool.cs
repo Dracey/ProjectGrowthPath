@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ProjectGrowthPath.Domain.Enums.LearningTools;
 
 namespace ProjectGrowthPath.Domain.Entities
 {
@@ -22,21 +18,4 @@ namespace ProjectGrowthPath.Domain.Entities
         public ICollection<LearningToolCompetence> ToolCompetences { get; set; } = new List<LearningToolCompetence>();
     }
 
-    public enum DifficultyTool
-    {
-        Easy = 0,
-        Medium = 1,
-        Hard = 2
-    }
-
-    public enum CategoryTool
-    {
-        Other = 0,
-        Video = 1,
-        Article = 2,
-        Book = 3,
-        Course = 4,
-        Podcast = 5,
-        Game = 6
-    }
 }
