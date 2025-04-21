@@ -3,6 +3,7 @@
 @using ProjectGrowthPath.Application.Service
 @attribute [StreamRendering]
 @inject LearningToolsService LearningToolsService
+@rendermode InteractiveServer
 
 <PageTitle>Learning Tools</PageTitle>
 
@@ -10,7 +11,15 @@
 
 <p>This component demonstrates showing data.</p>
 
-<button>Add Learningtool</button>
+@if (!isEditorVisible)
+{
+    <button @onclick="() => isEditorVisible = !isEditorVisible">Add new learning tool</button>
+}
+else
+{
+    <LearningToolForm OnCancel="ToggleEditor" OnSave="ToggleEditor" />
+}
+
 
 @if (learningTools == null)
 {
@@ -49,9 +58,15 @@ else
 
 @code {
     private List<LearningToolDto> learningTools;
+    bool isEditorVisible = false;
 
     protected override async Task OnInitializedAsync()
     {
         learningTools = await LearningToolsService.GetList();
+    }
+
+    void ToggleEditor()
+    {
+        isEditorVisible = !isEditorVisible;
     }
 }

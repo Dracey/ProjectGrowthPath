@@ -1,0 +1,13 @@
+﻿<h3>LearningToolForm</h3>
+
+
+<button @onclick="OnCancel">Cancel</button>
+<button @onclick="OnSave">Save</button>
+
+@code {
+    [Parameter]
+    public EventCallback OnSave { get; set; }
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+}

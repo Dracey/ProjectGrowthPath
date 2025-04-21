@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ProjectGrowthPath.Application.DTOs.LearningTools;
 using ProjectGrowthPath.Application.Interfaces;
 using ProjectGrowthPath.Domain.Entities;
-using ProjectGrowthPath.Infrastructure.Identity;
 using ProjectGrowthPath.Infrastructure.Persistence;
 
 namespace ProjectGrowthPath.Application.Service
