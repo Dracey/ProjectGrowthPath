@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor.Services;
 using ProjectGrowthPath.Application.Interfaces;
 using ProjectGrowthPath.Application.Service;
 using ProjectGrowthPath.Application.State;
+using ProjectGrowthPath.Infrastructure.API;
 using ProjectGrowthPath.Infrastructure.Identity;
 using ProjectGrowthPath.Infrastructure.Persistence;
 using ProjectGrowthPath.Infrastructure.Services;
@@ -62,13 +64,19 @@ public class Program
         // Application Services 
         builder.Services.AddScoped<IUserProfileService, UserProfileService>();
         builder.Services.AddScoped<IProfileCheckService, ProfileCheckService>();
+        builder.Services.AddScoped<ICompetenceRepository, CompetenceRepository>();
         builder.Services.AddScoped<ISetupStatePersistence, SetupStatePersistenceJsInterop>();
         builder.Services.AddScoped<ILearningToolsRepository, LearningToolsRepository>();
+        builder.Services.AddScoped<IAvatarGenerator, DiceBearAvatarGenerator>();
         builder.Services.AddScoped<SetupStateStore>();
         builder.Services.AddScoped<FirstTimeSetupService>();
         builder.Services.AddScoped<LearningToolsService>();
 
         // Application Repositories
+
+        builder.Services.AddHttpClient();
+        builder.Services.AddMudServices();
+
 
         var app = builder.Build();
 
