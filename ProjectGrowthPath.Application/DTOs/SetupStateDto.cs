@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ProjectGrowthPath.Application.State;
-using ProjectGrowthPath.Domain.Entities;
-using ProjectGrowthPath.Domain.ValueObjects;
+﻿using ProjectGrowthPath.Domain.Entities;
 
 namespace ProjectGrowthPath.Application.DTOs
 {

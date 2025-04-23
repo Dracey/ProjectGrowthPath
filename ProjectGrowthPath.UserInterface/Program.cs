@@ -66,10 +66,11 @@ public class Program
         builder.Services.AddScoped<IProfileCheckService, ProfileCheckService>();
         builder.Services.AddScoped<ICompetenceRepository, CompetenceRepository>();
         builder.Services.AddScoped<ISetupStatePersistence, SetupStatePersistenceJsInterop>();
+        builder.Services.AddScoped<ILearningToolsRepository, LearningToolsRepository>();
         builder.Services.AddScoped<IAvatarGenerator, DiceBearAvatarGenerator>();
         builder.Services.AddScoped<SetupStateStore>();
         builder.Services.AddScoped<FirstTimeSetupService>();
-
+        builder.Services.AddScoped<LearningToolsService>();
 
         // Application Repositories
 
