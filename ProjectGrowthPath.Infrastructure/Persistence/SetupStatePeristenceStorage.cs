@@ -29,7 +29,7 @@ namespace ProjectGrowthPath.Infrastructure.Persistence
                 GeneratedAvatars = state.GeneratedAvatars
                     .Select(a => new AvatarInfoDto { Seed = a.Seed, Url = a.Url })
                     .ToList(),
-                Interests = state.Interests.ToList(),
+                SelectedInterests = state.SelectedInterests.ToDictionary(entry => entry.Key, entry => entry.Value),
                 Skills = state.Skills.ToList(),
                 SelectedTools = state.SelectedTools.ToList(),
                 ChosenCompetence = state.ChosenCompetence,
@@ -77,13 +77,11 @@ namespace ProjectGrowthPath.Infrastructure.Persistence
                     .ToList();
             }
 
-            if (dto.Interests != null)
+            if (dto.SelectedInterests != null)
             {
-                foreach (var interest in dto.Interests)
-                {
-                    state.AddInterest(interest);
-                }
+                state.SelectedInterests = dto.SelectedInterests;
             }
+
             if (dto.Skills != null)
             {
                 foreach (var skill in dto.Skills)

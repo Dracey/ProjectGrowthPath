@@ -35,6 +35,25 @@ namespace ProjectGrowthPath.Application.Service
                 }, $"Avatar gekozen via DiceBear (style: {style}, seed: {seed})");
         }
 
+        
+        public async Task UpdateCompetenceDictionary(int id, Competence competence, string type)
+        {
+            if (type == "interests")
+            {
+                await _store.UpdateStateAsync(s => { s.SelectedInterests.Add(id, competence); },
+                    $"Interesse {competence.Name} ingesteld");
+            }
+            else if (type == "skills")
+            {
+                await _store.UpdateStateAsync(s => { s.SelectedSkills.Add(id, competence); },
+                    $"Vaardigheid {competence.Name} ingesteld");
+            }
+            else
+            {
+                throw new ArgumentException("Invalid type specified. Use 'interests' or 'skills'.");
+            }
+        }
+
         //public async Task SelectInterestsAsync(List<Competence> interests)
         //{
         //    foreach (var interest in interests)
@@ -66,12 +85,6 @@ namespace ProjectGrowthPath.Application.Service
         //{
         //    await _store.SetTargetDateAsync(targetDate);
         //}
-
-        public async Task ClearWizardAsync()
-        {
-            await _store.ClearAsync();
-        }
-
 
         // Eindmethode die alles bij elkaar brengt
         public async Task FinalizeSetupAsync()
