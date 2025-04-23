@@ -1,5 +1,6 @@
 ﻿@using ProjectGrowthPath.Application.Service
 @using System.ComponentModel.DataAnnotations
+@using Humanizer
 @using ProjectGrowthPath.Application.Interfaces
 @using ProjectGrowthPath.Application.State
 @using ProjectGrowthPath.Domain.Entities
@@ -23,41 +24,58 @@
 }
 else
 {
-    <!-- Stap drie van de SetupWizard -->
-    <MudPaper Class="p4">
-        <h3>Kies maximaal 3 vaardigheden waarin je interesse hebt.</h3>
-        <p>Geen zorgen, dit kan je later aanpassen!</p>
-    
-        <MudAutocomplete T="Competence"
-                         Label="Voeg competentie toe"
-                         SearchFunc="SearchCompetences"
-                         ToStringFunc="c => c?.Name ?? string.Empty"
-                         ValueChanged="OnCompetenceSelected"
-                         Variant="Variant.Outlined"
-                         Class="my-3" />
-
-        <MudChipSet T="Competence">
-            @foreach (var comp in SelectedCompetences)
-            {
-                <MudChip T="Competence" @onclick="() => RemoveCompetence(comp)">@comp.Name</MudChip>
-            }
-        </MudChipSet>
-    </MudPaper>
-
+    <h3>Kies 3 vaardigheden waarin je interesse hebt.</h3>
+    <p>Geen zorgen, later kan je meer kiezen!</p>
+    <MudGrid>
+        <MudItem xs="12">
+            <MudAutocomplete T="Competence"
+                             Label="Eerste keuze"
+                             @bind-value="comp1"
+                             SearchFunc="SearchForComp1"
+                             ToStringFunc="@(c=> c==null?null : $"{c.Name} ({c.Description})")"
+                             Clearable=true/>
+        </MudItem>
+        <MudItem xs="12" >
+            <MudAutocomplete T="Competence"
+                             Label="Tweede keuze"
+                             @bind-value="comp2"
+                             SearchFunc="SearchForComp2"
+                             ToStringFunc="@(c=> c==null?null : $"{c.Name} ({c.Description})")" 
+                             Clearable=true/>
+        </MudItem>
+        <MudItem xs="12">
+            <MudAutocomplete T="Competence"
+                             Label="Derde keuze"
+                             @bind-value="comp3"
+                             SearchFunc="SearchForComp3"
+                             ToStringFunc="@(c=> c==null?null : $"{c.Name} ({c.Description})")" 
+                             Clearable=true/>
+        </MudItem>
+        <MudItem xs="12" md="12">
+            <MudText Class="mb-n3" Typo="Typo.body2">
+                Selectie van interesses: 
+                <MudChip T="string">@(comp1?.Name ?? "Niet geselecteerd")</MudChip>
+                <MudChip T="string">@(comp2?.Name ?? "Niet geselecteerd")</MudChip>
+                <MudChip T="string">@(comp3?.Name ?? "Niet geselecteerd")</MudChip>
+            </MudText>
+        </MudItem>
+    </MudGrid>
 
     <div class="mt-4">
         <button class="btn btn-outline-secondary me-2" @onclick="() => OnBack.InvokeAsync()">Terug</button>
-        <button class="btn btn-success" @onclick="() => OnNext.InvokeAsync()">Volgende</button>
+        <button class="btn btn-success" @onclick="() => OnNext.InvokeAsync()" disabled="@(!CanProceed)">Volgende</button>
     </div>
-
 }
 
 
 @code {
     [Parameter] public EventCallback OnNext { get; set; }
     [Parameter] public EventCallback OnBack { get; set; }
+    private Competence comp1, comp2, comp3;
     private bool _disposed;
     private bool IsLoading = true;
+    private bool CanProceed => comp1 != null && comp2 != null && comp3 != null
+                               && comp1 != comp2 && comp1 != comp3 && comp2 != comp3;
 
 
 
@@ -81,26 +99,47 @@ else
         await InvokeAsync(StateHasChanged);
     }
 
-    private Task<IEnumerable<Competence>> SearchCompetences(string value, CancellationToken token)
+    private IEnumerable<Competence> GetAvailableCompetences(params Competence[] exclude)
+    {
+        return AllCompetences
+            .Where(c => !exclude.Contains(c))
+            .ToList();
+    }
+
+    private Task<IEnumerable<Competence>> SearchForComp1(string value, CancellationToken token)
+    {
+        return Task.FromResult(FilterCompetences(value, GetAvailableCompetences(comp2, comp3)));
+    }
+
+    private Task<IEnumerable<Competence>> SearchForComp2(string value, CancellationToken token)
+    {
+        return Task.FromResult(FilterCompetences(value, GetAvailableCompetences(comp1, comp3)));
+    }
+
+    private Task<IEnumerable<Competence>> SearchForComp3(string value, CancellationToken token)
+    {
+        return Task.FromResult(FilterCompetences(value, GetAvailableCompetences(comp1, comp2)));
+    }
+
+    private IEnumerable<Competence> FilterCompetences(string value, IEnumerable<Competence> source)
     {
         if (string.IsNullOrWhiteSpace(value))
-            return Task.FromResult(AllCompetences.AsEnumerable());
+            return source;
 
-        var filtered = AllCompetences
+        return source
             .Where(c => c.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase))
             .ToList();
-
-        return Task.FromResult(filtered.AsEnumerable());
     }
 
     private async Task OnCompetenceSelected(Competence selected)
     {
         if (SelectedCompetences.Count < 3 && !SelectedCompetences.Contains(selected))
             SelectedCompetences.Add(selected);
+
+        StateHasChanged();
     }
     private void RemoveCompetence(Competence comp)
     {
         SelectedCompetences.Remove(comp);
     }
-
 }
