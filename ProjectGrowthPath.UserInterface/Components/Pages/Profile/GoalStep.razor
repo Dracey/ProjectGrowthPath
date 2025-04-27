@@ -83,14 +83,14 @@ else
 
     private string GetPaperStyle(Competence competence)
     {
-        var border = SelectedCompetence == competence ? "2px solid green" : "1px solid lightgray";
-        return $"cursor: pointer; border: {border}; padding: 16px;"; 
+        var border = SelectedCompetence?.CompetenceID == competence.CompetenceID ? "2px solid green" : "1px solid lightgray";
+        return $"cursor: pointer; border: {border}; padding: 16px;";
     }
 
     private async Task SelectCompetence(Competence competence)
     {
-        SelectedCompetence = competence;
         await SetupService.SetGoalCompetenceAsync(competence);
+        SelectedCompetence = competence;
         CanProceed = SelectedCompetence != null;
     }
 }
