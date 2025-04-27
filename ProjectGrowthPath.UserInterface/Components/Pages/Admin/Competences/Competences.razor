@@ -5,8 +5,81 @@
 @inject CompetenceService CompetenceService
 @rendermode InteractiveServer
 
-<h3>BASE</h3>
+<PageTitle>Learning Tools</PageTitle>
+
+<h1>Learning Tools</h1>
+
+<p>This component demonstrates showing data.</p>
+
+@if (!isEditorVisible)
+{
+    <button @onclick="() => isEditorVisible = !isEditorVisible">Add new learning tool</button>
+}
+else
+{
+    <CompetenceForm ToggleForm="ToggleForm" OnSave="OnSave" />
+}
+
+@if (competences == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var competence in competences)
+            {
+                <tr>
+                    <td>@competence.Name</td>
+                    <td>@competence.Description</td>
+                    <td>@competence.Category</td>
+                    <td>
+                        <button class="btn btn-danger" @onclick="() => DeleteCompetence(competence.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 @code {
+    private List<CompetenceDto> competences;
+    bool isEditorVisible = false;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await GetCompetences();
+    }
+
+    private async Task GetCompetences()
+    {
+        competences = await CompetenceService.GetList();
+    }
+
+    private void ToggleForm()
+    {
+        isEditorVisible = !isEditorVisible;
+    }
+
+    private async Task OnSave()
+    {
+        competences = null;
+        isEditorVisible = !isEditorVisible;
+        await GetCompetences();
+    }
+
+    private async Task DeleteCompetence(int id)
+    {
+        await CompetenceService.Delete(id);
+        await GetCompetences();
+    }
 }

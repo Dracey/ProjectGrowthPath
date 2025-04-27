@@ -29,7 +29,7 @@ public class CompetenceService
         };
     }
 
-    public async Task<List<CompetenceDto>> GetAllCompetencesAsync()
+    public async Task<List<CompetenceDto>> GetList()
     {
         var list = await _competenceRepository.GetList();
         return list.Select(c => new CompetenceDto
@@ -44,6 +44,11 @@ public class CompetenceService
     public async Task<Competence> Add(CompetenceCreateDto competenceDto)
     {
         return await _competenceRepository.Add(competenceDto);
+    }
+
+    public async Task Delete(int id)
+    {
+        await _competenceRepository.Delete(id);
     }
 }
 
