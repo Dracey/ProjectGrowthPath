@@ -2,6 +2,7 @@
 using ProjectGrowthPath.Application.State;
 using ProjectGrowthPath.Domain.Entities;
 using ProjectGrowthPath.Domain.ValueObjects;
+using System.Xml.Linq;
 
 namespace ProjectGrowthPath.Application.Service
 {
@@ -60,21 +61,15 @@ namespace ProjectGrowthPath.Application.Service
             }, message);
         }
 
-        //public async Task SelectInterestsAsync(List<Competence> interests)
-        //{
-        //    foreach (var interest in interests)
-        //        await _store.AddInterestAsync(interest);
-        //}
 
-        //public async Task SelectSkillsAsync(List<Competence> skills)
-        //{
-        //    foreach (var skill in skills)
-        //        await _store.AddSkillAsync(skill);
-        //}
+        public async Task SetGoalCompetenceAsync(Competence competence)
+        {
+            await _store.UpdateStateAsync(s => s.SetChosenCompetence(competence), "Competence ingesteld");
+        }
 
-        //public async Task SetProfilePictureAsync(byte[] picture)
+        //public async Task SetTargetDateAsync(DateTime targetDate)
         //{
-        //    await _store.SetProfilePictureAsync(picture);
+        //    await _store.SetTargetDateAsync(targetDate);
         //}
 
         //public async Task SetLearningToolsAsync(List<LearningTool> tools)
@@ -82,16 +77,7 @@ namespace ProjectGrowthPath.Application.Service
         //    await _store.SetLearningToolsAsync(tools);
         //}
 
-        //public async Task SetGoalCompetenceAsync(Competence competence)
-        //{
-        //    await _store.SetChosenCompetenceAsync(competence);
-        //}
-
-        //public async Task SetTargetDateAsync(DateTime targetDate)
-        //{
-        //    await _store.SetTargetDateAsync(targetDate);
-        //}
-
+        
         // Eindmethode die alles bij elkaar brengt
         public async Task FinalizeSetupAsync()
         {

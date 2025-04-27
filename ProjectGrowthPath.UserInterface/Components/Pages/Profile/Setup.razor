@@ -33,9 +33,13 @@
     }
     else if (stepIndex == 4)
     {
-        <LearningToolStep OnNext="NextStep" OnBack="PreviousStep" />
+        <GoalStep OnNext="NextStep" OnBack="PreviousStep" />
     }
     else if (stepIndex == 5)
+    {
+        <LearningToolStep OnNext="NextStep" OnBack="PreviousStep" />
+    }
+    else if (stepIndex == 6)
     {
         <FinalizeStep OnFinish="FinishSetup" OnBack="PreviousStep" />
     }

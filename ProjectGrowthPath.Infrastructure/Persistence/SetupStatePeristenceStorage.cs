@@ -31,8 +31,8 @@ namespace ProjectGrowthPath.Infrastructure.Persistence
                     .ToList(),
                 SelectedInterests = state.SelectedInterests.ToDictionary(entry => entry.Key, entry => entry.Value),
                 SelectedSkills = state.SelectedSkills.ToDictionary(entry => entry.Key, entry => entry.Value),
+                ChosenCompetence = state.ChosenCompetence,
                 SelectedTools = state.SelectedTools.ToList(),
-                ChoosenCompetence = state.ChoosenCompetence,
                 TargetDate = state.TargetDate
             };
 
@@ -87,14 +87,16 @@ namespace ProjectGrowthPath.Infrastructure.Persistence
                 state.SelectedSkills = dto.SelectedSkills;
             }
 
+            if (dto.ChosenCompetence != null)
+            {
+                state.SetChosenCompetence(dto.ChosenCompetence);
+            }
+
             if (dto.SelectedTools != null)
             {
                 state.SetLearningTools(dto.SelectedTools);
             }
-            if (dto.ChoosenCompetence != null)
-            {
-                state.SetChoosenCompetence(dto.ChoosenCompetence);
-            }
+          
             return state;
         }
 
