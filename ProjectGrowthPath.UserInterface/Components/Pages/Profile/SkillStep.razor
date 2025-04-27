@@ -95,7 +95,7 @@ else
     //
     protected override async Task OnInitializedAsync()
     {
-        var competences = await CompetenceRepository.GetAllAsync();
+        var competences = await CompetenceRepository.GetList();
 
         if (_disposed) return;
 

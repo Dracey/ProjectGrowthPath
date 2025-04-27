@@ -71,6 +71,7 @@ public class Program
         builder.Services.AddScoped<SetupStateStore>();
         builder.Services.AddScoped<FirstTimeSetupService>();
         builder.Services.AddScoped<LearningToolService>();
+        builder.Services.AddScoped<CompetenceService>();
 
         // Application Repositories
 
