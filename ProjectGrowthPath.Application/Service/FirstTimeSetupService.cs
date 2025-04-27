@@ -1,6 +1,7 @@
 ﻿using ProjectGrowthPath.Application.Interfaces;
 using ProjectGrowthPath.Application.State;
 using ProjectGrowthPath.Domain.Entities;
+using ProjectGrowthPath.Domain.ValueObjects;
 
 namespace ProjectGrowthPath.Application.Service
 {
@@ -35,6 +36,30 @@ namespace ProjectGrowthPath.Application.Service
                 }, $"Avatar gekozen via DiceBear (style: {style}, seed: {seed})");
         }
 
+
+        public async Task UpdateCompetenceDictionary(int id, Competence? competence, string type)
+        {
+            string label = type switch
+            {
+                "interests" => "Interesse",
+                "skills" => "Vaardigheid",
+                _ => throw new ArgumentException("Invalid type specified. Use 'interests' or 'skills'.")
+            };
+
+            string message = $"{label} {(competence?.Name ?? "verwijderd")}";
+
+            await _store.UpdateStateAsync(s =>
+            {
+                var targetDict = type == "interests" ? s.SelectedInterests : s.SelectedSkills;
+
+                if (competence == null)
+                    targetDict.Remove(id);
+                else
+                    targetDict[id] = competence;
+
+            }, message);
+        }
+
         //public async Task SelectInterestsAsync(List<Competence> interests)
         //{
         //    foreach (var interest in interests)
@@ -66,12 +91,6 @@ namespace ProjectGrowthPath.Application.Service
         //{
         //    await _store.SetTargetDateAsync(targetDate);
         //}
-
-        public async Task ClearWizardAsync()
-        {
-            await _store.ClearAsync();
-        }
-
 
         // Eindmethode die alles bij elkaar brengt
         public async Task FinalizeSetupAsync()

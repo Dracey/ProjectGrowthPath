@@ -25,39 +25,39 @@
 }
 else
 {
-    <h3>Kies 3 competenties waarin je interesse hebt.</h3>
+    <h3>Kies 3 vaardigheden die je bezit.</h3>
     <p>Geen zorgen, later kan je meer kiezen!</p>
     <MudGrid>
         <MudItem xs="12">
             <MudAutocomplete T="Competence"
-            Label="Eerste keuze"
-            Value="comp1"
-            ValueChanged="@(c => SelectCompetenceAsync(1, c))"
-            SearchFunc="(val, token) => SearchForComp(val, token, new[] { comp2, comp3 })"
-            ToStringFunc="@(c=> c==null?null : $"{c.Name} ({c.Description})")"
-            Clearable=true/>
-        </MudItem>
-        <MudItem xs="12" >
-            <MudAutocomplete T="Competence"
-            Label="Tweede keuze"
-            Value="comp2"
-            ValueChanged="@(c => SelectCompetenceAsync(2, c))"
-            SearchFunc="(val, token) => SearchForComp(val, token, new[] { comp1, comp3 })"
-            ToStringFunc="@(c=> c==null?null : $"{c.Name} ({c.Description})")" 
-            Clearable=true/>
+                             Label="Eerste keuze"
+                             Value="comp1"
+                             ValueChanged="@(c => SelectCompetenceAsync(1, c))"
+                             SearchFunc="(val, token) => SearchForComp(val, token, new[] { comp2, comp3 })"
+                             ToStringFunc="@(c=> c==null?null : $"{c.Name} ({c.Description})")"
+                             Clearable=true />
         </MudItem>
         <MudItem xs="12">
             <MudAutocomplete T="Competence"
-            Label="Derde keuze"
-            Value="comp3"
-            ValueChanged="@(c => SelectCompetenceAsync(3, c))"
-            SearchFunc="(val, token) => SearchForComp(val, token, new[] { comp1, comp2 })"
-            ToStringFunc="@(c=> c==null?null : $"{c.Name} ({c.Description})")" 
-            Clearable=true/>
+                             Label="Tweede keuze"
+                             Value="comp2"
+                             ValueChanged="@(c => SelectCompetenceAsync(2, c))"
+                             SearchFunc="(val, token) => SearchForComp(val, token, new[] { comp1, comp3 })"
+                             ToStringFunc="@(c=> c==null?null : $"{c.Name} ({c.Description})")"
+                             Clearable=true />
+        </MudItem>
+        <MudItem xs="12">
+            <MudAutocomplete T="Competence"
+                             Label="Derde keuze"
+                             Value="comp3"
+                             ValueChanged="@(c => SelectCompetenceAsync(3, c))"
+                             SearchFunc="(val, token) => SearchForComp(val, token, new[] { comp1, comp2 })"
+                             ToStringFunc="@(c=> c==null?null : $"{c.Name} ({c.Description})")"
+                             Clearable=true />
         </MudItem>
         <MudItem xs="12" md="12">
             <MudText Class="mb-n3" Typo="Typo.body2">
-                Selectie van interesses: 
+                Selectie van vaardigheden:
                 <MudChip T="string">@(comp1?.Name ?? "Niet geselecteerd")</MudChip>
                 <MudChip T="string">@(comp2?.Name ?? "Niet geselecteerd")</MudChip>
                 <MudChip T="string">@(comp3?.Name ?? "Niet geselecteerd")</MudChip>
@@ -112,7 +112,7 @@ else
         {
             await StateStorage.LoadAsync();
 
-            var selected = StateStorage.CurrentState.SelectedInterests;
+            var selected = StateStorage.CurrentState.SelectedSkills;
             if (selected != null)
             {
                 selected.TryGetValue(1, out comp1);
@@ -126,7 +126,7 @@ else
     }
 
 
-    // Complete lijst van competenties ophalen. 
+    // Complete lijst van competenties ophalen.
     private IEnumerable<Competence> GetAvailableCompetences(params Competence[] exclude)
     {
         return AllCompetences
@@ -152,7 +152,7 @@ else
 
     private async Task SelectCompetenceAsync(int number, Competence competence)
     {
-        string typeComp = "interests";
+        string typeComp = "skills";
 
         switch (number)
         {
@@ -168,6 +168,9 @@ else
         }
 
         await SetupService.UpdateCompetenceDictionary(number, competence, typeComp);
+
+        await InvokeAsync(StateHasChanged);
+
     }
 
 }
