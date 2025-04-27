@@ -21,14 +21,14 @@ public class LearningToolsRepository: ILearningToolsRepository
 
     public async Task<LearningTool> Get(int id)
     {
-        return await _dbContext.LearningTools.FirstOrDefaultAsync(x => x.LearningToolID == id);
+        return await _dbContext.LearningTools.FindAsync(id);
     }
 
     public async Task<List<LearningTool>> GetList()
     {
         return await _dbContext.LearningTools.ToListAsync();
-
     }
+
     public async Task<LearningTool> Add(LearningToolCreateDto dto)
     {
         var newLearningTool = new LearningTool

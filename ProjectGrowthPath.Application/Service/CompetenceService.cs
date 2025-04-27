@@ -1,9 +1,12 @@
-﻿using ProjectGrowthPath.Application.DTOs;
+﻿using ProjectGrowthPath.Application.DTOs.Competences;
 using ProjectGrowthPath.Application.Interfaces;
 using ProjectGrowthPath.Domain.Entities;
 
 namespace ProjectGrowthPath.Application.Service;
 
+/// <summary>
+/// Service voor alle leercompetenties.
+/// </summary>
 public class CompetenceService
 {
     private readonly ICompetenceRepository _competenceRepository;
@@ -13,28 +16,34 @@ public class CompetenceService
         _competenceRepository = competenceRepository;
     }
 
+    public async Task<CompetenceDto> Get(int id)
+    {
+        var competence = await _competenceRepository.Get(id);
+
+        return new CompetenceDto
+        {
+            Id = competence.CompetenceID,
+            Name = competence.Name,
+            Description = competence.Description,
+            Category = competence.Category
+        };
+    }
+
     public async Task<List<CompetenceDto>> GetAllCompetencesAsync()
     {
-        var list = await _competenceRepository.GetAllAsync();
+        var list = await _competenceRepository.GetList();
         return list.Select(c => new CompetenceDto
         {
-            CompetenceID = c.CompetenceID,
+            Id = c.CompetenceID,
             Name = c.Name,
             Description = c.Description,
             Category = c.Category
         }).ToList();
     }
 
-    public async Task AddCompetenceAsync(CompetenceDto competenceDto)
+    public async Task<Competence> Add(CompetenceCreateDto competenceDto)
     {
-        var competence = new Competence
-        {
-            CompetenceID = competenceDto.CompetenceID,
-            Name = competenceDto.Name,
-            Description = competenceDto.Description,
-            Category = competenceDto.Category
-        };
-        await _competenceRepository.AddAsync(competence);
+        return await _competenceRepository.Add(competenceDto);
     }
 }
 

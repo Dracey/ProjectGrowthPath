@@ -1,12 +1,13 @@
-﻿using ProjectGrowthPath.Domain.Entities;
+﻿using ProjectGrowthPath.Application.DTOs.Competences;
+using ProjectGrowthPath.Domain.Entities;
 
 namespace ProjectGrowthPath.Application.Interfaces;
 public interface ICompetenceRepository
 {
-    Task<List<Competence>> GetAllAsync();
-    Task<Competence?> GetByIdAsync(int id);
-    Task AddAsync(Competence competence);
-    Task UpdateAsync(Competence competence);
-    Task DeleteAsync(int id);
+    Task<Competence?> Get(int id);
+    Task<List<Competence>> GetList();
+    Task<Competence> Add(CompetenceCreateDto competence);
+    Task Delete(int id);
+    Task Update(int id, CompetenceDto competence);
 }
 

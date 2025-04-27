@@ -1,11 +1,9 @@
 ﻿using ProjectGrowthPath.Domain.Enums.Competences;
 
-namespace ProjectGrowthPath.Domain.Entities;
+namespace ProjectGrowthPath.Application.DTOs.Competences;
 
-// Entiteit voor de competenties die worden toegevoegd aan het systeem.
-public class Competence
+public class CompetenceCreateDto
 {
-    public int CompetenceID { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public CompetenceCategory Category { get; set; } = CompetenceCategory.SoftSkill;
