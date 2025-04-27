@@ -1,6 +1,7 @@
 ﻿using ProjectGrowthPath.Application.Interfaces;
 using ProjectGrowthPath.Application.State;
 using ProjectGrowthPath.Domain.Entities;
+using ProjectGrowthPath.Domain.ValueObjects;
 
 namespace ProjectGrowthPath.Application.Service
 {
@@ -35,23 +36,28 @@ namespace ProjectGrowthPath.Application.Service
                 }, $"Avatar gekozen via DiceBear (style: {style}, seed: {seed})");
         }
 
-        
-        public async Task UpdateCompetenceDictionary(int id, Competence competence, string type)
+
+        public async Task UpdateCompetenceDictionary(int id, Competence? competence, string type)
         {
-            if (type == "interests")
+            string label = type switch
             {
-                await _store.UpdateStateAsync(s => { s.SelectedInterests.Add(id, competence); },
-                    $"Interesse {competence.Name} ingesteld");
-            }
-            else if (type == "skills")
+                "interests" => "Interesse",
+                "skills" => "Vaardigheid",
+                _ => throw new ArgumentException("Invalid type specified. Use 'interests' or 'skills'.")
+            };
+
+            string message = $"{label} {(competence?.Name ?? "verwijderd")}";
+
+            await _store.UpdateStateAsync(s =>
             {
-                await _store.UpdateStateAsync(s => { s.SelectedSkills.Add(id, competence); },
-                    $"Vaardigheid {competence.Name} ingesteld");
-            }
-            else
-            {
-                throw new ArgumentException("Invalid type specified. Use 'interests' or 'skills'.");
-            }
+                var targetDict = type == "interests" ? s.SelectedInterests : s.SelectedSkills;
+
+                if (competence == null)
+                    targetDict.Remove(id);
+                else
+                    targetDict[id] = competence;
+
+            }, message);
         }
 
         //public async Task SelectInterestsAsync(List<Competence> interests)

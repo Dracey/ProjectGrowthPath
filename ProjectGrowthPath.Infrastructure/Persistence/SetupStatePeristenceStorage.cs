@@ -30,9 +30,9 @@ namespace ProjectGrowthPath.Infrastructure.Persistence
                     .Select(a => new AvatarInfoDto { Seed = a.Seed, Url = a.Url })
                     .ToList(),
                 SelectedInterests = state.SelectedInterests.ToDictionary(entry => entry.Key, entry => entry.Value),
-                Skills = state.Skills.ToList(),
+                SelectedSkills = state.SelectedSkills.ToDictionary(entry => entry.Key, entry => entry.Value),
                 SelectedTools = state.SelectedTools.ToList(),
-                ChosenCompetence = state.ChosenCompetence,
+                ChoosenCompetence = state.ChoosenCompetence,
                 TargetDate = state.TargetDate
             };
 
@@ -82,20 +82,18 @@ namespace ProjectGrowthPath.Infrastructure.Persistence
                 state.SelectedInterests = dto.SelectedInterests;
             }
 
-            if (dto.Skills != null)
+            if (dto.SelectedSkills != null)
             {
-                foreach (var skill in dto.Skills)
-                {
-                    state.AddSkill(skill);
-                }
+                state.SelectedSkills = dto.SelectedSkills;
             }
+
             if (dto.SelectedTools != null)
             {
                 state.SetLearningTools(dto.SelectedTools);
             }
-            if (dto.ChosenCompetence != null)
+            if (dto.ChoosenCompetence != null)
             {
-                state.SetChosenCompetence(dto.ChosenCompetence);
+                state.SetChoosenCompetence(dto.ChoosenCompetence);
             }
             return state;
         }

@@ -24,7 +24,7 @@ namespace ProjectGrowthPath.Domain.ValueObjects
         public IReadOnlyList<Competence> Skills => _skills;
         public IReadOnlyList<LearningTool> SelectedTools => _selectedTools;
 
-        public Competence? ChosenCompetence { get; private set; }
+        public Competence? ChoosenCompetence { get; private set; }
         public DateTime? TargetDate { get; private set; }
 
 
@@ -40,9 +40,9 @@ namespace ProjectGrowthPath.Domain.ValueObjects
                 _skills.Add(competence);
         }
 
-        public void SetChosenCompetence(Competence competence)
+        public void SetChoosenCompetence(Competence competence)
         {
-            ChosenCompetence = competence;
+            ChoosenCompetence = competence;
         }
 
         public void SetLearningTools(List<LearningTool> tools)
