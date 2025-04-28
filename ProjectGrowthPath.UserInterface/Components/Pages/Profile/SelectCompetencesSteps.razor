@@ -54,11 +54,13 @@ else
     [Parameter] public EventCallback OnNext { get; set; }
     [Parameter] public EventCallback OnBack { get; set; }
     [Parameter] public string Mode { get; set; } = "interests"; // "skills" of "interests"
-    
+
     private List<Competence> AllCompetences { get; set; } = new();
-    private Dictionary<int, Competence> SelectedCompetences => Mode == "skills"
-        ? StateStorage.CurrentState.SelectedSkills
-        : StateStorage.CurrentState.SelectedInterests;
+
+    private Dictionary<int, Competence> SelectedInterests => StateStorage.CurrentState.SelectedInterests;
+    private Dictionary<int, Competence> SelectedSkills => StateStorage.CurrentState.SelectedSkills;
+
+    private Dictionary<int, Competence> SelectedCompetences => Mode == "skills" ? SelectedSkills : SelectedInterests;
 
     private bool _isFirstRender = true;
     private bool IsLoading = true;
@@ -70,11 +72,9 @@ else
     private string Title => Mode == "skills" ? "Kies 3 vaardigheden die je bezit." : "Kies 3 competenties waarin je interesse hebt.";
     private string Subtitle => "Geen zorgen, later kan je meer kiezen!";
 
-
     protected override async Task OnInitializedAsync()
     {
         AllCompetences = await CompetenceRepository.GetAllAsync();
-
         IsLoading = false;
         await InvokeAsync(StateHasChanged);
     }
@@ -103,13 +103,29 @@ else
 
     private IEnumerable<Competence> GetAvailableCompetences(int currentNumber)
     {
-        var selected = SelectedCompetences
+        // Haal de huidige selectie op voor deze stap
+        var selectedInThisMode = SelectedCompetences
             .Where(kvp => kvp.Key != currentNumber)
             .Select(kvp => kvp.Value)
             .Where(c => c != null)
             .ToList();
 
-        return AllCompetences.Where(c => !selected.Contains(c));
+        // Haal selectie op uit de andere mode (andere stap)
+        var selectedInOtherMode = (Mode == "skills" ? StateStorage.CurrentState.SelectedInterests : StateStorage.CurrentState.SelectedSkills)
+            .Select(kvp => kvp.Value)
+            .Where(c => c != null)
+            .ToList();
+
+        // Combineer alles wat uitgesloten moet worden
+        var allExcluded = selectedInThisMode
+            .Concat(selectedInOtherMode)
+            .Distinct()
+            .ToList();
+
+        // Return alleen de competenties die niet geselecteerd zijn
+        return AllCompetences
+            .Where(c => !allExcluded.Any(ex => ex.CompetenceID == c.CompetenceID))
+            .ToList();
     }
 
     private Task<IEnumerable<Competence>> SearchForComp(string value, CancellationToken token, IEnumerable<Competence> available)
