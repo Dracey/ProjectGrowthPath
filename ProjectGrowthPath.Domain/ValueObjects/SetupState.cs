@@ -14,31 +14,13 @@ namespace ProjectGrowthPath.Domain.ValueObjects
         public Dictionary<int, Competence> SelectedInterests { get; set; } = new(); 
         public Dictionary<int, Competence> SelectedSkills { get; set; } = new();
 
-
-        // Deze misschien weg
-        public readonly List<Competence> _interests = new();
-        private readonly List<Competence> _skills = new();
         private readonly List<LearningTool> _selectedTools = new();
 
-        public IReadOnlyList<Competence> Interests => _interests;
-        public IReadOnlyList<Competence> Skills => _skills;
         public IReadOnlyList<LearningTool> SelectedTools => _selectedTools;
 
         public Competence? ChosenCompetence { get; private set; }
         public DateTime? TargetDate { get; private set; }
 
-
-        public void AddInterest(Competence competence)
-        {
-            if (!_interests.Contains(competence))
-                _interests.Add(competence);
-        }
-
-        public void AddSkill(Competence competence)
-        {
-            if (!_skills.Contains(competence))
-                _skills.Add(competence);
-        }
 
         public void SetChosenCompetence(Competence competence)
         {
