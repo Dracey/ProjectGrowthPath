@@ -1,13 +1,8 @@
 ﻿@using ProjectGrowthPath.Application.Service
-@using System.ComponentModel.DataAnnotations
-@using System.Net
-@using Humanizer
 @using ProjectGrowthPath.Application.Interfaces
 @using ProjectGrowthPath.Application.State
 @using ProjectGrowthPath.Domain.Entities
 @using MudBlazor
-
-
 @inject FirstTimeSetupService SetupService
 @inject SetupStateStore StateStorage
 @inject ICompetenceRepository CompetenceRepository
@@ -18,46 +13,30 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-
 @if (IsLoading)
 {
     <MudProgressCircular Indeterminate="true" />
 }
 else
 {
-    <h3>Kies 3 vaardigheden die je bezit.</h3>
-    <p>Geen zorgen, later kan je meer kiezen!</p>
+    <h3>@Title</h3>
+    <p>@Subtitle</p>
     <MudGrid>
-        <MudItem xs="12">
-            <MudAutocomplete T="Competence"
-                             Label="Eerste keuze"
-                             Value="comp1"
-                             ValueChanged="@(c => SelectCompetenceAsync(1, c))"
-                             SearchFunc="(val, token) => SearchForComp(val, token, new[] { comp2, comp3 })"
-                             ToStringFunc="@(c=> c==null?null : $"{c.Name} ({c.Description})")"
-                             Clearable=true />
-        </MudItem>
-        <MudItem xs="12">
-            <MudAutocomplete T="Competence"
-                             Label="Tweede keuze"
-                             Value="comp2"
-                             ValueChanged="@(c => SelectCompetenceAsync(2, c))"
-                             SearchFunc="(val, token) => SearchForComp(val, token, new[] { comp1, comp3 })"
-                             ToStringFunc="@(c=> c==null?null : $"{c.Name} ({c.Description})")"
-                             Clearable=true />
-        </MudItem>
-        <MudItem xs="12">
-            <MudAutocomplete T="Competence"
-                             Label="Derde keuze"
-                             Value="comp3"
-                             ValueChanged="@(c => SelectCompetenceAsync(3, c))"
-                             SearchFunc="(val, token) => SearchForComp(val, token, new[] { comp1, comp2 })"
-                             ToStringFunc="@(c=> c==null?null : $"{c.Name} ({c.Description})")"
-                             Clearable=true />
-        </MudItem>
+        @foreach (var number in new[] { 1, 2, 3 })
+        {
+            <MudItem xs="12">
+                <MudAutocomplete T="Competence"
+                                 Label="@($"Keuze {number}")"
+                                 Value="@GetComp(number)"
+                                 ValueChanged="@(c => SelectCompetenceAsync(number, c))"
+                                 SearchFunc="(val, token) => SearchForComp(val, token, ExcludeCompetences(number))"
+                                 ToStringFunc="@(c => c == null ? null : $"{c.Name} ({c.Description})")"
+                                 Clearable="true" />
+            </MudItem>
+        }
         <MudItem xs="12" md="12">
             <MudText Class="mb-n3" Typo="Typo.body2">
-                Selectie van vaardigheden:
+                Selectie:
                 <MudChip T="string">@(comp1?.Name ?? "Niet geselecteerd")</MudChip>
                 <MudChip T="string">@(comp2?.Name ?? "Niet geselecteerd")</MudChip>
                 <MudChip T="string">@(comp3?.Name ?? "Niet geselecteerd")</MudChip>
@@ -71,13 +50,13 @@ else
     </div>
 }
 
-
 @code {
     [Parameter] public EventCallback OnNext { get; set; }
     [Parameter] public EventCallback OnBack { get; set; }
+    [Parameter] public string Mode { get; set; } = "interests"; // "skills" of "interests"
+
     private Competence comp1, comp2, comp3;
     private List<Competence> AllCompetences { get; set; } = new();
-
 
     private bool _disposed;
     private bool _isFirstRender = true;
@@ -86,33 +65,30 @@ else
     private bool CanProceed => comp1 != null && comp2 != null && comp3 != null
                                && comp1 != comp2 && comp1 != comp3 && comp2 != comp3;
 
+    private string Title => Mode == "skills" ? "Kies 3 vaardigheden die je bezit." : "Kies 3 competenties waarin je interesse hebt.";
+    private string Subtitle => "Geen zorgen, later kan je meer kiezen!";
+
     public void Dispose()
     {
         _disposed = true;
     }
 
-
-    //
     protected override async Task OnInitializedAsync()
     {
         var competences = await CompetenceRepository.GetAllAsync();
-
         if (_disposed) return;
 
         AllCompetences = competences;
-
         IsLoading = false;
         await InvokeAsync(StateHasChanged);
     }
 
-    // Eerste render al opgeslagen competenties ophalen
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && _isFirstRender)
         {
             await StateStorage.LoadAsync();
-
-            var selected = StateStorage.CurrentState.SelectedSkills;
+            var selected = Mode == "skills" ? StateStorage.CurrentState.SelectedSkills : StateStorage.CurrentState.SelectedInterests;
             if (selected != null)
             {
                 selected.TryGetValue(1, out comp1);
@@ -125,16 +101,43 @@ else
         }
     }
 
-
-    // Complete lijst van competenties ophalen.
-    private IEnumerable<Competence> GetAvailableCompetences(params Competence[] exclude)
+    private async Task SelectCompetenceAsync(int number, Competence competence)
     {
-        return AllCompetences
-            .Where(c => !exclude.Contains(c))
-            .ToList();
+        switch (number)
+        {
+            case 1: comp1 = competence; break;
+            case 2: comp2 = competence; break;
+            case 3: comp3 = competence; break;
+        }
+
+        await SetupService.UpdateCompetenceDictionary(number, competence, Mode);
+        await InvokeAsync(StateHasChanged);
     }
 
-    // Om ervoor te zorgen dat dezelfde competencies niet worden gedisplayed in de resultaten
+    private Competence GetComp(int number) => number switch
+    {
+        1 => comp1,
+        2 => comp2,
+        3 => comp3,
+        _ => null
+    };
+
+    private Competence[] ExcludeCompetences(int number)
+    {
+        return number switch
+        {
+            1 => new[] { comp2, comp3 },
+            2 => new[] { comp1, comp3 },
+            3 => new[] { comp1, comp2 },
+            _ => Array.Empty<Competence>()
+        };
+    }
+
+    private IEnumerable<Competence> GetAvailableCompetences(params Competence[] exclude)
+    {
+        return AllCompetences.Where(c => !exclude.Contains(c)).ToList();
+    }
+
     private Task<IEnumerable<Competence>> SearchForComp(string value, CancellationToken token, Competence[] exclude)
     {
         return Task.FromResult(FilterCompetences(value, GetAvailableCompetences(exclude)));
@@ -145,32 +148,6 @@ else
         if (string.IsNullOrWhiteSpace(value))
             return source;
 
-        return source
-            .Where(c => c.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase))
-            .ToList();
+        return source.Where(c => c.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase)).ToList();
     }
-
-    private async Task SelectCompetenceAsync(int number, Competence competence)
-    {
-        string typeComp = "skills";
-
-        switch (number)
-        {
-            case 1:
-                comp1 = competence;
-                break;
-            case 2:
-                comp2 = competence;
-                break;
-            case 3:
-                comp3 = competence;
-                break;
-        }
-
-        await SetupService.UpdateCompetenceDictionary(number, competence, typeComp);
-
-        await InvokeAsync(StateHasChanged);
-
-    }
-
 }

@@ -64,7 +64,7 @@ namespace ProjectGrowthPath.Application.Service
 
         public async Task SetGoalCompetenceAsync(Competence competence)
         {
-            await _store.UpdateStateAsync(s => s.SetChosenCompetence(competence), "Competence ingesteld");
+            await _store.UpdateStateAsync(s => s.SetChosenCompetence(competence), $"Gekozen doel competentie: {competence.Name} vastgelegd.");
         }
 
         //public async Task SetTargetDateAsync(DateTime targetDate)
