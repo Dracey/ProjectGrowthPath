@@ -67,10 +67,11 @@ namespace ProjectGrowthPath.Application.Service
             await _store.UpdateStateAsync(s => s.SetChosenCompetence(competence), $"Gekozen doel competentie: {competence.Name} vastgelegd.");
         }
 
-        //public async Task SetTargetDateAsync(DateTime targetDate)
-        //{
-        //    await _store.SetTargetDateAsync(targetDate);
-        //}
+        
+        public async Task SetTargetDateAsync(DateTime date)
+        {
+            await _store.UpdateStateAsync(s => s.SetTargetDate(date), $"Doel datum ingesteld: {date.ToShortDateString()}");
+        }
 
         //public async Task SetLearningToolsAsync(List<LearningTool> tools)
         //{
