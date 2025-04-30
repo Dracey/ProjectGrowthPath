@@ -7,11 +7,11 @@ namespace ProjectGrowthPath.Application.Service;
 /// <summary>
 /// Service voor alle leermiddelen handelingen.
 /// </summary>
-public class LearningToolsService
+public class LearningToolService
 {
     private ILearningToolsRepository _learningToolRepository;
 
-    public LearningToolsService(ILearningToolsRepository learningToolRepository)
+    public LearningToolService(ILearningToolsRepository learningToolRepository)
     {
         _learningToolRepository = learningToolRepository;
     }
@@ -49,6 +49,7 @@ public class LearningToolsService
             Provider = x.Provider
         }).ToList();
     }
+
     public async Task<LearningTool> Add(LearningToolCreateDto dto)
     {
         return await _learningToolRepository.Add(dto);

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProjectGrowthPath.Application.DTOs.Competences;
 using ProjectGrowthPath.Application.Interfaces;
 using ProjectGrowthPath.Domain.Entities;
 using ProjectGrowthPath.Infrastructure.Persistence;
@@ -7,42 +8,54 @@ namespace ProjectGrowthPath.Infrastructure.Services;
 public class CompetenceRepository : ICompetenceRepository
 {
 
-    private readonly AppDbContext _context;
+    private readonly AppDbContext _dbContext;
 
-    public CompetenceRepository(AppDbContext context)
+    public CompetenceRepository(AppDbContext dbContext)
     {
-        _context = context;
+        _dbContext = dbContext;
     }
 
-    public async Task AddAsync(Competence competence)
+    public async Task<Competence?> Get(int id)
     {
-        _context.Competences.Add(competence);
-        await _context.SaveChangesAsync();
+        return await _dbContext.Competences.FindAsync(id);
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task<List<Competence>> GetList()
     {
-        var competence = await _context.Competences.FindAsync(id);
-        if (competence != null)
+        return await _dbContext.Competences.ToListAsync();
+    }
+
+    public async Task<Competence> Add(CompetenceCreateDto competence)
+    {
+        var newCompetence = new Competence
         {
-            _context.Competences.Remove(competence);
-            await _context.SaveChangesAsync();
+            Name = competence.Name,
+            Description = competence.Description,
+            Category = competence.Category
+        };
+
+        var entityEntry = await _dbContext.Competences.AddAsync(newCompetence);
+        await _dbContext.SaveChangesAsync(); // Ensure the changes are saved to the database
+        return entityEntry.Entity; // Return the LearningTool entity
+    }
+
+    public async Task Delete(int id)
+    {
+        await _dbContext.Competences
+            .Where(x => x.CompetenceID == id)
+            .ExecuteDeleteAsync();
+    }
+
+    public async Task Update(int Id, CompetenceDto competenceDto)
+    {
+        var competence = await _dbContext.Competences.FindAsync(Id);
+
+        if (competence == null)
+        {
+            throw new Exception("Competence not found");
         }
-    }
 
-    public async Task<List<Competence>> GetAllAsync()
-    {
-        return await _context.Competences.ToListAsync();
-    }
-
-    public async Task<Competence?> GetByIdAsync(int id)
-    {
-        return await _context.Competences.FindAsync(id);
-    }
-
-    public async Task UpdateAsync(Competence competence)
-    {
-        _context.Competences.Update(competence);
-        await _context.SaveChangesAsync();
+        _dbContext.Competences.Update(competence);
+        await _dbContext.SaveChangesAsync();
     }
 }
