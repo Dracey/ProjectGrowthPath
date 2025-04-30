@@ -10,7 +10,7 @@ namespace ProjectGrowthPath.Application.DTOs
         public List<AvatarInfoDto> GeneratedAvatars { get; set; } = new();
         public Dictionary<int, Competence> SelectedInterests { get; set; } = new();
         public Dictionary<int, Competence> SelectedSkills { get; set; } = new();
-        public Competence? ChoosenCompetence { get; set; }
+        public Competence? ChosenCompetence { get; set; }
         public List<LearningTool> SelectedTools { get; set; } = new();
         public DateTime? TargetDate { get; set; }
     }

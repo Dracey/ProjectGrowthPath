@@ -37,7 +37,11 @@ namespace ProjectGrowthPath.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    Link = table.Column<string>(type: "text", nullable: false)
+                    Link = table.Column<string>(type: "text", nullable: false),
+                    Difficulty = table.Column<int>(type: "integer", nullable: false),
+                    Category = table.Column<int>(type: "integer", nullable: false),
+                    Duration = table.Column<int>(type: "integer", nullable: false),
+                    Provider = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
