@@ -74,7 +74,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        AllCompetences = await CompetenceRepository.GetAllAsync();
+        AllCompetences = await CompetenceRepository.GetList();
         IsLoading = false;
         await InvokeAsync(StateHasChanged);
     }

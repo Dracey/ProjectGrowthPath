@@ -72,6 +72,8 @@ public class Program
         builder.Services.AddScoped<FirstTimeSetupService>();
         builder.Services.AddScoped<LearningToolService>();
         builder.Services.AddScoped<CompetenceService>();
+        builder.Services.AddScoped<AvatarService>();
+
 
         // Application Repositories
 

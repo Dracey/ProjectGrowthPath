@@ -78,6 +78,8 @@ namespace ProjectGrowthPath.Application.Service
         //    await _store.SetLearningToolsAsync(tools);
         //}
 
+        //
+
         
         // Eindmethode die alles bij elkaar brengt
         public async Task FinalizeSetupAsync()

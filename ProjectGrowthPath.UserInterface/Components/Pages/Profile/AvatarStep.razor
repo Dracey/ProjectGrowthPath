@@ -4,8 +4,9 @@
 @using Mono.TextTemplating
 
 @inject FirstTimeSetupService SetupService
-@inject IAvatarGenerator AvatarService
 @inject SetupStateStore StateStorage
+@inject AvatarService AvatarService
+
 
 
 <h3>Hi @DisplayName!</h3>
@@ -60,14 +61,12 @@
     [Parameter] public EventCallback OnNext { get; set; }
     [Parameter] public EventCallback OnBack { get; set; }
 
-    // Verschillende velden om de state bij te houden als er iets geselecteerd is. 
+    // Verschillende velden om de state bij te houden als er iets geselecteerd is.
     private string SelectedStyle { get; set; } = "avataaars";
     private bool AvatarSelected { get; set; } = false;
-    private bool isInitialized = false;
     private string? SelectedSeed;
-    public string DisplayName;
+    private string DisplayName = "";
     private List<(string Seed, string Url)> GeneratedAvatars = new();
-
 
     // Lijst van soorten avatars
     private readonly Dictionary<string, string> StyleDisplayNames = new()
@@ -79,73 +78,53 @@
 
     private IEnumerable<string> AvailableStyles => StyleDisplayNames.Keys;
 
-
     // Nadat de pagina is geladen worden de volgende functies uitgevoerd.
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             await StateStorage.LoadAsync();
-
             DisplayName = StateStorage.CurrentState.NewUser.Name;
-            SelectedStyle = StateStorage.CurrentState.AvatarStyle ?? "avataaars";
-            
 
-            isInitialized = true;
+            var (avatars, selectedSeed) = await AvatarService.InitializeAvatarStepAsync(StateStorage.CurrentState);
+            GeneratedAvatars = avatars;
+            SelectedSeed = selectedSeed;
+            AvatarSelected = selectedSeed is not null;
 
-            StateHasChanged();
-            if (StateStorage.CurrentState.GeneratedAvatars != null && StateStorage.CurrentState.GeneratedAvatars.Count > 0)
-            {
-                GeneratedAvatars = StateStorage.CurrentState.GeneratedAvatars;
-
-            }
-            else
-            {
-                await RegenerateAvatars();
-            }
-
-            if (!string.IsNullOrWhiteSpace(StateStorage.CurrentState.SelectedAvatarSeed))
-            {
-                SelectedSeed = StateStorage.CurrentState.SelectedAvatarSeed;
-                AvatarSelected = true; 
-            }
-
+            await StateStorage.SaveAsync();
             StateHasChanged();
         }
     }
-  
+    // Nieuwe avatars laden
+    private async Task RegenerateAvatars() =>
+        await UpdateAvatars(SelectedStyle);
+        
+
     // Als de gebruiker een nieuwe stijl uitkiest krijg hij of zij nieuwe avatars te zien
-    private void OnStyleChanged(string style)
+    private async Task OnStyleChanged(string style)
     {
         SelectedStyle = style;
-        RegenerateAvatars();
+        await UpdateAvatars(style);
     }
 
-    // Nieuwe avatars laden
-    private async Task RegenerateAvatars()
+    private async Task UpdateAvatars(string style)
     {
         AvatarSelected = false;
-        GeneratedAvatars = await AvatarService.GenerateMultipleAvatarUrlsAsync(SelectedStyle, 6);
-
-        StateStorage.CurrentState.AvatarStyle = SelectedStyle;
-        StateStorage.CurrentState.GeneratedAvatars = GeneratedAvatars;
-
+        GeneratedAvatars = await AvatarService.UpdateStyleAndRegenerateAsync(style, StateStorage.CurrentState);
         await StateStorage.SaveAsync();
-
         StateHasChanged();
     }
-
-    private string GetButtonClass(string style)
-    {
-        return style == SelectedStyle ? "active" : string.Empty;
-    }
+    
+    // Krijg de class voor de knop op basis van de geselecteerde stijl
+    private string GetButtonClass(string style) =>
+        style == SelectedStyle ? "active" : string.Empty;
 
     // Gekozen avatar opslaan
     private async Task SelectAvatarAsync(string seed)
     {
-        await SetupService.SetProfilePictureAsync(SelectedStyle, seed);
+        await AvatarService.SelectAvatarAsync(SelectedStyle, seed, StateStorage.CurrentState);
         SelectedSeed = seed;
-
         AvatarSelected = true;
+        await StateStorage.SaveAsync();
     }
 }
