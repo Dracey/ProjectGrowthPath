@@ -3,6 +3,8 @@
 @using ProjectGrowthPath.Application.State
 @using ProjectGrowthPath.Domain.Entities
 @using MudBlazor
+@inject ICompetenceSelectionService SelectionService
+
 @inject FirstTimeSetupService SetupService
 @inject SetupStateStore StateStorage
 @inject ICompetenceRepository CompetenceRepository
@@ -53,9 +55,8 @@ else
 @code {
     [Parameter] public EventCallback OnNext { get; set; }
     [Parameter] public EventCallback OnBack { get; set; }
-    [Parameter] public string Mode { get; set; } = "interests"; // "skills" of "interests"
 
-    private List<Competence> AllCompetences { get; set; } = new();
+    [Parameter] public string Mode { get; set; } = "interests"; // "skills" of "interests"
 
     private Dictionary<int, Competence> SelectedInterests => StateStorage.CurrentState.SelectedInterests;
     private Dictionary<int, Competence> SelectedSkills => StateStorage.CurrentState.SelectedSkills;
@@ -65,16 +66,12 @@ else
     private bool _isFirstRender = true;
     private bool IsLoading = true;
 
-    private bool CanProceed => SelectedCompetences?.Count == 3
-                               && SelectedCompetences.Values.Distinct().Count() == 3
-                               && SelectedCompetences.Values.All(c => c != null);
-
     private string Title => Mode == "skills" ? "Kies 3 vaardigheden die je bezit." : "Kies 3 competenties waarin je interesse hebt.";
     private string Subtitle => "Geen zorgen, later kan je meer kiezen!";
 
     protected override async Task OnInitializedAsync()
     {
-        AllCompetences = await CompetenceRepository.GetList();
+        await SelectionService.InitializeAsync();
         IsLoading = false;
         await InvokeAsync(StateHasChanged);
     }
@@ -89,51 +86,20 @@ else
         }
     }
 
-    private Competence GetSelectedCompetence(int number)
-    {
-        SelectedCompetences.TryGetValue(number, out var competence);
-        return competence;
-    }
+    private Competence GetSelectedCompetence(int number) => SelectionService.GetSelectedCompetence(number, Mode);
+
 
     private async Task SelectCompetenceAsync(int number, Competence competence)
     {
-        await SetupService.UpdateCompetenceDictionary(number, competence, Mode);
+        await SelectionService.SelectCompetenceAsync(number, competence, Mode);
         await InvokeAsync(StateHasChanged);
     }
 
     private IEnumerable<Competence> GetAvailableCompetences(int currentNumber)
-    {
-        // Haal de huidige selectie op voor deze stap
-        var selectedInThisMode = SelectedCompetences
-            .Where(kvp => kvp.Key != currentNumber)
-            .Select(kvp => kvp.Value)
-            .Where(c => c != null)
-            .ToList();
+        => SelectionService.GetAvailableCompetences(currentNumber, Mode);
 
-        // Haal selectie op uit de andere mode (andere stap)
-        var selectedInOtherMode = (Mode == "skills" ? StateStorage.CurrentState.SelectedInterests : StateStorage.CurrentState.SelectedSkills)
-            .Select(kvp => kvp.Value)
-            .Where(c => c != null)
-            .ToList();
+    private Task<IEnumerable<Competence>> SearchForComp(string value, CancellationToken token, IEnumerable<Competence> _)
+        => SelectionService.SearchCompetencesAsync(value, Mode);
 
-        // Combineer alles wat uitgesloten moet worden
-        var allExcluded = selectedInThisMode
-            .Concat(selectedInOtherMode)
-            .Distinct()
-            .ToList();
-
-        // Return alleen de competenties die niet geselecteerd zijn
-        return AllCompetences
-            .Where(c => !allExcluded.Any(ex => ex.CompetenceID == c.CompetenceID))
-            .ToList();
-    }
-
-    private Task<IEnumerable<Competence>> SearchForComp(string value, CancellationToken token, IEnumerable<Competence> available)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-            return Task.FromResult(available);
-
-        var result = available.Where(c => c.Name.Contains(value, StringComparison.InvariantCultureIgnoreCase));
-        return Task.FromResult(result);
-    }
+    private bool CanProceed => SelectionService.CanProceed(Mode);
 }
