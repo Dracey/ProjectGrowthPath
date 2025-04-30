@@ -4,7 +4,7 @@ using ProjectGrowthPath.Domain.ValueObjects;
 
 namespace ProjectGrowthPath.Application.Service
 {
-    public class AvatarService
+    public class AvatarService : IAvatarService
     {
         private readonly IAvatarGenerator _avatarGenerator;
         private readonly FirstTimeSetupService _setupService;

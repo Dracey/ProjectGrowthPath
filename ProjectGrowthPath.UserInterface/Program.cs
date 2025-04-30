@@ -69,11 +69,11 @@ public class Program
         builder.Services.AddScoped<ILearningToolsRepository, LearningToolsRepository>();
         builder.Services.AddScoped<IAvatarGenerator, DiceBearAvatarGenerator>();
         builder.Services.AddScoped<ICompetenceSelectionService, CompetenceSelectionService>();
+        builder.Services.AddScoped<IAvatarService, AvatarService>();
         builder.Services.AddScoped<SetupStateStore>();
         builder.Services.AddScoped<FirstTimeSetupService>();
         builder.Services.AddScoped<LearningToolService>();
         builder.Services.AddScoped<CompetenceService>();
-        builder.Services.AddScoped<AvatarService>();
 
 
         // Application Repositories
