@@ -8,7 +8,6 @@ namespace ProjectGrowthPath.Application.State
     {
         private readonly ISetupStatePersistence _persistence;
         private readonly ILogger<SetupStateStore> _logger;
-
         public SetupState CurrentState { get; private set; }
 
 

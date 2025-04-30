@@ -31,8 +31,8 @@ namespace ProjectGrowthPath.Infrastructure.Persistence
                     .ToList(),
                 SelectedInterests = state.SelectedInterests.ToDictionary(entry => entry.Key, entry => entry.Value),
                 SelectedSkills = state.SelectedSkills.ToDictionary(entry => entry.Key, entry => entry.Value),
+                ChosenCompetence = state.ChosenCompetence,
                 SelectedTools = state.SelectedTools.ToList(),
-                ChoosenCompetence = state.ChoosenCompetence,
                 TargetDate = state.TargetDate
             };
 
@@ -48,53 +48,22 @@ namespace ProjectGrowthPath.Infrastructure.Persistence
             if (string.IsNullOrWhiteSpace(json)) return new SetupState();  
 
             var dto = JsonSerializer.Deserialize<SetupStateDto>(json);
-            if (dto == null) return new SetupState();  
+            if (dto == null) return new SetupState();
 
-            var state = new SetupState();
-
-            
-            state.NewUser.SetName(dto.NewUser?.Name ?? string.Empty);  
-
-            if (dto.TargetDate.HasValue)
+            var state = new SetupState
             {
-                state.SetTargetDate(dto.TargetDate.Value);
-            }
+                NewUser = { Name = dto.NewUser?.Name ?? string.Empty },
+                AvatarStyle = dto.AvatarStyle,
+                SelectedAvatarSeed = dto.SelectedAvatarSeed ?? string.Empty,
+                SelectedInterests = dto.SelectedInterests ?? new Dictionary<int, Competence>(),
+                SelectedSkills = dto.SelectedSkills ?? new Dictionary<int, Competence>(),
+                GeneratedAvatars = dto.GeneratedAvatars?.Select(a => (a.Seed, a.Url)).ToList() ?? new List<(string, string)>(),
+            };
 
-            if (dto.AvatarStyle != null)
-            {
-                state.AvatarStyle = dto.AvatarStyle;
-            }
-
-            if (!string.IsNullOrWhiteSpace(dto.SelectedAvatarSeed))
-            {
-                state.SelectedAvatarSeed = dto.SelectedAvatarSeed;
-            }
-
-            if (dto.GeneratedAvatars != null)
-            {
-                state.GeneratedAvatars = dto.GeneratedAvatars
-                    .Select(a => (a.Seed, a.Url))
-                    .ToList();
-            }
-
-            if (dto.SelectedInterests != null)
-            {
-                state.SelectedInterests = dto.SelectedInterests;
-            }
-
-            if (dto.SelectedSkills != null)
-            {
-                state.SelectedSkills = dto.SelectedSkills;
-            }
-
-            if (dto.SelectedTools != null)
-            {
-                state.SetLearningTools(dto.SelectedTools);
-            }
-            if (dto.ChoosenCompetence != null)
-            {
-                state.SetChoosenCompetence(dto.ChoosenCompetence);
-            }
+            if (dto.TargetDate.HasValue) state.SetTargetDate(dto.TargetDate.Value);
+            if (dto.ChosenCompetence != null) state.SetChosenCompetence(dto.ChosenCompetence);
+            if (dto.SelectedTools != null) state.SetLearningTools(dto.SelectedTools);
+          
             return state;
         }
 
