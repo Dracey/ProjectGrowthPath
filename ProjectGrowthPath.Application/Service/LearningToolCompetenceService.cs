@@ -5,6 +5,9 @@ using ProjectGrowthPath.Domain.Entities;
 
 namespace ProjectGrowthPath.Application.Service;
 
+/// <summary>
+/// Service class voor learningtool-competence.
+/// </summary>
 public class LearningToolCompetenceService
 {
     private readonly ILearningtoolCompetenceRepository _learningToolCompetenceRepository;

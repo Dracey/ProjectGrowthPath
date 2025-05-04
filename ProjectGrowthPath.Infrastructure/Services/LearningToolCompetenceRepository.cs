@@ -6,6 +6,9 @@ using ProjectGrowthPath.Infrastructure.Persistence;
 
 namespace ProjectGrowthPath.Infrastructure.Services;
 
+/// <summary>
+/// Repository class voor learningtool-competence.
+/// </summary>
 public class LearningToolCompetenceRepository : ILearningtoolCompetenceRepository
 {
     private readonly AppDbContext _dbContext;
