@@ -1,4 +1,5 @@
-﻿using ProjectGrowthPath.Domain.Enums.LearningTools;
+﻿using ProjectGrowthPath.Application.DTOs.Competences;
+using ProjectGrowthPath.Domain.Enums.LearningTools;
 
 namespace ProjectGrowthPath.Application.DTOs.LearningTools
 {
@@ -12,5 +13,6 @@ namespace ProjectGrowthPath.Application.DTOs.LearningTools
         public CategoryTool Category { get; set; }
         public int Duration { get; set; }
         public string Provider { get; set; }
+        public List<CompetenceDto> Competences { get; set; }
     }
 }
