@@ -57,7 +57,6 @@ public class LearningToolService
         foreach (var learningTool in learningToolsDto)
         {
             var learningToolCompetences = await _learningToolCompetenceService.GetByLearningToolId(learningTool.Id);
-            learningTool.Competences = new List<CompetenceDto>();
             foreach (var learningToolCompetence in learningToolCompetences)
             {
                 var competence = await _competenceService.Get(learningToolCompetence.CompetenceID);

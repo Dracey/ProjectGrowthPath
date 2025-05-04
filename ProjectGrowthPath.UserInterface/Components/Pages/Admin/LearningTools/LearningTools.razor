@@ -34,6 +34,7 @@ else
                 <th>Category</th>
                 <th>Duration</th>
                 <th>Provider</th>
+                <th>Competences</th>
                 <th></th>
             </tr>
         </thead>
@@ -48,6 +49,7 @@ else
                     <td>@learningTool.Category</td>
                     <td>@learningTool.Duration</td>
                     <td>@learningTool.Provider</td>
+                    <td>@CompileCompetences(learningTool)</td>
                     <td>
                         <button class="btn btn-danger" @onclick="() => DeleteLearningTool(learningTool.Id)">Delete</button>
                     </td>
@@ -87,5 +89,10 @@ else
     {
         await LearningToolsService.Delete(id);
         await GetLearningTools();
+    }
+
+    private string CompileCompetences(LearningToolDto learningTool)
+    {
+        return string.Join(", ", learningTool.Competences .Select(e => e.Name));
     }
 }
