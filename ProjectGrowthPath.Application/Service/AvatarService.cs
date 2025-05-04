@@ -7,9 +7,9 @@ namespace ProjectGrowthPath.Application.Service
     public class AvatarService : IAvatarService
     {
         private readonly IAvatarGenerator _avatarGenerator;
-        private readonly FirstTimeSetupService _setupService;
+        private readonly IFirstTimeSetupService _setupService;
 
-        public AvatarService(IAvatarGenerator avatarGenerator, FirstTimeSetupService setupService)
+        public AvatarService(IAvatarGenerator avatarGenerator, IFirstTimeSetupService setupService)
         {
             _avatarGenerator = avatarGenerator;
             _setupService = setupService;

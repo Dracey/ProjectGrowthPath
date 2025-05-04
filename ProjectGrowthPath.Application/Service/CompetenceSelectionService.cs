@@ -7,10 +7,10 @@ public class CompetenceSelectionService : ICompetenceSelectionService
 {
     private readonly ICompetenceRepository _competenceRepository;
     private readonly SetupStateStore _stateStore;
-    private readonly FirstTimeSetupService _setupService;
+    private readonly IFirstTimeSetupService _setupService;
     private List<Competence> _allCompetences = new();
 
-    public CompetenceSelectionService(ICompetenceRepository competenceRepository, SetupStateStore stateStore, FirstTimeSetupService setupService)
+    public CompetenceSelectionService(ICompetenceRepository competenceRepository, SetupStateStore stateStore, IFirstTimeSetupService setupService)
     {
         _competenceRepository = competenceRepository;
         _stateStore = stateStore;

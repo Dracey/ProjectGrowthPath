@@ -1,8 +1,8 @@
 ﻿@page "/profile/setup"
-@using ProjectGrowthPath.Application.Service
 @using ProjectGrowthPath.UserInterface.Components.Layout
+@using ProjectGrowthPath.Application.Interfaces
 
-@inject FirstTimeSetupService SetupService
+@inject IFirstTimeSetupService SetupService
 @inject NavigationManager Navigation
 
 @layout LoginAndRegister

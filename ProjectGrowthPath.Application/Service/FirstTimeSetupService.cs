@@ -6,7 +6,7 @@ using System.Xml.Linq;
 
 namespace ProjectGrowthPath.Application.Service
 {
-    public class FirstTimeSetupService
+    public class FirstTimeSetupService : IFirstTimeSetupService
     {
         private readonly SetupStateStore _store;
         private readonly IUserProfileService _profileService;
