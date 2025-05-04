@@ -6,7 +6,7 @@ name: Build and deploy ASP.Net Core app to Azure Web App - growthpathapp
 on:
   push:
     branches:
-      - development
+      - Development
   workflow_dispatch:
 
 jobs:
