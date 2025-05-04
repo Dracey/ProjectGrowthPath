@@ -1,7 +1,8 @@
 ﻿@using ProjectGrowthPath.Application.Service
 @using System.ComponentModel.DataAnnotations
+@using ProjectGrowthPath.Application.Interfaces
 @using ProjectGrowthPath.Application.State
-@inject FirstTimeSetupService SetupService
+@inject IFirstTimeSetupService SetupService
 @inject SetupStateStore StateStorage
 <!-- Eerste stap van de SetupWizard -->
 <!-- Simpele naam invullen form -->

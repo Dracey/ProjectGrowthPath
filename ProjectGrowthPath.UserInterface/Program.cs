@@ -68,10 +68,13 @@ public class Program
         builder.Services.AddScoped<ISetupStatePersistence, SetupStatePersistenceJsInterop>();
         builder.Services.AddScoped<ILearningToolsRepository, LearningToolsRepository>();
         builder.Services.AddScoped<IAvatarGenerator, DiceBearAvatarGenerator>();
+        builder.Services.AddScoped<ICompetenceSelectionService, CompetenceSelectionService>();
+        builder.Services.AddScoped<IAvatarService, AvatarService>();
+        builder.Services.AddScoped<IFirstTimeSetupService, FirstTimeSetupService>();
         builder.Services.AddScoped<SetupStateStore>();
-        builder.Services.AddScoped<FirstTimeSetupService>();
         builder.Services.AddScoped<LearningToolService>();
         builder.Services.AddScoped<CompetenceService>();
+
 
         // Application Repositories
 
