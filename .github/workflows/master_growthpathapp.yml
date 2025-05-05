@@ -1,3 +1,6 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
 name: Build and deploy ASP.Net Core app to Azure Web App - growthpathapp
 
 on:
@@ -20,24 +23,18 @@ jobs:
         with:
           dotnet-version: '9.x'
 
-      - name: Create publish directory
-        run: mkdir -p ./artifacts/publish    
-
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish ProjectGrowthPath.UserInterface/ProjectGrowthPath.UserInterface.csproj -c Release -o ./artifacts/publish
+        run: dotnet publish ProjectGrowthPath.UserInterface/ProjectGrowthPath.UserInterface.csproj -c Release -o ./publish
 
-      - name: List contents of publish directory
-        run: dir ./artifacts/publish 
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ./artifacts/publish
-
+          path: ./publish
   deploy:
     runs-on: windows-latest
     needs: build
@@ -50,12 +47,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-
-      - name: Deploy to Azure Web App using Zip Deploy
+      
+      - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'growthpathapp'
           slot-name: 'Production'
-          package: ./artifacts/publish  # Gebruik hier het zip-bestand als package
+          package: .
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F994F6B55D054CCDBDE8645DDD119D3E }}
