@@ -32,8 +32,8 @@ public class LearningToolService
             Name = learningTool.Name,
             Description = learningTool.Description,
             Link = learningTool.Link,
-            Difficulty = learningTool.Difficulty,
-            Category = learningTool.Category,
+            Difficulty = (int)learningTool.Difficulty,
+            Category = (int)learningTool.Category,
             Duration = learningTool.Duration,
             Provider = learningTool.Provider
         };
@@ -48,8 +48,8 @@ public class LearningToolService
             Name = x.Name,
             Description = x.Description,
             Link = x.Link,
-            Difficulty = x.Difficulty,
-            Category = x.Category,
+            Difficulty = (int)x.Difficulty,
+            Category = (int)x.Category,
             Duration = x.Duration,
             Provider = x.Provider
         }).ToList();
