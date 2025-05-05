@@ -11,7 +11,7 @@
 
 @if (!isEditorVisible)
 {
-    <button @onclick="() => isEditorVisible = !isEditorVisible">Add new learning tool</button>
+    <button @onclick="() => ToggleForm()">Add new learning tool</button>
 }
 else
 {
@@ -80,6 +80,7 @@ else
 
     private void ToggleForm()
     {
+        selectedLearningTool = new LearningToolDto();
         isEditorVisible = !isEditorVisible;
     }
 
