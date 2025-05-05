@@ -21,6 +21,13 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        // Voeg console logging toe
+        builder.Logging.ClearProviders();
+        builder.Logging.AddConsole();
+
+        // Optioneel: Log alles van niveau 'Debug' en hoger
+        builder.Logging.SetMinimumLevel(LogLevel.Debug);
+
         // Add services to the container.
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
