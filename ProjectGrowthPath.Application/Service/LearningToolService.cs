@@ -1,4 +1,6 @@
-﻿using ProjectGrowthPath.Application.DTOs.LearningTools;
+﻿using ProjectGrowthPath.Application.DTOs.Competences;
+using ProjectGrowthPath.Application.DTOs.LearningToolCompetence;
+using ProjectGrowthPath.Application.DTOs.LearningTools;
 using ProjectGrowthPath.Application.Interfaces;
 using ProjectGrowthPath.Domain.Entities;
 
@@ -10,10 +12,14 @@ namespace ProjectGrowthPath.Application.Service;
 public class LearningToolService
 {
     private ILearningToolsRepository _learningToolRepository;
+    private readonly LearningToolCompetenceService _learningToolCompetenceService;
+    private readonly CompetenceService _competenceService;
 
-    public LearningToolService(ILearningToolsRepository learningToolRepository)
+    public LearningToolService(ILearningToolsRepository learningToolRepository, LearningToolCompetenceService learningToolCompetenceService, CompetenceService competenceService)
     {
         _learningToolRepository = learningToolRepository;
+        _learningToolCompetenceService = learningToolCompetenceService;
+        _competenceService = competenceService;
     }
 
     public async Task<LearningToolDto> Get(int id)
@@ -36,8 +42,7 @@ public class LearningToolService
     public async Task<List<LearningToolDto>> GetList()
     {
         var learningTools = await _learningToolRepository.GetList();
-
-        return learningTools.Select(x => new LearningToolDto
+        var learningToolsDto = learningTools.Select(x => new LearningToolDto
         {
             Id = x.LearningToolID,
             Name = x.Name,
@@ -48,11 +53,43 @@ public class LearningToolService
             Duration = x.Duration,
             Provider = x.Provider
         }).ToList();
+
+        foreach (var learningTool in learningToolsDto)
+        {
+            var learningToolCompetences = await _learningToolCompetenceService.GetByLearningToolId(learningTool.Id);
+            foreach (var learningToolCompetence in learningToolCompetences)
+            {
+                var competence = await _competenceService.Get(learningToolCompetence.CompetenceID);
+                learningTool.Competences.Add(new CompetenceDto
+                {
+                    Id = competence.Id,
+                    Name = competence.Name,
+                    Description = competence.Description,
+                    Category = competence.Category
+                });
+            }
+        }
+
+        return learningToolsDto;
     }
 
     public async Task<LearningTool> Add(LearningToolCreateDto dto)
     {
-        return await _learningToolRepository.Add(dto);
+        var learningtool =  await _learningToolRepository.Add(dto);
+
+        if(dto.Competences != null)
+        {
+            foreach (var competence in dto.Competences)
+            {
+                await _learningToolCompetenceService.Add(new LearningToolCompetenceCreateDto
+                {
+                    CompetenceID = competence,
+                    LearningToolID = learningtool.LearningToolID
+                });
+            }
+        }
+
+        return learningtool;
     }
 
     public async Task Delete(int id)
