@@ -29,6 +29,9 @@ jobs:
       - name: dotnet publish
         run: dotnet publish ProjectGrowthPath.UserInterface/ProjectGrowthPath.UserInterface.csproj -c Release -o ./artifacts/publish
 
+      - name: List contents of publish directory
+        run: dir ./artifacts/publish 
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -47,12 +50,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-      
-      - name: Deploy to Azure Web App
+
+      - name: Deploy to Azure Web App using Zip Deploy
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'growthpathapp'
           slot-name: 'Production'
-          package: ./artifacts/publish
+          package: ./artifacts/publish  # Gebruik hier het zip-bestand als package
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F994F6B55D054CCDBDE8645DDD119D3E }}
