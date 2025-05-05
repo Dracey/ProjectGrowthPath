@@ -102,5 +102,23 @@ public class LearningToolService
     public async Task Update(int id, LearningToolDto dto)
     {
         await _learningToolRepository.Update(id, dto);
+
+        var learningToolCompetences = await _learningToolCompetenceService.GetByLearningToolId(id);
+        foreach (var learningToolCompetence in learningToolCompetences)
+        {
+            await _learningToolCompetenceService.Delete(learningToolCompetence.LearningToolCompID);
+        }
+
+        if (dto.Competences != null)
+        {
+            foreach (var competence in dto.Competences)
+            {
+                await _learningToolCompetenceService.Add(new LearningToolCompetenceCreateDto
+                {
+                    CompetenceID = competence.Id,
+                    LearningToolID = id
+                });
+            }
+        }
     }
 }
