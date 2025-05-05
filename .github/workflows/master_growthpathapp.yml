@@ -48,6 +48,9 @@ jobs:
         with:
           name: .net-app
 
+      - name: Verify package path
+        run: dir ${{env.DOTNET_ROOT}}/growthpathapp    
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
