@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy ASP.Net Core app to Azure Web App - growthpathapp
 
 on:
@@ -27,14 +24,14 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish ProjectGrowthPath.UserInterface/ProjectGrowthPath.UserInterface.csproj -c Release -o ./publish
-
+        run: dotnet publish ProjectGrowthPath.UserInterface/ProjectGrowthPath.UserInterface.csproj -c Release -o ./artifacts/publish
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ./publish
+          path: ./artifacts/publish
+
   deploy:
     runs-on: windows-latest
     needs: build
@@ -54,5 +51,5 @@ jobs:
         with:
           app-name: 'growthpathapp'
           slot-name: 'Production'
-          package: .
+          package: ./artifacts/publish  # Verwijs naar de nieuwe publish map
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F994F6B55D054CCDBDE8645DDD119D3E }}
