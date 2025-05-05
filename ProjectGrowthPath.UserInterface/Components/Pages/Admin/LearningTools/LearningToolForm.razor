@@ -88,7 +88,7 @@
             Competences
         </label>
         <div class="col-sm-10">
-            <MudSelect T="CompetenceDto" MultiSelection="true"  ToStringFunc="x => x.Name">
+            <MudSelect T="CompetenceDto" MultiSelection="true" ToStringFunc="x => x.Name" @bind-SelectedValues="LearningTool.Competences">
                 @foreach (var competence in Competences)
                 {
                     <MudSelectItem T="CompetenceDto" Value="@competence">@competence.Name</MudSelectItem>

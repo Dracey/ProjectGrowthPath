@@ -13,6 +13,6 @@ namespace ProjectGrowthPath.Application.DTOs.LearningTools
         public int Category { get; set; }
         public int Duration { get; set; }
         public string Provider { get; set; }
-        public List<CompetenceDto> Competences { get; set; } = new List<CompetenceDto>();
+        public IEnumerable<CompetenceDto> Competences { get; set; }
     }
 }

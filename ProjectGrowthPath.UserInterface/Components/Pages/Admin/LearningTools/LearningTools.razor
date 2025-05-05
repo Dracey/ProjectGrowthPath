@@ -99,7 +99,18 @@ else
     private void EditLearningTool(LearningToolDto learningTool)
     {
         // Open the form with the selected learning tool data
-        selectedLearningTool = learningTool;
+        selectedLearningTool = new LearningToolDto
+            {
+                Id = learningTool.Id,
+                Name = learningTool.Name,
+                Description = learningTool.Description,
+                Link = learningTool.Link,
+                Difficulty = learningTool.Difficulty,
+                Category = learningTool.Category,
+                Duration = learningTool.Duration,
+                Provider = learningTool.Provider,
+                Competences = learningTool.Competences
+            };
         isEditorVisible = true;
     }
 

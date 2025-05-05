@@ -57,10 +57,11 @@ public class LearningToolService
         foreach (var learningTool in learningToolsDto)
         {
             var learningToolCompetences = await _learningToolCompetenceService.GetByLearningToolId(learningTool.Id);
+            var competences = new List<CompetenceDto>();
             foreach (var learningToolCompetence in learningToolCompetences)
             {
                 var competence = await _competenceService.Get(learningToolCompetence.CompetenceID);
-                learningTool.Competences.Add(new CompetenceDto
+                competences.Add(new CompetenceDto
                 {
                     Id = competence.Id,
                     Name = competence.Name,
@@ -68,6 +69,7 @@ public class LearningToolService
                     Category = competence.Category
                 });
             }
+            learningTool.Competences = competences;
         }
 
         return learningToolsDto;
