@@ -1,0 +1,10 @@
+**/bin/
+**/obj/
+.vs/
+Dockerfile
+.dockerignore
+*.user
+*.suo
+*.db
+*.log
+*.pdb

@@ -124,6 +124,7 @@ public class Program
         app.UseAntiforgery();
 
         app.MapStaticAssets();
+        app.UseStaticFiles();
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
 
