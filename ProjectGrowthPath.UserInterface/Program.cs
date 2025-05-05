@@ -21,6 +21,8 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+
+
         // Voeg console logging toe
         builder.Logging.ClearProviders();
         builder.Logging.AddConsole();
