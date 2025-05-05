@@ -1,10 +1,15 @@
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor.Services;
 using ProjectGrowthPath.Application.Interfaces;
+using ProjectGrowthPath.Application.Service;
+using ProjectGrowthPath.Application.State;
+using ProjectGrowthPath.Infrastructure.API;
 using ProjectGrowthPath.Infrastructure.Identity;
 using ProjectGrowthPath.Infrastructure.Persistence;
-using ProjectGrowthPath.Infrastructure.Repositories;
+using ProjectGrowthPath.Infrastructure.Services;
 using ProjectGrowthPath.UserInterface.Components;
 using ProjectGrowthPath.UserInterface.Components.Account;
 
@@ -24,13 +29,18 @@ public class Program
         builder.Services.AddScoped<IdentityUserAccessor>();
         builder.Services.AddScoped<IdentityRedirectManager>();
         builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+        builder.Services.AddScoped<ProtectedLocalStorage>();
 
-        builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-            })
-            .AddIdentityCookies();
+
+        // Voor sessies
+        builder.Services.AddDistributedMemoryCache();
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(30);
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+        });
 
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found."
@@ -44,14 +54,47 @@ public class Program
 
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
             .AddSignInManager()
             .AddDefaultTokenProviders();
 
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
-        
+
+        // Application Services 
+        builder.Services.AddScoped<IUserProfileService, UserProfileService>();
+        builder.Services.AddScoped<IProfileCheckService, ProfileCheckService>();
+        builder.Services.AddScoped<ICompetenceRepository, CompetenceRepository>();
+        builder.Services.AddScoped<ISetupStatePersistence, SetupStatePersistenceJsInterop>();
+        builder.Services.AddScoped<ILearningToolsRepository, LearningToolsRepository>();
+        builder.Services.AddScoped<ILearningtoolCompetenceRepository, LearningToolCompetenceRepository>();
+        builder.Services.AddScoped<IAvatarGenerator, DiceBearAvatarGenerator>();
+        builder.Services.AddScoped<ICompetenceSelectionService, CompetenceSelectionService>();
+        builder.Services.AddScoped<IAvatarService, AvatarService>();
+        builder.Services.AddScoped<IFirstTimeSetupService, FirstTimeSetupService>();
+        builder.Services.AddScoped<SetupStateStore>();
+        builder.Services.AddScoped<LearningToolService>();
+        builder.Services.AddScoped<CompetenceService>();
+        builder.Services.AddScoped<LearningToolCompetenceService>();
+
+        // Application Repositories
+
+        builder.Services.AddHttpClient();
+        builder.Services.AddMudServices();
+
+
         var app = builder.Build();
+
+        using (var scope = app.Services.CreateScope())
+        {
+            var services = scope.ServiceProvider;
+            var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+            // Seed roles and admin user
+            SeedRoles(roleManager).Wait();
+            SeedAdmin(userManager).Wait();
+        }
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -65,6 +108,8 @@ public class Program
             app.UseHsts();
         }
 
+        app.UseSession();
+
         app.UseHttpsRedirection();
 
         app.UseAntiforgery();
@@ -73,9 +118,47 @@ public class Program
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
 
-        // Add additional endpoints required by the Identity /Account Razor components.
         app.MapAdditionalIdentityEndpoints();
 
         app.Run();
     }
+
+
+    // Eerste seed data voor development. Weg laten in productie.
+    private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
+    {
+        var roles = new string[] { "Beheerder", "Medewerker" };
+        foreach (var role in roles)
+        {
+            var roleExist = await roleManager.RoleExistsAsync(role);
+            if (!roleExist)
+            {
+                await roleManager.CreateAsync(new IdentityRole(role));
+            }
+        }
+    }
+
+    // Eerste seed data voor development. Weg laten in productie.
+    private static async Task SeedAdmin(UserManager<ApplicationUser> userManager)
+    {
+        var adminEmail = "admin@voorbeeld.nl";
+        var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+        if (adminUser == null)
+        {
+            var user = new ApplicationUser
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
+                EmailConfirmed = true,
+
+            };
+            var result = await userManager.CreateAsync(user, "AdminPassword123!");
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(user, "Beheerder");
+            }
+        }
+    }
 }
+

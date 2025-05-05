@@ -1,7 +1,21 @@
 ﻿@page "/"
+@using ProjectGrowthPath.Application.Interfaces
+@using Microsoft.AspNetCore.Authorization
+@inject IProfileCheckService ProfileCheckService
+
+@attribute [Authorize]
+
 
 <PageTitle>Home</PageTitle>
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        // Voer de profielcontrole uit na de inlog
+        // await ProfileCheckService.CheckAndRedirectIfNeeded();
+    }
+}

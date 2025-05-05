@@ -8,7 +8,7 @@ namespace ProjectGrowthPath.Domain.Entities
 {
     public class UserBadge
     {
-        public Guid UserBadgeID { get; set; }
+        public int UserBadgeID { get; set; }
         public Guid UserID { get; set; }
         public string BadgeName { get; set; } = string.Empty;
         public DateTime Received { get; set; }

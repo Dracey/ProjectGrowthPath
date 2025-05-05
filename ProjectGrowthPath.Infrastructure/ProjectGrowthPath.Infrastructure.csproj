@@ -7,14 +7,23 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Repositories\**" />
+	  <EmbeddedResource Remove="Repositories\**" />
+	  <None Remove="Repositories\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\ProjectGrowthPath.Domain\ProjectGrowthPath.Domain.csproj" />
 		<ProjectReference Include="..\ProjectGrowthPath.Application\ProjectGrowthPath.Application.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.4" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.4" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.4" />
+		<PackageReference Include="Microsoft.Build.Framework" Version="17.13.9" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -23,12 +32,14 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.4" />
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" />
 		<PackageReference Include="Microsoft.Extensions.Identity.Core" Version="9.0.4" />
+		<PackageReference Include="Microsoft.JSInterop" Version="9.0.1" />
 		<PackageReference Include="Npgsql" Version="9.0.3" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Folder Include="Migrations\" />
+	  <Folder Include="Migrations\ApplicationIdentityDb\" />
 	</ItemGroup>
  
 </Project>

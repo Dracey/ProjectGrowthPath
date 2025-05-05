@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ProjectGrowthPath.Domain.Enums.Competences;
 
-namespace ProjectGrowthPath.Domain.Entities
+namespace ProjectGrowthPath.Domain.Entities;
+
+// Entiteit voor de competenties die worden toegevoegd aan het systeem.
+public class Competence
 {
-    // Einiteit voor de competenties die worden toegevoegd aan het systeem.
-    public class Competence
-    {
-        public Guid CompetenceID { get; set; }
-        public string Name { get; set; } = string.Empty;
-    }
+    public int CompetenceID { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public CompetenceCategory Category { get; set; } = CompetenceCategory.SoftSkill;
 }

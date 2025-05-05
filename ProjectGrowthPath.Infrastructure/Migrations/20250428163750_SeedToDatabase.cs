@@ -1,12 +1,15 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
+
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
 namespace ProjectGrowthPath.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class SeedToDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,8 +18,11 @@ namespace ProjectGrowthPath.Infrastructure.Migrations
                 name: "Competences",
                 columns: table => new
                 {
-                    CompetenceID = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    CompetenceID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Category = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -27,10 +33,15 @@ namespace ProjectGrowthPath.Infrastructure.Migrations
                 name: "LearningTools",
                 columns: table => new
                 {
-                    LearningToolID = table.Column<Guid>(type: "uuid", nullable: false),
+                    LearningToolID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
-                    Link = table.Column<string>(type: "text", nullable: false)
+                    Link = table.Column<string>(type: "text", nullable: false),
+                    Difficulty = table.Column<int>(type: "integer", nullable: false),
+                    Category = table.Column<int>(type: "integer", nullable: false),
+                    Duration = table.Column<int>(type: "integer", nullable: false),
+                    Provider = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,6 +53,7 @@ namespace ProjectGrowthPath.Infrastructure.Migrations
                 columns: table => new
                 {
                     UserID = table.Column<Guid>(type: "uuid", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Level = table.Column<int>(type: "integer", nullable: false),
                     Points = table.Column<int>(type: "integer", nullable: false),
@@ -56,13 +68,14 @@ namespace ProjectGrowthPath.Infrastructure.Migrations
                 name: "ToolCompetences",
                 columns: table => new
                 {
-                    ToolCompID = table.Column<Guid>(type: "uuid", nullable: false),
-                    LearningToolID = table.Column<Guid>(type: "uuid", nullable: false),
-                    CompetenceID = table.Column<Guid>(type: "uuid", nullable: false)
+                    LearningToolCompID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    LearningToolID = table.Column<int>(type: "integer", nullable: false),
+                    CompetenceID = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ToolCompetences", x => x.ToolCompID);
+                    table.PrimaryKey("PK_ToolCompetences", x => x.LearningToolCompID);
                     table.ForeignKey(
                         name: "FK_ToolCompetences_Competences_CompetenceID",
                         column: x => x.CompetenceID,
@@ -81,7 +94,8 @@ namespace ProjectGrowthPath.Infrastructure.Migrations
                 name: "Goals",
                 columns: table => new
                 {
-                    GoalID = table.Column<Guid>(type: "uuid", nullable: false),
+                    GoalID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserID = table.Column<Guid>(type: "uuid", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     IsCompleted = table.Column<bool>(type: "boolean", nullable: false),
@@ -104,7 +118,8 @@ namespace ProjectGrowthPath.Infrastructure.Migrations
                 name: "UserBadges",
                 columns: table => new
                 {
-                    UserBadgeID = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserBadgeID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserID = table.Column<Guid>(type: "uuid", nullable: false),
                     BadgeName = table.Column<string>(type: "text", nullable: false),
                     Received = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -124,9 +139,10 @@ namespace ProjectGrowthPath.Infrastructure.Migrations
                 name: "UserCompetences",
                 columns: table => new
                 {
-                    UserCompID = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserCompID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserID = table.Column<Guid>(type: "uuid", nullable: false),
-                    CompetenceID = table.Column<Guid>(type: "uuid", nullable: false),
+                    CompetenceID = table.Column<int>(type: "integer", nullable: false),
                     Type = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
@@ -150,9 +166,10 @@ namespace ProjectGrowthPath.Infrastructure.Migrations
                 name: "GoalLearningTools",
                 columns: table => new
                 {
-                    GoalToolID = table.Column<Guid>(type: "uuid", nullable: false),
-                    GoalID = table.Column<Guid>(type: "uuid", nullable: false),
-                    LearningToolID = table.Column<Guid>(type: "uuid", nullable: false),
+                    GoalToolID = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    GoalID = table.Column<int>(type: "integer", nullable: false),
+                    LearningToolID = table.Column<int>(type: "integer", nullable: false),
                     IsCompleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
@@ -170,6 +187,29 @@ namespace ProjectGrowthPath.Infrastructure.Migrations
                         principalTable: "LearningTools",
                         principalColumn: "LearningToolID",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Competences",
+                columns: new[] { "CompetenceID", "Category", "Description", "Name" },
+                values: new object[,]
+                {
+                    { 1, "SoftSkill", "Effectief samenwerken met collega’s en teams.", "Samenwerken" },
+                    { 2, "SoftSkill", "Duidelijk en effectief communiceren, zowel schriftelijk als mondeling.", "Communicatie" },
+                    { 3, "SoftSkill", "In staat zijn om gestructureerd problemen te analyseren en op te lossen.", "Probleemoplossend vermogen" },
+                    { 4, "SoftSkill", "Plannen, structureren en prioriteiten stellen in taken en projecten.", "Organiseren" },
+                    { 5, "HardSkill", "Schrijven en onderhouden van softwareapplicaties met C# en .NET.", "C# Ontwikkeling" },
+                    { 6, "HardSkill", "Werken met relationele databases, SQL en datamodellering.", "Databasebeheer" },
+                    { 7, "HardSkill", "Begrijpen van beveiligingsprincipes, zoals authenticatie, autorisatie en veilige codering.", "Security awareness" },
+                    { 8, "HardSkill", "Basiskennis van cloudplatformen zoals Azure of AWS.", "Cloud computing" },
+                    { 9, "HardSkill", "Ontwerpen van schaalbare, onderhoudbare software volgens design patterns en principes.", "Softwarearchitectuur" },
+                    { 10, "SoftSkill", "Anderen aansturen, inspireren en richting geven aan een team of project.", "Leiderschap" },
+                    { 11, "HardSkill", "Kennis van de Scrum-methodiek en ervaring met werken in Agile teams.", "Scrum" },
+                    { 12, "SoftSkill", "Het systematisch plannen, uitvoeren en opleveren van projecten.", "Projectmatig werken" },
+                    { 13, "HardSkill", "Het ontwerpen en structureren van software volgens Clean Architecture principes.", "Clean Architecture" },
+                    { 14, "HardSkill", "Kennis van het bouwen van interactieve webapplicaties met Blazor WebAssembly.", "Blazor ontwikkeling" },
+                    { 15, "HardSkill", "Inzicht in CI/CD, automatisering van deployments en samenwerking tussen Dev en Ops.", "DevOps basiskennis" },
+                    { 16, "HardSkill", "Versiebeheer beheersen met Git, inclusief branching, commits en pull requests.", "Git & versiebeheer" }
                 });
 
             migrationBuilder.CreateIndex(
