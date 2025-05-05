@@ -1,0 +1,105 @@
+﻿@using ProjectGrowthPath.Application.Service
+@using ProjectGrowthPath.Application.Interfaces
+@using ProjectGrowthPath.Application.State
+@using ProjectGrowthPath.Domain.Entities
+@using MudBlazor
+@inject ICompetenceSelectionService SelectionService
+
+@inject IFirstTimeSetupService SetupService
+@inject SetupStateStore StateStorage
+@inject ICompetenceRepository CompetenceRepository
+
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+@if (IsLoading)
+{
+    <MudProgressCircular Indeterminate="true" />
+}
+else
+{
+    <h3>@Title</h3>
+    <p>@Subtitle</p>
+    <MudGrid>
+        @foreach (var number in new[] { 1, 2, 3 })
+        {
+            <MudItem xs="12">
+                <MudAutocomplete T="Competence"
+                                 Label="@($"Keuze {number}")"
+                                 Value="@GetSelectedCompetence(number)"
+                                 ValueChanged="@(c => SelectCompetenceAsync(number, c))"
+                                 SearchFunc="(val, token) => SearchForComp(val, token, GetAvailableCompetences(number))"
+                                 ToStringFunc="@(c => c == null ? null : $"{c.Name} ({c.Description})")"
+                                 Clearable="true" />
+            </MudItem>
+        }
+        <MudItem xs="12" md="12">
+            <MudText Class="mb-n3" Typo="Typo.body2">
+                Selectie:
+                @foreach (var comp in SelectedCompetences.OrderBy(k => k.Key))
+                {
+                    <MudChip T="string">@($"{comp.Value?.Name ?? "Niet geselecteerd"}")</MudChip>
+                }
+            </MudText>
+        </MudItem>
+    </MudGrid>
+
+    <div class="mt-4">
+        <button class="btn btn-outline-secondary me-2" @onclick="() => OnBack.InvokeAsync()">Terug</button>
+        <button class="btn btn-success" @onclick="() => OnNext.InvokeAsync()" disabled="@(!CanProceed)">Volgende</button>
+    </div>
+}
+
+@code {
+    [Parameter] public EventCallback OnNext { get; set; }
+    [Parameter] public EventCallback OnBack { get; set; }
+
+    [Parameter] public string Mode { get; set; } = "interests"; // "skills" of "interests"
+
+    private Dictionary<int, Competence> SelectedInterests => StateStorage.CurrentState.SelectedInterests;
+    private Dictionary<int, Competence> SelectedSkills => StateStorage.CurrentState.SelectedSkills;
+
+    private Dictionary<int, Competence> SelectedCompetences => Mode == "skills" ? SelectedSkills : SelectedInterests;
+
+    private bool _isFirstRender = true;
+    private bool IsLoading = true;
+
+    private string Title => Mode == "skills" ? "Kies 3 vaardigheden die je bezit." : "Kies 3 competenties waarin je interesse hebt.";
+    private string Subtitle => "Geen zorgen, later kan je meer kiezen!";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SelectionService.InitializeAsync();
+        IsLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && _isFirstRender)
+        {
+            await StateStorage.LoadAsync();
+            _isFirstRender = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private Competence GetSelectedCompetence(int number) => SelectionService.GetSelectedCompetence(number, Mode);
+
+
+    private async Task SelectCompetenceAsync(int number, Competence competence)
+    {
+        await SelectionService.SelectCompetenceAsync(number, competence, Mode);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private IEnumerable<Competence> GetAvailableCompetences(int currentNumber)
+        => SelectionService.GetAvailableCompetences(currentNumber, Mode);
+
+    private Task<IEnumerable<Competence>> SearchForComp(string value, CancellationToken token, IEnumerable<Competence> _)
+        => SelectionService.SearchCompetencesAsync(value, Mode);
+
+    private bool CanProceed => SelectionService.CanProceed(Mode);
+}

@@ -1,0 +1,130 @@
+﻿@using ProjectGrowthPath.Application.Service
+@using ProjectGrowthPath.Application.Interfaces
+@using ProjectGrowthPath.Application.State
+@using Mono.TextTemplating
+
+@inject IFirstTimeSetupService SetupService
+@inject SetupStateStore StateStorage
+@inject IAvatarService AvatarService
+
+
+
+<h3>Hi @DisplayName!</h3>
+<p>Kies een avatar die bij je past. Je kunt ook nieuwe avatars genereren.</p>
+
+
+<!-- Keuze voor stijlen -->
+<div class="mb-3">
+    <label for="styleSelect">Beschikbare stijlen:</label>
+    <div class="btn-group w-100" role="group" aria-label="Avatar styles">
+        @foreach (var style in AvailableStyles)
+        {
+            <button type="button" class="btn btn-outline-primary w-25 @GetButtonClass(style)"
+                    @onclick="() => OnStyleChanged(style)">
+                @StyleDisplayNames.GetValueOrDefault(style, style)
+            </button>
+        }
+    </div>
+</div>
+
+<!-- Avatars die zijn gegenereerd-->
+@if (GeneratedAvatars.Any())
+{
+    <div class="row">
+        @foreach (var avatar in GeneratedAvatars)
+        {
+            <div class="col-4 text-center mb-4">
+                <div class="position-relative d-inline-block"
+                     style="border: @(SelectedSeed == avatar.Seed ? "3px solid dodgerblue" : "1px solid #ccc"); border-radius: 8px; padding: 4px; cursor: pointer;"
+                     @onclick="() => SelectAvatarAsync(avatar.Seed)">
+                    <img src="@avatar.Url" alt="Avatar" class="img-thumbnail" width="100" />
+                    @if (SelectedSeed == avatar.Seed)
+                    {
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
+                            ✓
+                        </span>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<!-- Navigatie knoppen ->
+<div class="mt-5 d-flex justify-content-center gap-5">
+    <button class="btn btn-outline-secondary me-2" @onclick="() => OnBack.InvokeAsync()">Terug</button>
+    <button class="btn btn-secondary" @onclick="RegenerateAvatars">Genereer nieuwe avatars</button>
+    <button class="btn btn-success" @onclick="() => OnNext.InvokeAsync()" disabled="@(!AvatarSelected)">Volgende</button>
+</div>
+
+@code {
+    [Parameter] public EventCallback OnNext { get; set; }
+    [Parameter] public EventCallback OnBack { get; set; }
+
+    // Verschillende velden om de state bij te houden als er iets geselecteerd is.
+    private string SelectedStyle { get; set; } = "avataaars";
+    private bool AvatarSelected { get; set; } = false;
+    private string? SelectedSeed;
+    private string DisplayName = "";
+    private List<(string Seed, string Url)> GeneratedAvatars = new();
+
+    // Lijst van soorten avatars
+    private readonly Dictionary<string, string> StyleDisplayNames = new()
+    {
+        { "avataaars", "Classic" },
+        { "open-peeps", "Cartoon" },
+        { "bottts-neutral", "Robot" }
+    };
+
+    private IEnumerable<string> AvailableStyles => StyleDisplayNames.Keys;
+
+    // Nadat de pagina is geladen worden de volgende functies uitgevoerd.
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await StateStorage.LoadAsync();
+            DisplayName = StateStorage.CurrentState.NewUser.Name;
+
+            var (avatars, selectedSeed) = await AvatarService.InitializeAvatarStepAsync(StateStorage.CurrentState);
+            GeneratedAvatars = avatars;
+            SelectedSeed = selectedSeed;
+            AvatarSelected = selectedSeed is not null;
+
+            await StateStorage.SaveAsync();
+            StateHasChanged();
+        }
+    }
+    // Nieuwe avatars laden
+    private async Task RegenerateAvatars() =>
+        await UpdateAvatars(SelectedStyle);
+        
+
+    // Als de gebruiker een nieuwe stijl uitkiest krijg hij of zij nieuwe avatars te zien
+    private async Task OnStyleChanged(string style)
+    {
+        SelectedStyle = style;
+        await UpdateAvatars(style);
+    }
+
+    private async Task UpdateAvatars(string style)
+    {
+        AvatarSelected = false;
+        GeneratedAvatars = await AvatarService.UpdateStyleAndRegenerateAsync(style, StateStorage.CurrentState);
+        await StateStorage.SaveAsync();
+        StateHasChanged();
+    }
+    
+    // Krijg de class voor de knop op basis van de geselecteerde stijl
+    private string GetButtonClass(string style) =>
+        style == SelectedStyle ? "active" : string.Empty;
+
+    // Gekozen avatar opslaan
+    private async Task SelectAvatarAsync(string seed)
+    {
+        await AvatarService.SelectAvatarAsync(SelectedStyle, seed, StateStorage.CurrentState);
+        SelectedSeed = seed;
+        AvatarSelected = true;
+        await StateStorage.SaveAsync();
+    }
+}

@@ -1,0 +1,133 @@
+﻿@using ProjectGrowthPath.Application.DTOs
+@using ProjectGrowthPath.Application.DTOs.LearningTools
+@using ProjectGrowthPath.Application.DTOs.Competences
+@using ProjectGrowthPath.Application.Service
+@using ProjectGrowthPath.Application.Service.Enums
+@inject LearningToolService LearningToolsService
+@inject CompetenceService CompetenceService
+
+<MudPopoverProvider />
+<MudThemeProvider />
+
+<EditForm Model=@learningTool OnSubmit=@FormSubmitted>
+    <div class="form-group row">
+        <label for="name" class="col-sm-2 col-form-label">
+            Name
+        </label>
+        <div class="col-sm-10">
+            <InputText id="name" class="form-control" @bind-Value="learningTool.Name" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="description" class="col-sm-2 col-form-label">
+            Description
+        </label>
+        <div class="col-sm-10">
+            <InputText id="description" class="form-control" @bind-Value="learningTool.Description" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="link" class="col-sm-2 col-form-label">
+            Link
+        </label>
+        <div class="col-sm-10">
+            <InputText id="link" class="form-control" @bind-Value="learningTool.Link" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="difficulty" class="col-sm-2 col-form-label">
+            Difficulty
+        </label>
+        <div class="col-sm-10">
+            <InputSelect id="difficulty" class="form-control" @bind-Value="learningTool.Difficulty">
+                @foreach (var difficulty in LearningToolDifficulties)
+                {
+                    <option value="@difficulty.Id">@difficulty.Name</option>
+                }
+            </InputSelect>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="category" class="col-sm-2 col-form-label">
+            Category
+        </label>
+        <div class="col-sm-10">
+            <InputSelect id="category" class="form-control" @bind-Value="learningTool.Category">
+                @foreach (var category in LearningToolCategories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </InputSelect>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="duration" class="col-sm-2 col-form-label">
+            Duration
+        </label>
+        <div class="col-sm-10">
+            <InputNumber id="duration" class="form-control" @bind-Value="learningTool.Duration" />
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="provider" class="col-sm-2 col-form-label">
+            Provider
+        </label>
+        <div class="col-sm-10">
+            <InputText id="provider" class="form-control" @bind-Value="learningTool.Provider" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label">
+            Competences
+        </label>
+        <div class="col-sm-10">
+            <MudSelect T="CompetenceDto" MultiSelection="true" @bind-SelectedValues="SelectedCompetences" ToStringFunc="x => x.Name">
+                @foreach (var competence in Competences)
+                {
+                    <MudSelectItem T="CompetenceDto" Value="@competence">@competence.Name</MudSelectItem>
+                }
+            </MudSelect>
+        </div>
+    </div>
+
+    <button class="btn btn-secondary" @onclick="ToggleForm">Cancel</button>
+    <input type="submit" value="Submit" class="btn btn-primary" />
+</EditForm>
+
+@code {
+    [Parameter]
+    public EventCallback ToggleForm { get; set; }
+
+    [Parameter]
+    public EventCallback OnSave { get; set; }
+
+    LearningToolCreateDto learningTool = new LearningToolCreateDto();
+
+    List<EnumDto> LearningToolCategories => CategoryToolService.GetEnumList();
+    List<EnumDto> LearningToolDifficulties => DifficultyToolService.GetEnumList();
+    List<CompetenceDto> Competences = new List<CompetenceDto>();
+    private IEnumerable<CompetenceDto> SelectedCompetences = new HashSet<CompetenceDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Competences = await CompetenceService.GetList();
+    }
+
+    public async Task FormSubmitted()
+    {
+        learningTool.Competences = SelectedCompetences.Select(x => x.Id).ToList();
+        await LearningToolsService.Add(learningTool);
+        await OnSave.InvokeAsync();
+    }
+
+    private IEnumerable<string> GetMultiSelectionText(List<string> selectedItemIdsAsString)
+    {
+        return SelectedCompetences.Select(x => x.Name);
+    }
+}

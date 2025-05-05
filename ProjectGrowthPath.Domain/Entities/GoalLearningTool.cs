@@ -8,9 +8,9 @@ namespace ProjectGrowthPath.Domain.Entities
 {
     public class GoalLearningTool
     {
-        public Guid GoalToolID { get; set; }
-        public Guid GoalID { get; set; }
-        public Guid LearningToolID { get; set; }
+        public int GoalToolID { get; set; }
+        public int GoalID { get; set; }
+        public int LearningToolID { get; set; }
         public bool IsCompleted { get; set; }
 
 
