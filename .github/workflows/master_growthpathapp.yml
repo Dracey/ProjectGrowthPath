@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: windows-latest
     permissions:
-      contents: read #This is required for actions/checkout
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -24,13 +24,13 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish ./ProjectGrowthPath.UserInterface/ProjectGrowthPath.UserInterface.csproj -c Release -o "${{env.DOTNET_ROOT}}/growthpathapp"
+        run: dotnet publish ./ProjectGrowthPath.UserInterface/ProjectGrowthPath.UserInterface.csproj -c Release -o release
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/growthpathapp
+          path: release
 
   deploy:
     runs-on: windows-latest
@@ -39,8 +39,8 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
-      contents: read #This is required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
       - name: Download artifact from build job
@@ -48,14 +48,11 @@ jobs:
         with:
           name: .net-app
 
-      - name: Verify package path
-        run: dir ${{env.DOTNET_ROOT}}/growthpathapp    
-
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'growthpathapp'
           slot-name: 'Production'
-          package: ${{env.DOTNET_ROOT}}/growthpathapp
+          package: .  # Dit wijst nu naar de uitgepakte inhoud van release/
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F994F6B55D054CCDBDE8645DDD119D3E }}
