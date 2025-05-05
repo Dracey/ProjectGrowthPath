@@ -96,6 +96,12 @@ public class LearningToolService
 
     public async Task Delete(int id)
     {
+        var learningToolCompetences = await _learningToolCompetenceService.GetByLearningToolId(id);
+        foreach (var learningToolCompetence in learningToolCompetences)
+        {
+            await _learningToolCompetenceService.Delete(learningToolCompetence.LearningToolCompID);
+        }
+
         await _learningToolRepository.Delete(id);
     }
 
