@@ -99,8 +99,8 @@ public class LearningToolService
         await _learningToolRepository.Delete(id);
     }
 
-    public Task Update(int id, LearningToolDto dto)
+    public async Task Update(int id, LearningToolDto dto)
     {
-        throw new NotImplementedException();
+        await _learningToolRepository.Update(id, dto);
     }
 }

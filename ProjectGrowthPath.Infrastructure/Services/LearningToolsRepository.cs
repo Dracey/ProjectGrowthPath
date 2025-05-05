@@ -54,8 +54,25 @@ public class LearningToolsRepository: ILearningToolsRepository
             .ExecuteDeleteAsync();
     }
 
-    public Task Update(int id, LearningToolDto dto)
+    public async Task Update(int id, LearningToolDto dto)
     {
-        throw new NotImplementedException();
+        var learningTool = await _dbContext.LearningTools.FindAsync(id);
+
+        if (learningTool == null)
+        {
+            throw new KeyNotFoundException($"LearningTool with ID {id} not found.");
+        }
+
+        learningTool.Name = dto.Name;
+        learningTool.Description = dto.Description;
+        learningTool.Link = dto.Link;
+        learningTool.Difficulty = (DifficultyTool)dto.Difficulty;
+        learningTool.Category = (CategoryTool)dto.Category;
+        learningTool.Duration = dto.Duration;
+        learningTool.Provider = dto.Provider;
+
+        _dbContext.LearningTools.Update(learningTool);
+
+        await _dbContext.SaveChangesAsync(); // Ensure the changes are saved to the database
     }
 }
