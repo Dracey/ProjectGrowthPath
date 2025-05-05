@@ -43,13 +43,13 @@ public class Program
         });
 
         builder.Services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found."
+            options.UseNpgsql(builder.Configuration.GetConnectionString("Default") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found."
             )));
 
 
         // Identity Service
         builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("IdentityConnections") ?? throw new InvalidOperationException("Connection string 'IdentityConnect' not found."
+            options.UseNpgsql(builder.Configuration.GetConnectionString("Identity") ?? throw new InvalidOperationException("Connection string 'IdentityConnect' not found."
             )));
 
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
