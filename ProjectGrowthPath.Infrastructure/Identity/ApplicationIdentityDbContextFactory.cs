@@ -18,7 +18,7 @@ namespace ProjectGrowthPath.Infrastructure.Identity
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var connectionString = config.GetConnectionString("IdentityConnections");
+            var connectionString = config.GetConnectionString("Identity");
 
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationIdentityDbContext>();
             optionsBuilder.UseNpgsql(connectionString);

@@ -16,7 +16,7 @@ namespace ProjectGrowthPath.Infrastructure.Persistence
                 .AddJsonFile("ProjectGrowthPath.UserInterface/appsettings.json")
                 .Build();
 
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            var connectionString = configuration.GetConnectionString("Default");
 
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
             optionsBuilder.UseNpgsql(connectionString);
