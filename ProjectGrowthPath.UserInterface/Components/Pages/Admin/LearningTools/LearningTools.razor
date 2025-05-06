@@ -11,11 +11,11 @@
 
 @if (!isEditorVisible)
 {
-    <button @onclick="() => isEditorVisible = !isEditorVisible">Add new learning tool</button>
+    <button @onclick="() => ToggleForm()">Add new learning tool</button>
 }
 else
 {
-    <LearningToolForm ToggleForm="ToggleForm" OnSave="OnSave" />
+    <LearningToolForm LearningTool="selectedLearningTool" ToggleForm="ToggleForm" OnSave="OnSave" />
 }
 
 @if (learningTools == null)
@@ -27,6 +27,7 @@ else
     <table class="table">
         <thead>
             <tr>
+                <th></th>
                 <th>Name</th>
                 <th>Description</th>
                 <th>Link</th>
@@ -42,6 +43,9 @@ else
             @foreach (var learningTool in learningTools)
             {
                 <tr>
+                    <td>
+                        <button class="btn btn-danger" @onclick="() => EditLearningTool(learningTool)">Edit</button>
+                    </td>
                     <td>@learningTool.Name</td>
                     <td>@learningTool.Description</td>
                     <td>@learningTool.Link</td>
@@ -61,6 +65,7 @@ else
 
 @code {
     private List<LearningToolDto> learningTools;
+    private LearningToolDto selectedLearningTool = new LearningToolDto();
     bool isEditorVisible = false;
 
     protected override async Task OnInitializedAsync()
@@ -75,6 +80,7 @@ else
 
     private void ToggleForm()
     {
+        selectedLearningTool = new LearningToolDto();
         isEditorVisible = !isEditorVisible;
     }
 
@@ -89,6 +95,24 @@ else
     {
         await LearningToolsService.Delete(id);
         await GetLearningTools();
+    }
+
+    private void EditLearningTool(LearningToolDto learningTool)
+    {
+        // Open the form with the selected learning tool data
+        selectedLearningTool = new LearningToolDto
+            {
+                Id = learningTool.Id,
+                Name = learningTool.Name,
+                Description = learningTool.Description,
+                Link = learningTool.Link,
+                Difficulty = learningTool.Difficulty,
+                Category = learningTool.Category,
+                Duration = learningTool.Duration,
+                Provider = learningTool.Provider,
+                Competences = learningTool.Competences
+            };
+        isEditorVisible = true;
     }
 
     private string CompileCompetences(LearningToolDto learningTool)

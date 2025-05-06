@@ -55,4 +55,9 @@ public class LearningToolCompetenceService
     {
         return await _learningToolCompetenceRepository.Add(learningToolCompetenceDto);
     }
+
+    public async Task Delete(int id)
+    {
+        await _learningToolCompetenceRepository.Delete(id);
+    }
 }

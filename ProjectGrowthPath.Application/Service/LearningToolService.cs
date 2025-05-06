@@ -32,8 +32,8 @@ public class LearningToolService
             Name = learningTool.Name,
             Description = learningTool.Description,
             Link = learningTool.Link,
-            Difficulty = learningTool.Difficulty,
-            Category = learningTool.Category,
+            Difficulty = (int)learningTool.Difficulty,
+            Category = (int)learningTool.Category,
             Duration = learningTool.Duration,
             Provider = learningTool.Provider
         };
@@ -48,8 +48,8 @@ public class LearningToolService
             Name = x.Name,
             Description = x.Description,
             Link = x.Link,
-            Difficulty = x.Difficulty,
-            Category = x.Category,
+            Difficulty = (int)x.Difficulty,
+            Category = (int)x.Category,
             Duration = x.Duration,
             Provider = x.Provider
         }).ToList();
@@ -57,10 +57,11 @@ public class LearningToolService
         foreach (var learningTool in learningToolsDto)
         {
             var learningToolCompetences = await _learningToolCompetenceService.GetByLearningToolId(learningTool.Id);
+            var competences = new List<CompetenceDto>();
             foreach (var learningToolCompetence in learningToolCompetences)
             {
                 var competence = await _competenceService.Get(learningToolCompetence.CompetenceID);
-                learningTool.Competences.Add(new CompetenceDto
+                competences.Add(new CompetenceDto
                 {
                     Id = competence.Id,
                     Name = competence.Name,
@@ -68,6 +69,7 @@ public class LearningToolService
                     Category = competence.Category
                 });
             }
+            learningTool.Competences = competences;
         }
 
         return learningToolsDto;
@@ -94,11 +96,35 @@ public class LearningToolService
 
     public async Task Delete(int id)
     {
+        var learningToolCompetences = await _learningToolCompetenceService.GetByLearningToolId(id);
+        foreach (var learningToolCompetence in learningToolCompetences)
+        {
+            await _learningToolCompetenceService.Delete(learningToolCompetence.LearningToolCompID);
+        }
+
         await _learningToolRepository.Delete(id);
     }
 
-    public Task Update(int id, LearningToolDto dto)
+    public async Task Update(int id, LearningToolDto dto)
     {
-        throw new NotImplementedException();
+        await _learningToolRepository.Update(id, dto);
+
+        var learningToolCompetences = await _learningToolCompetenceService.GetByLearningToolId(id);
+        foreach (var learningToolCompetence in learningToolCompetences)
+        {
+            await _learningToolCompetenceService.Delete(learningToolCompetence.LearningToolCompID);
+        }
+
+        if (dto.Competences != null)
+        {
+            foreach (var competence in dto.Competences)
+            {
+                await _learningToolCompetenceService.Add(new LearningToolCompetenceCreateDto
+                {
+                    CompetenceID = competence.Id,
+                    LearningToolID = id
+                });
+            }
+        }
     }
 }

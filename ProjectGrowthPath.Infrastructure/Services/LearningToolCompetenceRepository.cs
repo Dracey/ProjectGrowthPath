@@ -42,7 +42,9 @@ public class LearningToolCompetenceRepository : ILearningtoolCompetenceRepositor
 
     public async Task Delete(int id)
     {
-        throw new NotImplementedException();
+        await _dbContext.ToolCompetences
+            .Where(x => x.LearningToolCompID == id)
+            .ExecuteDeleteAsync();
     }
 
     public async Task Update(int id, LearningToolCompetenceDto competence)
