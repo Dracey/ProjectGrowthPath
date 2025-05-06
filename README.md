@@ -53,8 +53,8 @@ Wat is er allemaal nodig om het project lokaal te kunnen draaien:
 6. Update de connectiestrings in `appsettings.json` te vinden in ProjectGrowthPath.Userinterface:
    ```js
    "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Port=5432;Database=GrowthPathDB;Username=postgres;Password=yourpassword"
-     "DefaultConnections": "Host=localhost;Port=5432;Database=IdentityDB;Username=postgres;Password=yourpassword"
+    "Default": "Host=localhost;Port=5432;Database=GrowthPathDB;Username=postgres;Password=yourpassword"
+     "Identity": "Host=localhost;Port=5432;Database=IdentityDB;Username=postgres;Password=yourpassword"
     }
    ```
 7. Voer een database migratie uit (als er geen bestanden in ProjectGrowthPath.Infrastructure/Migrations staan)
