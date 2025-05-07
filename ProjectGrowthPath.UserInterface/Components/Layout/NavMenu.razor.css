@@ -9,6 +9,8 @@
     display: flex;
     flex-direction: row;
     background-color: #ffffff;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .logo-holder {
@@ -36,11 +38,12 @@
     margin-left: 10px;
 }
 
-.login-register-nav-buttons {
+.nav-buttons {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: flex-end; 
+    gap: 1rem;
 }
 
 .nav-buttons-authorized,
