@@ -7,6 +7,10 @@
     <UserSecretsId>aspnet-ProjectGrowthPath.UserInterface-16e58d65-b3f5-43b9-bfd0-76a67d3509b7</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\SetupWizard.css" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<ProjectReference Include="..\ProjectGrowthPath.Infrastructure\ProjectGrowthPath.Infrastructure.csproj" />
 	</ItemGroup>
