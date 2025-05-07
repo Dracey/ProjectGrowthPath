@@ -2,6 +2,8 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+
+
 a, .btn-link {
     color: #006bb7;
 }
@@ -58,3 +60,13 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+/*
+    CSS voor verschillende login componenten
+*/
+
+.components-holders {
+    width: 100%;
+    margin: 100px;
+}
+
