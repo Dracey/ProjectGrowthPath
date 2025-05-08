@@ -1,11 +1,59 @@
 ﻿.content-holder {
+    max-width: 700px;
     margin: auto;
-    padding: 40px;
-    width: 700px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    height: 500px;
+    padding: 20px;
     display: flex;
     justify-content: center;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .text {
     font-size: 20px;
 }
+
+.button-setup {
+    margin-top: 20px;
+    background: #183A53;
+    width: 120px;
+    height: 30px;
+    color: white;
+    font-size: 20px;
+    border-radius: 90px;
+    font-weight: 700;
+}
+
+.button-setup:hover {
+
+}
+
+/*Name step*/
+.name-hold {
+    margin: auto;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+}
+
+.name-content {
+    margin: auto;
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+}
+
+.image-holder {
+    position: relative;
+    bottom: -14px;
+    right: -6px;
+}
+
+
+.benjamin-image {
+    width: 200px;
+    Margin: -10px;
+}
+
