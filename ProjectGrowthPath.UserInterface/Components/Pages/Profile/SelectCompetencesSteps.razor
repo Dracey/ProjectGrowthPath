@@ -8,11 +8,9 @@
 @inject IFirstTimeSetupService SetupService
 @inject SetupStateStore StateStorage
 @inject ICompetenceRepository CompetenceRepository
+@rendermode InteractiveServer
 
-<MudThemeProvider />
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
+
 
 @if (IsLoading)
 {

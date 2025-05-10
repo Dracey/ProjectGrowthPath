@@ -1,0 +1,37 @@
+﻿@page "/landing"
+@layout LoginAndRegister
+
+@inject NavigationManager _nav
+
+@using ProjectGrowthPath.UserInterface.Components.Layout
+  
+<div class="component-layout">
+    <div class="home-image">
+        <div class="login-button-holder">
+            <a class="login-button" href="/Account/Login">Log nu in!</a>
+        </div>
+    </div>
+    <div class="vector-image-1">
+    </div>
+
+    <div class="about-holder">
+        <div class="about-text">
+            <h2>Wat doen we?</h2>
+            <p>Op GrowthPath doen we het anders!</p>
+            <p>Wij maken gebruik van punten en een leaderboard.</p>
+            <p>Ga de strijd aan met je collega’s en word de beste!</p>
+        </div>
+        <img class="benjamin-image" src="Benjamin-Zakken.png"/>
+        <div class="vector-image-2"> </div>
+    </div>
+    <div class="offer-holder">
+        <div class="offer-text">
+            <h2>Wat bieden we?</h2>
+            <p>Via GrowthPath krijg je op maat geselecteerde trainingen die zich aanpassen aan jouw behoeften en vaardigheden</p>
+        </div>
+    </div>
+</div>
+
+@code {
+
+}
