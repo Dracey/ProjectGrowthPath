@@ -22,11 +22,12 @@
     height: 30px;
     color: white;
     font-size: 20px;
-    border-radius: 90px;
+    border-radius: 20px;
     font-weight: 700;
 }
 
 .button-setup:hover {
+    background: #183A53;
 
 }
 
@@ -51,9 +52,49 @@
     right: -6px;
 }
 
-
 .benjamin-image {
     width: 200px;
     Margin: -10px;
 }
 
+/* Avatar step*/
+/* Override btn-primary */
+
+.btn {
+    font-weight: 700;
+}
+
+.btn-secondary {
+    background-color: #183A53 !important;
+    color: white !important;
+    border-radius: 20px;
+}
+
+    .btn-secondary:hover, .back-button:hover {
+        background-color: aliceblue!important; 
+        color: #183A53 !important;
+    }
+
+/* Override btn-success */
+.btn-success {
+    background-color: #183A53 !important;
+    border-color: #183A53 !important;
+    border-radius: 20px;
+}
+
+button.btn.btn-success:disabled {
+    background-color: #4A6C89 !important;
+    border-color: #4A6C89 !important;
+    color: #ffffff !important; /* of een lichtere kleur als je wilt */
+    opacity: 1 !important; /* optie om transparantie van disabled knop uit te zetten */
+    cursor: not-allowed;
+}
+
+/* Custom button style */
+.back-button {
+    background-color: #183A53 !important;
+    border: 1px solid #ccc;
+    color: white; 
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}

@@ -37,7 +37,7 @@
                 <div class="position-relative d-inline-block"
                      style="border: @(SelectedSeed == avatar.Seed ? "3px solid dodgerblue" : "1px solid #ccc"); border-radius: 8px; padding: 4px; cursor: pointer;"
                      @onclick="() => SelectAvatarAsync(avatar.Seed)">
-                    <img src="@avatar.Url" alt="Avatar" class="img-thumbnail" width="100" />
+                    <img src="@avatar.Url" alt="Avatar" class="img-thumbnail" width="100"/>
                     @if (SelectedSeed == avatar.Seed)
                     {
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
@@ -52,7 +52,7 @@
 
 <!-- Navigatie knoppen ->
 <div class="mt-5 d-flex justify-content-center gap-5">
-    <button class="btn btn-outline-secondary me-2" @onclick="() => OnBack.InvokeAsync()">Terug</button>
+    <button class="back-button" @onclick="() => OnBack.InvokeAsync()">Terug</button>
     <button class="btn btn-secondary" @onclick="RegenerateAvatars">Genereer nieuwe avatars</button>
     <button class="btn btn-success" @onclick="() => OnNext.InvokeAsync()" disabled="@(!AvatarSelected)">Volgende</button>
 </div>
