@@ -1,0 +1,74 @@
+﻿@using ProjectGrowthPath.Application.DTOs.LearningTools
+@using ProjectGrowthPath.Domain.Enums.LearningTools
+@inject IDialogService DialogService
+
+<MudDialog>
+    <DialogContent>
+        <MudCard>
+            <MudCardMedia Image="@GetImagePath((CategoryTool)Tool.Category)" Height="140" />
+
+            <MudCardHeader>
+                <MudText Typo="Typo.h5">@Tool.Name</MudText>
+            </MudCardHeader>
+
+            <MudCardContent>
+                <MudText Typo="Typo.body2">@Tool.Description</MudText>
+
+                <MudChip T="string" Color="Color.Info" Variant="Variant.Outlined" Class="mt-2">
+                    Moeilijkheid: @GetDifficultyLabel((DifficultyTool)Tool.Difficulty)
+                </MudChip>
+
+                <MudChip T="string" Color="Color.Info" Variant="Variant.Outlined" Class="ml-1">
+                    Categorie: @GetCategoryOfTool((CategoryTool)Tool.Category)
+                </MudChip>
+
+                <MudChip T="string" Color="Color.Secondary" Variant="Variant.Filled" Class="ml-1">
+                    @if (Tool.Duration < 60)
+                    {
+                        @("<60 minuten")
+                    }
+                    else
+                    {
+                        @($"{Tool.Duration} uur")
+                    }
+                </MudChip>
+            </MudCardContent>
+
+            <MudCardActions>
+                <MudButton Variant="Variant.Filled" Target="_blank" Href="@Tool.Link" Color="Color.Primary">Bekijk</MudButton>
+                <MudButton OnClick="() => MudDialog.Close(DialogResult.Ok(true))" Variant="Variant.Text">Sluiten</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public LearningToolDto Tool { get; set; }
+
+    private string GetImagePath(CategoryTool category)
+        => $"images/categories/{category.ToString().ToLower()}.png";
+
+    private string GetDifficultyLabel(DifficultyTool difficulty)
+        => difficulty switch
+        {
+            DifficultyTool.Easy => "Gemakkelijk",
+            DifficultyTool.Medium => "Gemiddeld",
+            DifficultyTool.Hard => "Moeilijk",
+            _ => "Onbekend"
+        };
+
+    private string GetCategoryOfTool(CategoryTool category)
+        => category switch
+        {
+            CategoryTool.Article => "Artikel",
+            CategoryTool.Book => "Boek",
+            CategoryTool.Course => "Cursus",
+            CategoryTool.Game => "Spel",
+            CategoryTool.Video => "Video",
+            CategoryTool.Podcast => "Podcast",
+            CategoryTool.Other => "Overig",
+            _ => "Onbekend"
+        };
+}
