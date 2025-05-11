@@ -8,6 +8,7 @@ public interface IFirstTimeSetupService
     Task SetProfilePictureAsync(string style, string seed);
     Task UpdateCompetenceDictionary(int id, Competence? competence, string type);
     Task SetGoalCompetenceAsync(Competence competence);
+    Task ToggleLearningToolAsync(int toolId);
     Task SetTargetDateAsync(DateTime date);
     Task FinalizeSetupAsync();
 }

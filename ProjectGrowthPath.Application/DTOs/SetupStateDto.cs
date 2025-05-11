@@ -11,7 +11,7 @@ namespace ProjectGrowthPath.Application.DTOs
         public Dictionary<int, Competence> SelectedInterests { get; set; } = new();
         public Dictionary<int, Competence> SelectedSkills { get; set; } = new();
         public Competence? ChosenCompetence { get; set; }
-        public List<LearningTool> SelectedTools { get; set; } = new();
+        public List<int> SelectedTools { get; set; } = new();
         public DateTime? TargetDate { get; set; }
     }
 }

@@ -14,9 +14,7 @@ namespace ProjectGrowthPath.Domain.ValueObjects
         public Dictionary<int, Competence> SelectedInterests { get; set; } = new(); 
         public Dictionary<int, Competence> SelectedSkills { get; set; } = new();
 
-        private readonly List<LearningTool> _selectedTools = new();
-
-        public IReadOnlyList<LearningTool> SelectedTools => _selectedTools;
+        public List<int> SelectedTools { get; set; } = new();
 
         public Competence? ChosenCompetence { get; private set; }
         public DateTime? TargetDate { get; private set; }
@@ -27,10 +25,12 @@ namespace ProjectGrowthPath.Domain.ValueObjects
             ChosenCompetence = competence;
         }
 
-        public void SetLearningTools(List<LearningTool> tools)
+        public void ToggleLearningTool(int toolId)
         {
-            _selectedTools.Clear();
-            _selectedTools.AddRange(tools);
+            if (SelectedTools.Contains(toolId))
+                SelectedTools.Remove(toolId);
+            else
+                SelectedTools.Add(toolId);
         }
 
         public void SetTargetDate(DateTime date)

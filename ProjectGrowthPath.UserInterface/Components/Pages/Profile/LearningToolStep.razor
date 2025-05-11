@@ -1,14 +1,14 @@
-﻿@using ProjectGrowthPath.Application.Service
-@using System.ComponentModel.DataAnnotations
-@using ProjectGrowthPath.UserInterface.Components
+﻿@using System.ComponentModel.DataAnnotations
 @using System.Net
 @using Humanizer
+@using MudBlazor
+@using ProjectGrowthPath.Application.DTOs.LearningTools
 @using ProjectGrowthPath.Application.Interfaces
+@using ProjectGrowthPath.Application.Service
 @using ProjectGrowthPath.Application.State
 @using ProjectGrowthPath.Domain.Entities
-@using ProjectGrowthPath.Application.DTOs.LearningTools
 @using ProjectGrowthPath.Domain.Enums.LearningTools
-@using MudBlazor
+@using ProjectGrowthPath.UserInterface.Components
 
 @inject LearningToolService LearningToolService
 @inject IFirstTimeSetupService SetupService
@@ -28,14 +28,13 @@ else
             @foreach (var tool in learningToolDtos)
             {
                 <MudItem xs="12" sm="6" md="4" lg="3" Class="d-flex justify-center">
-                    <MudCard Style="width: 100%; min-width: 150px; max-width: 250px; height: 100%; position: relative;">
+                    <MudCard Style="@GetCardStyle(tool.Id)"
+                             OnClick="() => ToggleToolSelection(tool.Id)">
                         <div style="position: relative; height: 140px; border-radius: 4px; overflow: hidden;">
                             <img src="@GetImagePath((CategoryTool)tool.Category)"
-                                 style="width: 100%; height: 100%; object-fit: cover;" />
+                                 style="width: 100%; height: 100%; object-fit: cover;"/>
 
-                            <div style="position: absolute; top: 0; left: 0;
-                                width: 100%; height: 100%;
-                                background-color: rgba(0, 0, 0, 0.6);">
+                            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6);">
                             </div>
 
                             <div style="position: absolute; bottom: 10px; left: 10px; color: white;">
@@ -66,6 +65,11 @@ else
                         </MudCardContent>
 
                         <MudCardActions>
+                            <MudButton Variant="Variant.Filled"
+                                       Color="@(IsSelected(tool.Id) ? Color.Error : Color.Primary)"
+                                       OnClick="() => ToggleToolSelection(tool.Id)">
+                                @(IsSelected(tool.Id) ? "Verwijderen" : "Selecteer")
+                            </MudButton>
                             <MudButton Variant="Variant.Text" OnClick="() => ShowDetails(tool)">Meer info</MudButton>
                         </MudCardActions>
                     </MudCard>
@@ -97,6 +101,7 @@ else
     private bool CanProceed = false;
 
     private List<LearningToolDto> learningToolDtos = new List<LearningToolDto>();
+    private bool IsSelected(int toolId) => StateStorage.CurrentState.SelectedTools.Contains(toolId);
 
 
     // De datum die is geselecteerd door de gebruiker
@@ -121,7 +126,18 @@ else
         }
 
         IsLoading = false;
+        CanProceed = StateStorage.CurrentState.SelectedTools.Any();
+
         await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task ToggleToolSelection(int toolId)
+    {
+        await SetupService.ToggleLearningToolAsync(toolId);
+
+        await StateStorage.LoadAsync(); // herlaad state na mutatie
+        CanProceed = StateStorage.CurrentState.SelectedTools.Any();
+        StateHasChanged();
     }
 
 
@@ -160,6 +176,12 @@ else
     {
         var parameters = new DialogParameters { ["Tool"] = tool };
         DialogService.Show<LearningToolDetailOverlay>("Meer informatie", parameters);
+    }
+
+    private string GetCardStyle(int toolId)
+    {
+        var borderColor = IsSelected(toolId) ? "2px solid #4caf50" : "1px solid lightgray";
+        return $"cursor: pointer; width: 100%; min-width: 150px; max-width: 250px; height: 100%; position: relative; border: {borderColor};";
     }
 
     private async Task SelectDate(DateTime? date)
