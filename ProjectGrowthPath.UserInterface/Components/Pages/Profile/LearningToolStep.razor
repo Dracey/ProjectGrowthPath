@@ -1,0 +1,69 @@
+﻿@using ProjectGrowthPath.Application.Service
+@using System.ComponentModel.DataAnnotations
+@using System.Net
+@using Humanizer
+@using ProjectGrowthPath.Application.Interfaces
+@using ProjectGrowthPath.Application.State
+@using ProjectGrowthPath.Domain.Entities
+@using ProjectGrowthPath.Application.DTOs.LearningTools
+@using MudBlazor
+
+@inject LearningToolService LearningToolService
+@inject IFirstTimeSetupService SetupService
+@inject SetupStateStore StateStorage
+
+<h3>LearningToolStep</h3>
+
+@if (IsLoading)
+{
+    <MudProgressCircular Indeterminate="true" />
+}
+else
+{
+    <MudGrid>
+    @foreach (var tool in learningToolDtos)
+    {
+        <MudItem xs="12" sm="6" md="4" lg="3">
+            <MudCard Style="height: 100%;">
+                <MudCardHeader>
+                    <MudText Typo="Typo.h6">@tool.Name</MudText>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText Typo="Typo.body2" Class="mb-2">@tool.Description</MudText>
+                        <MudChip Color="Color.Info" T="LearningToolDto" Variant="Variant.Outlined">@tool.Difficulty.ToString()</MudChip>
+                    <MudChip Color="Color.Secondary" T="LearingToolDto" Variant="Variant.Filled" Class="ml-1">@(tool.Duration.ToString()) /></MudChip>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Text" Target="_blank" Href="@tool.Link">Bekijk</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    }
+</MudGrid>
+}
+
+<div class="mt-4">
+    <button class="btn btn-outline-secondary me-2" @onclick="() => OnBack.InvokeAsync()">Terug</button>
+    <button class="btn btn-success" @onclick="() => OnNext.InvokeAsync()" disabled="@(!CanProceed)">Volgende</button>
+</div>
+
+
+@code {
+    [Parameter] public EventCallback OnNext { get; set; }
+    [Parameter] public EventCallback OnBack { get; set; }
+
+    private bool IsLoading = true;
+    private bool CanProceed = false;
+
+    private List<LearningToolDto> learningToolDtos = new List<LearningToolDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await StateStorage.LoadAsync();
+
+        learningToolDtos = await LearningToolService.GetByCompetenceId(StateStorage.CurrentState.ChosenCompetence.CompetenceID);
+
+        IsLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+}
