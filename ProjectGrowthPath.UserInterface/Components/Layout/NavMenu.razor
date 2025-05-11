@@ -14,15 +14,32 @@
         <AuthorizeView>
             <Authorized>
                 <div class="nav-buttons-authorized">
+                    @* Admin-only knoppen *@
+                    @if (context.User.IsInRole("Beheerder"))
+                    {
+                        <div class="nav-item">
+                            <NavLink class="nav-link" href="/admin/dashboard">
+                                <span class="bi bi-tools" aria-hidden="true"></span> Admin Dashboard
+                            </NavLink>
+                        </div>
+                    }
+
+                    @* Algemene knoppen voor ingelogde gebruikers *@
                     <div class="nav-item">
                         <NavLink class="nav-link" href="Account/Manage">
                             <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
                         </NavLink>
                     </div>
+
+                    <div class="nav-item avatar-placeholder">
+                        <img class="empty-avatar-placeholder" src="empty-img-cover.jpg"/>
+                    </div>
+
+                    @* Uitlogknop *@
                     <div class="nav-item">
                         <form action="Account/Logout" method="post">
-                            <AntiforgeryToken />
-                            <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                            <AntiforgeryToken/>
+                            <input type="hidden" name="ReturnUrl" value="@currentUrl"/>
                             <button type="submit" class="nav-link">
                                 <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Uitloggen
                             </button>
@@ -39,7 +56,7 @@
                         <NavLink class="nav-link" href="Account/Login">Inloggen</NavLink>
                     </div>
                     <div class="nav-item avatar-placeholder">
-                        <img class="empty-avatar-placeholder" src="empty-img-cover.jpg"/>
+                        <img class="empty-avatar-placeholder" src="empty-img-cover.jpg" />
                     </div>
                 </div>
             </NotAuthorized>
