@@ -24,8 +24,7 @@
     COPY --from=build /out .
     
     # Expose port 80
-    # EXPOSE 80
-    # ENV ASPNETCORE_URLS=http://+:80
+    EXPOSE 80
+    ENV ASPNETCORE_URLS=http://+:80
 
-    # Set the entry point to serve the Blazor WASM application
     ENTRYPOINT ["dotnet", "ProjectGrowthPath.UserInterface.dll"]
