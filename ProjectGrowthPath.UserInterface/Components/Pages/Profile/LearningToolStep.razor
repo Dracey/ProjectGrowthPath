@@ -23,26 +23,22 @@
 }
 else
 {
-    <div style="max-height: 500px; overflow-y: auto; padding: 16px;">
+    <div class="tool-list-container">
         <MudGrid Justify="Justify.Center" Gutter="GutterSize.Small" Wrap="Wrap.Wrap">
             @foreach (var tool in learningToolDtos)
             {
                 <MudItem xs="12" sm="6" md="4" lg="3" Class="d-flex justify-center">
                     <MudCard Style="@GetCardStyle(tool.Id)"
                              OnClick="() => ToggleToolSelection(tool.Id)">
-                        <div style="position: relative; height: 140px; border-radius: 4px; overflow: hidden;">
-                            <img src="@GetImagePath((CategoryTool)tool.Category)"
-                                 style="width: 100%; height: 100%; object-fit: cover;"/>
-
-                            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6);">
-                            </div>
-
-                            <div style="position: absolute; bottom: 10px; left: 10px; color: white;">
+                        <div class="image-text-holder">
+                            <img src="@GetImagePath((CategoryTool)tool.Category)" class ="image-tool"/>
+                            <div class="black-trans-box"></div>
+                            <div class="tool-header-text">
                                 <MudText Typo="Typo.h6" Class="m-0">@tool.Name</MudText>
                             </div>
                         </div>
                         <MudCardContent>
-                            <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+                            <div class="tool-content-holder">
                                 <MudChip T="string" Color="Color.Info" Variant="Variant.Outlined">
                                     @GetCategoryOfTool((CategoryTool)tool.Category)
                                 </MudChip>
@@ -63,7 +59,6 @@ else
                                 </MudChip>
                             </div>
                         </MudCardContent>
-
                         <MudCardActions>
                             <MudButton Variant="Variant.Filled"
                                        Color="@(IsSelected(tool.Id) ? Color.Error : Color.Primary)"
