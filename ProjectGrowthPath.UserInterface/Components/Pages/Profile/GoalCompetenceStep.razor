@@ -12,7 +12,7 @@
 @inject SetupStateStore StateStorage
 
 
-<h3>Maken van een leerdoel</h3>
+<h3>Welke competentie zou je nu willen verbeteren?</h3>
 @if (IsLoading)
 {
     <MudProgressCircular Indeterminate="true" />
@@ -31,7 +31,7 @@ else
         }
     </MudGrid>
 
-    <MudText Typo="Typo.h5" Class="mt-6 mb-2"></MudText>
+    <MudText Typo="Typo.h5" Class="mt-6 mb-2">Interesses</MudText>
     <MudGrid>
         @foreach (var interest in _interests.Values)
         {
