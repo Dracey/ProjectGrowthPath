@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using ProjectGrowthPath.Application.Interfaces;
-
 namespace ProjectGrowthPath.Infrastructure.Services
 {
     public class ProfileCheckService(IUserProfileService profileService, NavigationManager navigation, AuthenticationStateProvider authStateProvider) : IProfileCheckService

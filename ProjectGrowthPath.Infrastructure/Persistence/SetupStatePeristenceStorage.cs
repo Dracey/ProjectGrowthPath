@@ -1,10 +1,10 @@
 ﻿using Microsoft.JSInterop;
 using ProjectGrowthPath.Application.DTOs;
-using ProjectGrowthPath.Application.Interfaces;
 using ProjectGrowthPath.Domain.Entities;
 using ProjectGrowthPath.Domain.ValueObjects;
 using System.Text.Json;
 using System.Xml;
+using ProjectGrowthPath.Application.Interfaces;
 
 namespace ProjectGrowthPath.Infrastructure.Persistence
 {
@@ -58,12 +58,12 @@ namespace ProjectGrowthPath.Infrastructure.Persistence
                 SelectedInterests = dto.SelectedInterests ?? new Dictionary<int, Competence>(),
                 SelectedSkills = dto.SelectedSkills ?? new Dictionary<int, Competence>(),
                 GeneratedAvatars = dto.GeneratedAvatars?.Select(a => (a.Seed, a.Url)).ToList() ?? new List<(string, string)>(),
+                SelectedTools = dto.SelectedTools ?? new List<int>()
             };
 
             if (dto.TargetDate.HasValue) state.SetTargetDate(dto.TargetDate.Value);
             if (dto.ChosenCompetence != null) state.SetChosenCompetence(dto.ChosenCompetence);
-            if (dto.SelectedTools != null) state.SetLearningTools(dto.SelectedTools);
-          
+         
             return state;
         }
 

@@ -1,5 +1,4 @@
 ﻿using ProjectGrowthPath.Application.Interfaces;
-using ProjectGrowthPath.Application.Service;
 using ProjectGrowthPath.Application.State;
 using ProjectGrowthPath.Domain.Entities;
 
@@ -15,7 +14,6 @@ public class CompetenceSelectionService : ICompetenceSelectionService
         _competenceRepository = competenceRepository;
         _stateStore = stateStore;
         _setupService = setupService;
-
     }
 
     public async Task InitializeAsync()

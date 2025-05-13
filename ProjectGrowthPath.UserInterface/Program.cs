@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using ProjectGrowthPath.Application.Interfaces;
+using ProjectGrowthPath.Application.Interfaces.IServices;
 using ProjectGrowthPath.Application.Service;
 using ProjectGrowthPath.Application.State;
 using ProjectGrowthPath.Infrastructure.API;
@@ -86,6 +87,7 @@ public class Program
         builder.Services.AddScoped<ICompetenceSelectionService, CompetenceSelectionService>();
         builder.Services.AddScoped<IAvatarService, AvatarService>();
         builder.Services.AddScoped<IFirstTimeSetupService, FirstTimeSetupService>();
+        builder.Services.AddScoped<ILearningToolSetupHelper, LearningToolSetupHelper>();
         builder.Services.AddScoped<SetupStateStore>();
         builder.Services.AddScoped<LearningToolService>();
         builder.Services.AddScoped<CompetenceService>();

@@ -1,8 +1,8 @@
-﻿using ProjectGrowthPath.Application.Interfaces;
-using ProjectGrowthPath.Application.State;
+﻿using ProjectGrowthPath.Application.State;
 using ProjectGrowthPath.Domain.Entities;
 using ProjectGrowthPath.Domain.ValueObjects;
 using System.Xml.Linq;
+using ProjectGrowthPath.Application.Interfaces;
 
 namespace ProjectGrowthPath.Application.Service
 {
@@ -73,14 +73,18 @@ namespace ProjectGrowthPath.Application.Service
             await _store.UpdateStateAsync(s => s.SetTargetDate(date), $"Doel datum ingesteld: {date.ToShortDateString()}");
         }
 
-        //public async Task SetLearningToolsAsync(List<LearningTool> tools)
-        //{
-        //    await _store.SetLearningToolsAsync(tools);
-        //}
 
-        //
+        public async Task ToggleLearningToolAsync(int toolId)
+        {
+            var isAlreadySelected = _store.CurrentState.SelectedTools.Contains(toolId);
 
-        
+            await _store.UpdateStateAsync(
+                s => s.ToggleLearningTool(toolId),
+                $"Leermiddel {(isAlreadySelected ? "verwijderd" : "toegevoegd")}: ID {toolId}"
+            );
+        }
+
+
         // Eindmethode die alles bij elkaar brengt
         public async Task FinalizeSetupAsync()
         {
