@@ -1,5 +1,6 @@
 ﻿.content-holder {
     max-width: 900px;
+    min-width: 700px;
     margin: auto;
     margin-top: 30px;
     margin-bottom: 30px;
@@ -98,6 +99,7 @@ button.btn.btn-success:disabled {
 
 /* Learning tools step*/
 .tool-list-container {
+    min-width: 850px;
     max-height: 500px;
     overflow-y: auto;
     padding: 16px;

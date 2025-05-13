@@ -26,10 +26,10 @@
 else
 {
     <div class="tool-list-container">
-        <MudGrid Justify="Justify.Center" Gutter="GutterSize.Small" Wrap="Wrap.Wrap">
+        <MudGrid Justify="Justify.Center" Gutter="GutterSize.Medium" Wrap="Wrap.Wrap">
             @foreach (var tool in learningToolDtos)
             {
-                <MudItem xs="12" sm="6" md="4" lg="3" Class="d-flex justify-center ms-2 me-2">
+                <MudItem xs="12" sm="6" md="4" lg="3" Class="d-flex">
                     <MudCard Style="@GetCardStyle(tool.Id)"
                              OnClick="() => ToggleToolSelection(tool.Id)">
                         <div class="image-text-holder">
@@ -147,7 +147,7 @@ else
     private string GetCardStyle(int toolId)
     {
         var borderColor = IsSelected(toolId) ? "2px solid #4caf50" : "1px solid lightgray";
-        return $"cursor: pointer; width: 100%; min-width: 150px; max-width: 250px; height: 100%; position: relative; border: {borderColor};";
+        return $"cursor: pointer; width: 100%; min-width: 170px; max-width: 250px; height: 100%; position: relative; border: {borderColor};";
     }
 
     private async Task SelectDate(DateTime? date)
