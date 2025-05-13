@@ -4,6 +4,7 @@
 @using MudBlazor
 @using ProjectGrowthPath.Application.DTOs.LearningTools
 @using ProjectGrowthPath.Application.Interfaces
+@using ProjectGrowthPath.Application.Interfaces.IServices
 @using ProjectGrowthPath.Application.Service
 @using ProjectGrowthPath.Application.State
 @using ProjectGrowthPath.Domain.Entities
@@ -14,6 +15,7 @@
 @inject IFirstTimeSetupService SetupService
 @inject SetupStateStore StateStorage
 @inject IDialogService DialogService
+@inject ILearningToolSetupHelper LearningToolSetupHelper
 
 <h3>Leermiddelen!</h3>
 <p>Kies leermiddelen uit om te helpen met het verbeteren van jouw keuze!</p>
@@ -27,11 +29,11 @@ else
         <MudGrid Justify="Justify.Center" Gutter="GutterSize.Small" Wrap="Wrap.Wrap">
             @foreach (var tool in learningToolDtos)
             {
-                <MudItem xs="12" sm="6" md="4" lg="3" Class="d-flex justify-center">
+                <MudItem xs="12" sm="6" md="4" lg="3" Class="d-flex justify-center ms-2 me-2">
                     <MudCard Style="@GetCardStyle(tool.Id)"
                              OnClick="() => ToggleToolSelection(tool.Id)">
                         <div class="image-text-holder">
-                            <img src="@GetImagePath((CategoryTool)tool.Category)" class ="image-tool"/>
+                            <img src="@LearningToolSetupHelper.GetImagePath((CategoryTool)tool.Category)" class="image-tool" />
                             <div class="black-trans-box"></div>
                             <div class="tool-header-text">
                                 <MudText Typo="Typo.h6" Class="m-0">@tool.Name</MudText>
@@ -40,15 +42,15 @@ else
                         <MudCardContent>
                             <div class="tool-content-holder">
                                 <MudChip T="string" Color="Color.Info" Variant="Variant.Outlined">
-                                    @GetCategoryOfTool((CategoryTool)tool.Category)
+                                    @LearningToolSetupHelper.GetCategoryOfTool((CategoryTool)tool.Category)
                                 </MudChip>
 
                                 <MudChip T="string" Color="Color.Info" Variant="Variant.Outlined">
-                                    @GetDifficultyLabel((DifficultyTool)tool.Difficulty)
+                                    @LearningToolSetupHelper.GetDifficultyLabel((DifficultyTool)tool.Difficulty)
                                 </MudChip>
 
                                 <MudChip T="string" Color="Color.Secondary" Variant="Variant.Filled">
-                                    @if (tool.Duration < 60)
+                                    @if (tool.Duration == 0)
                                     {
                                         @("<60 minuten")
                                     }
@@ -92,11 +94,12 @@ else
     [Parameter] public EventCallback OnNext { get; set; }
     [Parameter] public EventCallback OnBack { get; set; }
 
+    // Laden en valideren van de pagina
     private bool IsLoading = true;
     private bool CanProceed = false;
+    private bool IsSelected(int toolId) => StateStorage.CurrentState.SelectedTools.Contains(toolId);
 
     private List<LearningToolDto> learningToolDtos = new List<LearningToolDto>();
-    private bool IsSelected(int toolId) => StateStorage.CurrentState.SelectedTools.Contains(toolId);
 
 
     // De datum die is geselecteerd door de gebruiker
@@ -133,38 +136,6 @@ else
         await StateStorage.LoadAsync(); // herlaad state na mutatie
         CanProceed = StateStorage.CurrentState.SelectedTools.Any();
         StateHasChanged();
-    }
-
-
-    private string GetDifficultyLabel(DifficultyTool difficulty)
-    {
-        return difficulty switch
-        {
-            DifficultyTool.Easy => "Gemakkelijk",
-            DifficultyTool.Medium => "Gemiddeld",
-            DifficultyTool.Hard => "Moeilijk",
-            _ => "Onbekend"
-        };
-    }
-
-    private string GetCategoryOfTool(CategoryTool category)
-    {
-        return category switch
-        {
-            CategoryTool.Article => "Artikel",
-            CategoryTool.Book => "Boek",
-            CategoryTool.Course => "Cursus",
-            CategoryTool.Game => "Spel",
-            CategoryTool.Video => "Video",
-            CategoryTool.Podcast => "Podcast",
-            CategoryTool.Other => "Overig"
-        };
-    }
-
-    private string GetImagePath(CategoryTool category)
-    {
-        var fileName = category.ToString().ToLower() + ".png"; // "article.png", etc.
-        return $"tools-images/{fileName}";
     }
 
     private void ShowDetails(LearningToolDto tool)
