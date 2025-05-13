@@ -12,37 +12,44 @@
 @inject SetupStateStore StateStorage
 
 
-<h3>Welke competentie zou je nu willen verbeteren?</h3>
+<h3>Kies één competentie die je wilt gaan verbeteren.</h3>
 @if (IsLoading)
 {
     <MudProgressCircular Indeterminate="true" />
 }
 else
 {
-    <MudText Typo="Typo.h5" Class="mt-4 mb-2">Skills</MudText>
-    <MudGrid>
-        @foreach (var skill in _skills.Values)
-        {
-            <MudItem xs="12" sm="6" md="4">
-                <MudPaper Elevation="4" Class="pa-4" Style="@GetPaperStyle(skill)" @onclick="() => SelectCompetence(skill)">
-                    <MudText Typo="Typo.h6">@skill.Name</MudText>
-                </MudPaper>
-            </MudItem>
-        }
-    </MudGrid>
+    <div class="goal-content-holder">
+        <div>
+            <MudText Typo="Typo.h6" Class="mt-6 mb-2">Interesses:</MudText>
+            <MudGrid>
+                @foreach (var interest in _interests.Values)
+                {
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudPaper Elevation="4" Class="pa-4" Style="@GetPaperStyle(interest)" @onclick="() => SelectCompetence(interest)">
+                            <MudText Typo="Typo.body1">@interest.Name</MudText>
+                        </MudPaper>
+                    </MudItem>
+                }
+            </MudGrid>
 
-    <MudText Typo="Typo.h5" Class="mt-6 mb-2">Interesses</MudText>
-    <MudGrid>
-        @foreach (var interest in _interests.Values)
-        {
-            <MudItem xs="12" sm="6" md="4">
-                <MudPaper Elevation="4" Class="pa-4" Style="@GetPaperStyle(interest)" @onclick="() => SelectCompetence(interest)">
-                    <MudText Typo="Typo.h6">@interest.Name</MudText>
-                </MudPaper>
-            </MudItem>
-        }
-    </MudGrid>
+            <MudText Typo="Typo.h6" Class="mt-4 mb-2">Vaardigheden:</MudText>
+            <MudGrid>
+                @foreach (var skill in _skills.Values)
+                {
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudPaper Elevation="4" Class="pa-4" Style="@GetPaperStyle(skill)" @onclick="() => SelectCompetence(skill)">
+                            <MudText Typo="Typo.body1">@skill.Name</MudText>
+                        </MudPaper>
+                    </MudItem>
+                }
+            </MudGrid>
+        </div>
+        <img class="benjamin-point-image" src="Benjamin-point.png" />
+    </div>
+   
 
+    
 }
 <div class="mt-4">
     <button class="btn btn-outline-secondary me-2" @onclick="() => OnBack.InvokeAsync()">Terug</button>

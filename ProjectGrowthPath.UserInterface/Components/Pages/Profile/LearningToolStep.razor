@@ -74,6 +74,7 @@ else
             }
         </MudGrid>
     </div>
+    <p>Wanneer denk je dit voor elkaar te hebben?</p>
     <MudDatePicker @ref="_picker" Label="Selecteer een datum" Date="_date" DateChanged="SelectDate" AutoClose="@_autoClose">
         <PickerActions>
             <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.ClearAsync())">Verwijderen</MudButton>

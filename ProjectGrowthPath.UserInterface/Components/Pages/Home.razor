@@ -16,6 +16,6 @@ Welcome to your new app.
     protected override async Task OnInitializedAsync()
     {
         // Voer de profielcontrole uit na de inlog
-        //await ProfileCheckService.CheckAndRedirectIfNeeded();
+        await ProfileCheckService.CheckAndRedirectIfNeeded();
     }
 }

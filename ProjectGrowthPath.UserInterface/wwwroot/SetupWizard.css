@@ -40,7 +40,7 @@
     align-items: center;
 }
 
-.name-content {
+.name-content, .goal-content-holder {
     margin: auto;
     flex-direction: row;
     display: flex;
@@ -97,6 +97,20 @@ button.btn.btn-success:disabled {
     border-radius: 20px;
 }
 
+/* Choose goal step*/
+.goal-content-holder {
+    margin-top: -40px;
+}
+
+
+.benjamin-point-image {
+    position: relative;
+    width: 200px;
+    bottom: -75px;
+    right: -15px;
+}
+
+
 /* Learning tools step*/
 .tool-list-container {
     min-width: 850px;
@@ -140,6 +154,7 @@ button.btn.btn-success:disabled {
     gap: 8px;
     align-items: center;
 }
+
 
 
 
