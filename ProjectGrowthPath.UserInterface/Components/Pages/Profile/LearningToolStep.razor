@@ -134,7 +134,7 @@ else
     {
         await SetupService.ToggleLearningToolAsync(toolId);
 
-        await StateStorage.LoadAsync(); // herlaad state na mutatie
+        await StateStorage.LoadAsync(); 
         CanProceed = StateStorage.CurrentState.SelectedTools.Any();
         StateHasChanged();
     }
