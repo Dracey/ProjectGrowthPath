@@ -1,0 +1,104 @@
+@using ProjectGrowthPath.Application.State
+@using ProjectGrowthPath.Domain.Entities
+@using ProjectGrowthPath.Application.DTOs.LearningTools
+@using ProjectGrowthPath.Application.Service
+@inject SetupStateStore StateStorage
+
+<h3>Samenvatting van jouw keuzes</h3>
+<MudPaper Class="pa-4" Elevation="0">
+    <MudList T="string">
+
+        <MudListItem>
+            <MudText Typo="Typo.h6">Naam:</MudText>
+            <MudText>@(StateStorage.CurrentState.NewUser.Name)</MudText>
+        </MudListItem>
+
+        <MudListItem>
+            <MudText Typo="Typo.h6">Focus Competentie:</MudText>
+            <MudText>@(StateStorage.CurrentState.ChosenCompetence?.Name ?? "Niet gekozen")</MudText>
+        </MudListItem>
+
+        <MudListItem>
+            <MudText Typo="Typo.h6">Interesses:</MudText>
+            @if (StateStorage.CurrentState.SelectedInterests.Any())
+            {
+                <MudChipSet>
+                    @foreach (var interest in StateStorage.CurrentState.SelectedInterests.Values)
+                    {
+                        <MudChip Color="Color.Info" Variant="Variant.Filled">@interest.Name</MudChip>
+                    }
+                </MudChipSet>
+            }
+            else
+            {
+                <MudText>Geen interesses geselecteerd.</MudText>
+            }
+        </MudListItem>
+
+        <MudListItem>
+            <MudText Typo="Typo.h6">Vaardigheden:</MudText>
+            @if (StateStorage.CurrentState.SelectedSkills.Any())
+            {
+                <MudChipSet>
+                    @foreach (var skill in StateStorage.CurrentState.SelectedSkills.Values)
+                    {
+                        <MudChip Color="Color.Secondary" Variant="Variant.Filled">@skill.Name</MudChip>
+                    }
+                </MudChipSet>
+            }
+            else
+            {
+                <MudText>Geen vaardigheden geselecteerd.</MudText>
+            }
+        </MudListItem>
+
+        <MudListItem>
+            <MudText Typo="Typo.h6">Gekozen Leermiddelen:</MudText>
+            @if (SelectedTools.Any())
+            {
+                <MudList Dense="true">
+                    @foreach (var tool in SelectedTools)
+                    {
+                        <MudListItem>
+                            <MudText>@tool.Name</MudText>
+                        </MudListItem>
+                    }
+                </MudList>
+            }
+            else
+            {
+                <MudText>Geen leermiddelen gekozen.</MudText>
+            }
+        </MudListItem>
+
+        <MudListItem>
+            <MudText Typo="Typo.h6"> Gewenste einddatum:</MudText>
+            <MudText>@(StateStorage.CurrentState.TargetDate?.ToString("dd-MM-yyyy") ?? "Niet opgegeven")</MudText>
+        </MudListItem>
+
+    </MudList>
+</MudPaper>
+
+<div class="mt-4">
+    <button class="btn btn-outline-secondary me-2" @onclick="() => OnBack.InvokeAsync()">Terug</button>
+    <button class="btn btn-success" @onclick="() => OnFinish.InvokeAsync()">Bevestigen</button>
+</div>
+
+@code {
+    [Parameter] public EventCallback OnFinish { get; set; }
+
+    [Parameter] public EventCallback OnBack { get; set; }
+
+    private List<LearningToolDto> SelectedTools = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await StateStorage.LoadAsync();
+        var allTools = await LearningToolService.GetByCompetenceId(StateStorage.CurrentState.ChosenCompetence.CompetenceID);
+        SelectedTools = allTools
+            .Where(t => StateStorage.CurrentState.SelectedTools.Contains(t.Id))
+            .ToList();
+    }
+
+    [Inject] private LearningToolService LearningToolService { get; set; }
+}

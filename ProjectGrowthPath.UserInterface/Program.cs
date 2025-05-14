@@ -137,6 +137,8 @@ public class Program
 
         app.MapAdditionalIdentityEndpoints();
 
+
+        // Voor docker moet het app.Run(http://0.0.0.0:80). Oplossing nog aan het zoeken.
         app.Run();
     }
 
