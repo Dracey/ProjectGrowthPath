@@ -74,6 +74,7 @@ else
             }
         </MudGrid>
     </div>
+    <p>Wanneer denk je dit voor elkaar te hebben?</p>
     <MudDatePicker @ref="_picker" Label="Selecteer een datum" Date="_date" DateChanged="SelectDate" AutoClose="@_autoClose">
         <PickerActions>
             <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.ClearAsync())">Verwijderen</MudButton>
@@ -133,7 +134,7 @@ else
     {
         await SetupService.ToggleLearningToolAsync(toolId);
 
-        await StateStorage.LoadAsync(); // herlaad state na mutatie
+        await StateStorage.LoadAsync(); 
         CanProceed = StateStorage.CurrentState.SelectedTools.Any();
         StateHasChanged();
     }
