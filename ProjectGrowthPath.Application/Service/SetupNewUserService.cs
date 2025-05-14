@@ -32,7 +32,7 @@ public class SetupNewUserService
         await ExecuteStepAsync(() =>
                 _userProfileService.CreateProfileAsync(_store.CurrentState.NewUser, _store.CurrentState.SelectedAvatarSeed, _store.CurrentState.AvatarStyle), "Gebruikersprofiel aanmaken");
 
-        await ExecuteStepAsync(() => _) 
+        await ExecuteStepAsync(() => _I);
         
         await ExecuteStepAsync(() => _store.ClearAsync(), "SetupState opschonen");
     }
