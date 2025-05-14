@@ -2,7 +2,9 @@
 using ProjectGrowthPath.Domain.Entities;
 using ProjectGrowthPath.Domain.ValueObjects;
 using System.Xml.Linq;
+using Microsoft.Extensions.Logging;
 using ProjectGrowthPath.Application.Interfaces;
+using YourApp.Application.Exceptions;
 
 namespace ProjectGrowthPath.Application.Service
 {
@@ -11,12 +13,14 @@ namespace ProjectGrowthPath.Application.Service
         private readonly SetupStateStore _store;
         private readonly IUserProfileService _profileService;
         private readonly IAvatarGenerator _avatarGenerator;
+        private readonly ILogger _logger;
 
-        public FirstTimeSetupService(SetupStateStore store, IUserProfileService profileService, IAvatarGenerator avatarGenerator)
+        public FirstTimeSetupService(SetupStateStore store, IUserProfileService profileService, IAvatarGenerator avatarGenerator, ILogger logger)
         {
             _store = store;
             _profileService = profileService;
             _avatarGenerator = avatarGenerator;
+            _logger = logger;
         }
 
 
@@ -85,22 +89,51 @@ namespace ProjectGrowthPath.Application.Service
         }
 
 
-        // Eindmethode die alles bij elkaar brengt
+        // Afsluitende methode waar er een profiel wordt aangemaakt
         public async Task FinalizeSetupAsync()
         {
+            // Gebruikersprofiel aanmaken
+            await ExecuteStepAsync(CreateUserProfile, "Gebruikersprofiel aanmaken");
+
+
+
+            // SetupState opschonen
+            await ExecuteStepAsync(_store.ClearAsync, "SetupState opschonen");
+        }
+
+
+        public async Task CreateUserProfile()
+        {
             var user = _store.CurrentState.NewUser;
+
 
             var newUser = new UserProfile
             {
                 Name = user.Name,
                 Level = 1,
                 Points = 0,
-                ProfilePicture = user.ProfilePicture,
+                ProfilePicture = await _avatarGenerator.GenerateAvatarAsync(_store.CurrentState.AvatarStyle, _store.CurrentState.SelectedAvatarSeed),
                 ApplicationUserId = user.ApplicationUserId
             };
 
             await _profileService.CreateProfileAsync(newUser);
-            await _store.ClearAsync();
+
+        }
+
+
+        private async Task ExecuteStepAsync(Func<Task> step, string stepName)
+        {
+            try
+            {
+                _logger.LogInformation("Start stap: {StepName}", stepName);
+                await step();
+                _logger.LogInformation("Voltooid: {StepName}", stepName);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Fout bij stap: {StepName}", stepName);
+                throw new UserFriendlyException($"Er is iets misgegaan bij '{stepName}'. Probeer het later opnieuw.");
+            }
         }
     }
 }
