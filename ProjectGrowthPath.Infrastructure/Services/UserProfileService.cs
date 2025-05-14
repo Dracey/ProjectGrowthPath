@@ -57,5 +57,14 @@ namespace ProjectGrowthPath.Infrastructure.Services
             
             await _dbContext.SaveChangesAsync();
         }
+
+        // Haal het profiel op van de gebruiker
+        public async Task<UserProfile> GetUserProfileByApplicationIDAsync(string applicationuserID)
+        {
+            var profile = await _dbContext.UserProfiles
+                .FirstOrDefaultAsync(up => up.ApplicationUserId == applicationuserID);
+            if (profile == null) throw new Exception("Profiel niet gevonden");
+            return profile;
+        }
     }
 }

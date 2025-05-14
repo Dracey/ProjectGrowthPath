@@ -9,7 +9,7 @@ namespace ProjectGrowthPath.Application.Interfaces.IRepository;
 
 public interface IUserCompetenceRepository
 {
-    Task AddUserCompetenceAsync(Guid userId, int competenceId, CompetenceType type);
+    Task AddUserCompetenceAsync(Dictionary<int, Competence> competences, Guid userID, int type);
     Task<IEnumerable<UserCompetence>> GetUserCompetencesAsync(Guid userId);
     Task RemoveUserCompetenceAsync(Guid userId, int competenceId);
 }
