@@ -1,4 +1,4 @@
-﻿namespace YourApp.Application.Exceptions;
+﻿namespace ProjectGrowthPath.Application.Service.Exceptions;
 
 public class UserFriendlyException : Exception
 {

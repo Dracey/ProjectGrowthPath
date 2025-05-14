@@ -33,9 +33,8 @@ namespace ProjectGrowthPath.Infrastructure.Services
             return await _dbContext.UserProfiles.AnyAsync(up => up.ApplicationUserId == userId);
         }
 
-
-        // Indien nee, Maak een profiel aan voor de gebruiker
-        public async Task CreateProfileAsync(UserProfile newUser)
+        // Maak een nieuw profiel aan
+        public async Task CreateProfileAsync(UserProfile newUser , string avatarSeed, string avatarStyle)
         {
             var authState = await _authProvider.GetAuthenticationStateAsync();
             var user = authState.User;

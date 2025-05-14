@@ -92,6 +92,7 @@ public class Program
         builder.Services.AddScoped<LearningToolService>();
         builder.Services.AddScoped<CompetenceService>();
         builder.Services.AddScoped<LearningToolCompetenceService>();
+        builder.Services.AddScoped<SetupNewUserService>();
 
         // Application Repositories
 

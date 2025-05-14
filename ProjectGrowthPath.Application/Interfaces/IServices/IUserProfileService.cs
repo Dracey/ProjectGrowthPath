@@ -5,12 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using ProjectGrowthPath.Domain.Entities;
 
-namespace ProjectGrowthPath.Application.Interfaces
-{
-    public interface IUserProfileService
-    {
+namespace ProjectGrowthPath.Application.Interfaces;
 
-        Task<bool> HasProfileAsync(string userId);
-        Task CreateProfileAsync(UserProfile newUser);
-    }
+public interface IUserProfileService
+{ 
+    Task<bool> HasProfileAsync(string userId);
+    Task CreateProfileAsync(UserProfile newUser, string avatarSeed, string avatarStyle);
 }
+
