@@ -34,7 +34,7 @@ namespace ProjectGrowthPath.Infrastructure.Services
         }
 
         // Maak een nieuw profiel aan
-        public async Task<UserProfile> CreateProfileAsync(UserProfile newUser , string avatarSeed, string avatarStyle)
+        public async Task<UserProfile> CreateProfileAsync(UserProfile newUser , byte[] avatar)
         {
             var authState = await _authProvider.GetAuthenticationStateAsync();
             var user = authState.User;
@@ -50,7 +50,7 @@ namespace ProjectGrowthPath.Infrastructure.Services
                 Name = newUser.Name,
                 Level = 1,
                 Points = 0,
-                ProfilePicture = newUser.ProfilePicture,
+                ProfilePicture = avatar,
             };
 
             var entityEntry = await _dbContext.UserProfiles.AddAsync(profile);

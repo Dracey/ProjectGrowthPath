@@ -15,9 +15,10 @@ public class SetupNewUserService
     private readonly IUserCompetenceRepository _userCompetenceRepository;
     private readonly IGoalRepository _goalRepository;
     private readonly IGoalLearningToolRepository _goalLearningToolRepository;
+    private readonly IAvatarGenerator _avatarGenerator;
     private readonly SetupStateStore _store;
 
-    public SetupNewUserService(ILogger<SetupNewUserService> logger, SetupStateStore store, IUserProfileService userProfileService, IUserCompetenceRepository userCompetenceRepository, IGoalRepository goalRepository, IGoalLearningToolRepository goalLearningToolRepository)
+    public SetupNewUserService(ILogger<SetupNewUserService> logger, SetupStateStore store, IUserProfileService userProfileService, IUserCompetenceRepository userCompetenceRepository, IGoalRepository goalRepository, IGoalLearningToolRepository goalLearningToolRepository, IAvatarGenerator avatarGenerator)
     {
         _store = store;
         _logger = logger;
@@ -25,6 +26,7 @@ public class SetupNewUserService
         _userCompetenceRepository = userCompetenceRepository;
         _goalRepository = goalRepository;
         _goalLearningToolRepository = goalLearningToolRepository;
+        _avatarGenerator = avatarGenerator;
     }
 
     public async Task FinishUpSetupAsync()
@@ -35,9 +37,14 @@ public class SetupNewUserService
         }
 
 
+        // Avatar to bytes 
+        byte[] avatar =
+           await _avatarGenerator.GenerateAvatarAsync(_store.CurrentState.AvatarStyle,
+                _store.CurrentState.SelectedAvatarSeed);
+
         // Eerste stap, gebruiker aanmaken.
          UserProfile savedUser = await ExecuteStepAsync(() =>
-                _userProfileService.CreateProfileAsync(_store.CurrentState.NewUser, _store.CurrentState.SelectedAvatarSeed, _store.CurrentState.AvatarStyle), "Gebruikersprofiel aanmaken");
+                _userProfileService.CreateProfileAsync(_store.CurrentState.NewUser, avatar), "Gebruikersprofiel aanmaken");
 
         // Voeg interesses toe aan gebruiker
         _ = await ExecuteStepAsync(() => _userCompetenceRepository.AddUserCompetenceAsync(_store.CurrentState.SelectedInterests, savedUser.UserID, 0), "Interesses toevoegen aan gebruiker");
@@ -86,8 +93,8 @@ public class SetupNewUserService
             Description = _store.CurrentState.ChosenCompetence.Name,
             Amount = _store.CurrentState.SelectedTools.Count,
             IsCompleted = false,
-            StartDate = DateTime.Today,
-            EndDate = _store.CurrentState.TargetDate.Value,
+            StartDate = DateTime.UtcNow.Date,
+            EndDate = _store.CurrentState.TargetDate.Value.ToUniversalTime(),
         };
     }
 }
