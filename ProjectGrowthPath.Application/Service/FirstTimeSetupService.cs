@@ -1,7 +1,5 @@
 ﻿using ProjectGrowthPath.Application.State;
 using ProjectGrowthPath.Domain.Entities;
-using ProjectGrowthPath.Domain.ValueObjects;
-using System.Xml.Linq;
 using ProjectGrowthPath.Application.Interfaces;
 
 namespace ProjectGrowthPath.Application.Service
@@ -9,14 +7,14 @@ namespace ProjectGrowthPath.Application.Service
     public class FirstTimeSetupService : IFirstTimeSetupService
     {
         private readonly SetupStateStore _store;
-        private readonly IUserProfileService _profileService;
         private readonly IAvatarGenerator _avatarGenerator;
+        private readonly SetupNewUserService _setupNewUserService;
 
-        public FirstTimeSetupService(SetupStateStore store, IUserProfileService profileService, IAvatarGenerator avatarGenerator)
+        public FirstTimeSetupService(SetupStateStore store, IUserProfileService profileService, IAvatarGenerator avatarGenerator, SetupNewUserService setupNewUserService)
         {
             _store = store;
-            _profileService = profileService;
             _avatarGenerator = avatarGenerator;
+            _setupNewUserService = setupNewUserService;
         }
 
 
@@ -85,22 +83,10 @@ namespace ProjectGrowthPath.Application.Service
         }
 
 
-        // Eindmethode die alles bij elkaar brengt
+        // Afsluitende methode (aparte service) aanroepen waar er een profiel wordt aangemaakt
         public async Task FinalizeSetupAsync()
         {
-            var user = _store.CurrentState.NewUser;
-
-            var newUser = new UserProfile
-            {
-                Name = user.Name,
-                Level = 1,
-                Points = 0,
-                ProfilePicture = user.ProfilePicture,
-                ApplicationUserId = user.ApplicationUserId
-            };
-
-            await _profileService.CreateProfileAsync(newUser);
-            await _store.ClearAsync();
+            await _setupNewUserService.FinishUpSetupAsync();
         }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using ProjectGrowthPath.Application.Interfaces;
+using ProjectGrowthPath.Application.Interfaces.IRepository;
 using ProjectGrowthPath.Application.Interfaces.IServices;
 using ProjectGrowthPath.Application.Service;
 using ProjectGrowthPath.Application.State;
@@ -88,10 +89,14 @@ public class Program
         builder.Services.AddScoped<IAvatarService, AvatarService>();
         builder.Services.AddScoped<IFirstTimeSetupService, FirstTimeSetupService>();
         builder.Services.AddScoped<ILearningToolSetupHelper, LearningToolSetupHelper>();
+        builder.Services.AddScoped<IUserCompetenceRepository, UserCompetenceRepository>();
+        builder.Services.AddScoped<IGoalRepository, GoalRepository>();
+        builder.Services.AddScoped<IGoalLearningToolRepository, GoalLearningToolRepository>();
         builder.Services.AddScoped<SetupStateStore>();
         builder.Services.AddScoped<LearningToolService>();
         builder.Services.AddScoped<CompetenceService>();
         builder.Services.AddScoped<LearningToolCompetenceService>();
+        builder.Services.AddScoped<SetupNewUserService>();
 
         // Application Repositories
 
@@ -137,6 +142,8 @@ public class Program
 
         app.MapAdditionalIdentityEndpoints();
 
+
+        // Voor docker moet het app.Run(http://0.0.0.0:80). Oplossing nog aan het zoeken.
         app.Run();
     }
 

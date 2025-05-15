@@ -33,9 +33,8 @@ namespace ProjectGrowthPath.Infrastructure.Services
             return await _dbContext.UserProfiles.AnyAsync(up => up.ApplicationUserId == userId);
         }
 
-
-        // Indien nee, Maak een profiel aan voor de gebruiker
-        public async Task CreateProfileAsync(UserProfile newUser)
+        // Maak een nieuw profiel aan
+        public async Task<UserProfile> CreateProfileAsync(UserProfile newUser , byte[] avatar)
         {
             var authState = await _authProvider.GetAuthenticationStateAsync();
             var user = authState.User;
@@ -51,12 +50,23 @@ namespace ProjectGrowthPath.Infrastructure.Services
                 Name = newUser.Name,
                 Level = 1,
                 Points = 0,
-                ProfilePicture = newUser.ProfilePicture,
+                ProfilePicture = avatar,
             };
 
-            _dbContext.UserProfiles.Add(profile);
-            
+            var entityEntry = await _dbContext.UserProfiles.AddAsync(profile);
+
             await _dbContext.SaveChangesAsync();
+
+            return entityEntry.Entity;
+        }
+
+        // Haal het profiel op van de gebruiker
+        public async Task<UserProfile> GetUserProfileByApplicationIDAsync(string applicationuserID)
+        {
+            var profile = await _dbContext.UserProfiles
+                .FirstOrDefaultAsync(up => up.ApplicationUserId == applicationuserID);
+            if (profile == null) throw new Exception("Profiel niet gevonden");
+            return profile;
         }
     }
 }
