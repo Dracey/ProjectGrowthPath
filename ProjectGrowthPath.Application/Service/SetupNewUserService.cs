@@ -17,7 +17,7 @@ public class SetupNewUserService
     private readonly IGoalLearningToolRepository _goalLearningToolRepository;
     private readonly SetupStateStore _store;
 
-    SetupNewUserService(ILogger<SetupNewUserService> logger, SetupStateStore store, IUserProfileService userProfileService, IUserCompetenceRepository userCompetenceRepository, IGoalRepository goalRepository, IGoalLearningToolRepository goalLearningToolRepository)
+    public SetupNewUserService(ILogger<SetupNewUserService> logger, SetupStateStore store, IUserProfileService userProfileService, IUserCompetenceRepository userCompetenceRepository, IGoalRepository goalRepository, IGoalLearningToolRepository goalLearningToolRepository)
     {
         _store = store;
         _logger = logger;

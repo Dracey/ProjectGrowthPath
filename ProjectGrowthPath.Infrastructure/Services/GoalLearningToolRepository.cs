@@ -30,10 +30,11 @@ namespace ProjectGrowthPath.Infrastructure.Services
                 };
 
                 var entityEntry = await _dbContext.GoalLearningTools.AddAsync(goalLearning);
-                await _dbContext.SaveChangesAsync();
 
                 lastAdded = entityEntry.Entity;
             }
+
+            await _dbContext.SaveChangesAsync();
 
             return lastAdded!;
         }
