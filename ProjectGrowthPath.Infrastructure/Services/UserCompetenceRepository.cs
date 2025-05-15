@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ProjectGrowthPath.Domain.Entities;
 using ProjectGrowthPath.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace ProjectGrowthPath.Infrastructure.Services;
 
@@ -20,21 +21,27 @@ public class UserCompetenceRepository : IUserCompetenceRepository
 
 
     // Voeg competenties toe aan de gebruiker
-    public async Task AddUserCompetenceAsync(Dictionary<int, Competence> competences, Guid userid, int type)
+    public async Task<List<UserCompetence>> AddUserCompetenceAsync(Dictionary<int, Competence> competences, Guid userid, int type)
     {
-        foreach (var comptence in competences)
+        var addedCompetences = new List<UserCompetence>();
+
+        foreach (var competence in competences)
         {
             var userCompetence = new UserCompetence
             {
-                CompetenceID = comptence.Key,
+                CompetenceID = competence.Key,
                 UserID = userid,
                 Type = type == 0 ? CompetenceType.Interest : CompetenceType.Skill
             };
-            
-            await _dbContext.UserCompetences.AddAsync(userCompetence);
-        }
-    }
 
+            var entityEntry = await _dbContext.UserCompetences.AddAsync(userCompetence);
+            await _dbContext.SaveChangesAsync();
+
+            addedCompetences.Add(entityEntry.Entity);
+        }
+
+        return addedCompetences;
+    }
 
     // Haal de competenties van de gebruiker op
     public Task<IEnumerable<UserCompetence>> GetUserCompetencesAsync(Guid userId)

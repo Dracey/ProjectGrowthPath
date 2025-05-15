@@ -34,7 +34,7 @@ namespace ProjectGrowthPath.Infrastructure.Services
         }
 
         // Maak een nieuw profiel aan
-        public async Task CreateProfileAsync(UserProfile newUser , string avatarSeed, string avatarStyle)
+        public async Task<UserProfile> CreateProfileAsync(UserProfile newUser , string avatarSeed, string avatarStyle)
         {
             var authState = await _authProvider.GetAuthenticationStateAsync();
             var user = authState.User;
@@ -53,9 +53,11 @@ namespace ProjectGrowthPath.Infrastructure.Services
                 ProfilePicture = newUser.ProfilePicture,
             };
 
-            _dbContext.UserProfiles.Add(profile);
-            
+            var entityEntry = await _dbContext.UserProfiles.AddAsync(profile);
+
             await _dbContext.SaveChangesAsync();
+
+            return entityEntry.Entity;
         }
 
         // Haal het profiel op van de gebruiker

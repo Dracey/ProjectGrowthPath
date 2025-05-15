@@ -10,7 +10,7 @@ namespace ProjectGrowthPath.Application.Interfaces;
 public interface IUserProfileService
 { 
     Task<bool> HasProfileAsync(string userId);
-    Task CreateProfileAsync(UserProfile newUser, string avatarSeed, string avatarStyle);
+    Task<UserProfile> CreateProfileAsync(UserProfile newUser, string avatarSeed, string avatarStyle);
     Task<UserProfile> GetUserProfileByApplicationIDAsync(string applicationuserID);
 }
 
