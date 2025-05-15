@@ -10,21 +10,21 @@ namespace ProjectGrowthPath.Application.Service;
 
 public class SetupNewUserService
 {
-
-    
     private readonly ILogger<SetupNewUserService> _logger;
     private readonly IUserProfileService _userProfileService;
     private readonly IUserCompetenceRepository _userCompetenceRepository;
     private readonly IGoalRepository _goalRepository;
+    private readonly IGoalLearningToolRepository _goalLearningToolRepository;
     private readonly SetupStateStore _store;
 
-    SetupNewUserService(ILogger<SetupNewUserService> logger, SetupStateStore store, IUserProfileService userProfileService, IUserCompetenceRepository userCompetenceRepository, IGoalRepository goalRepository)
+    SetupNewUserService(ILogger<SetupNewUserService> logger, SetupStateStore store, IUserProfileService userProfileService, IUserCompetenceRepository userCompetenceRepository, IGoalRepository goalRepository, IGoalLearningToolRepository goalLearningToolRepository)
     {
         _store = store;
         _logger = logger;
         _userProfileService = userProfileService;
         _userCompetenceRepository = userCompetenceRepository;
         _goalRepository = goalRepository;
+        _goalLearningToolRepository = goalLearningToolRepository;
     }
 
     public async Task FinishUpSetupAsync()
@@ -52,7 +52,7 @@ public class SetupNewUserService
 
 
         // Voeg leermiddelen toe aan doel
-        _ = await ExecuteStepAsync(() => _goalToolRepository.AddLearningToolsToGoal(addedGoal.GoalID, _store.CurrentState.SelectedTools), "Leermiddelen toevoegen aan doel");
+        _ = await ExecuteStepAsync(() => _goalLearningToolRepository.Add(_store.CurrentState.SelectedTools, addedGoal.GoalID), "Leermiddelen toevoegen aan doel");
 
         await _store.ClearAsync();
     }
