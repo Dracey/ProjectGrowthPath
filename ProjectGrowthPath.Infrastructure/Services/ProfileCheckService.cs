@@ -1,36 +1,27 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
+﻿using Microsoft.AspNetCore.Components;
 using ProjectGrowthPath.Application.Interfaces;
-namespace ProjectGrowthPath.Infrastructure.Services
+using ProjectGrowthPath.Application.Interfaces.IServices;
+
+namespace ProjectGrowthPath.Infrastructure.Services;
+
+public class ProfileCheckService : IProfileCheckService
 {
-    public class ProfileCheckService(IUserProfileService profileService, NavigationManager navigation, AuthenticationStateProvider authStateProvider) : IProfileCheckService
+    private readonly IUserSessionService _userSessionService;
+    private readonly NavigationManager _navigation;
+
+    public ProfileCheckService(NavigationManager navigation, IUserSessionService userSessionService)
     {
-        private readonly IUserProfileService _profileService = profileService;
-        private readonly NavigationManager _navigation = navigation;
-        private readonly AuthenticationStateProvider _authStateProvider = authStateProvider;
+        _navigation = navigation;
+        _userSessionService = userSessionService;
+    }
 
-        public async Task CheckAndRedirectIfNeeded()
+    public async Task CheckAndRedirectIfNeeded()
+    {
+        var user = await _userSessionService.GetAsync();
+
+        if (user == null)
         {
-            var authState = await _authStateProvider.GetAuthenticationStateAsync();
-            var user = authState.User;
-
-            if (user?.Identity?.IsAuthenticated == true)
-            {
-                var userId = user.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
-                if (!string.IsNullOrEmpty(userId))
-                {
-                    // Controleer of de gebruiker al een profiel heeft
-                    var hasProfile = await _profileService.HasProfileAsync(userId);
-
-                    if (!hasProfile)
-                    {
-                        // Als het profiel niet bestaat, stuur de gebruiker naar de profielinstelling
-                        _navigation.NavigateTo("/profile/setup");
-                    }
-                }
-            }
+            _navigation.NavigateTo("/profile/setup");
         }
     }
 }

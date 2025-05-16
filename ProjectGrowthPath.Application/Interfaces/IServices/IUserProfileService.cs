@@ -12,6 +12,6 @@ public interface IUserProfileService
 { 
     Task<bool> HasProfileAsync(string userId);
     Task<UserProfile> CreateProfileAsync(UserProfile newUser, byte[] avatar);
-    Task<UserProfile> GetUserProfileByApplicationContext();
+    Task<UserProfile?> GetUserProfileByApplicationContext();
 }
 

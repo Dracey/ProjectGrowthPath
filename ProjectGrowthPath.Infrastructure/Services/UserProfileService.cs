@@ -56,15 +56,12 @@ namespace ProjectGrowthPath.Infrastructure.Services
         }
 
         // Haal het profiel op van de gebruiker
-        public async Task<UserProfile> GetUserProfileByApplicationContext()
+        public async Task<UserProfile?> GetUserProfileByApplicationContext()
         {
             var (_, applicationUserId) = await GetAuthenticatedUserAsync();
 
             var profile = await _dbContext.UserProfiles
                 .FirstOrDefaultAsync(up => up.ApplicationUserId == applicationUserId);
-
-            if (profile == null)
-                throw new Exception("Profiel niet gevonden");
 
             return profile;
         }

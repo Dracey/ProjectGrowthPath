@@ -3,8 +3,11 @@
 @using ProjectGrowthPath.Application.Interfaces
 @using ProjectGrowthPath.Domain.Entities
 @using System.Text
+@using ProjectGrowthPath.Application.Interfaces.IServices
+
 @inject IProfileCheckService ProfileCheckService
-@inject IUserProfileService UserProfileService
+@inject IUserSessionService UserSessionService
+@inject NavigationManager _navigation
 
 @attribute [Authorize]
 
@@ -15,29 +18,32 @@
 
 Welcome to your new app.
 
-@if (svgMarkup == null)
+@if (_svgMarkup == null)
 {
     <p>Bezig met laden...</p>
 }
 else
 {
-    @((MarkupString)svgMarkup)
+    @((MarkupString)_svgMarkup)
 }
 
 @code {
-
-    string? svgMarkup = null;
+    private UserProfile? _profile;
+    string? _svgMarkup = null;
 
 
     protected override async Task OnInitializedAsync()
     {
         await ProfileCheckService.CheckAndRedirectIfNeeded();
 
-        var currentUser = await UserProfileService.GetUserProfileByApplicationContext();
+        if (_navigation.Uri.EndsWith("/profile/setup"))
+            return;
 
-        if (currentUser != null && currentUser.ProfilePicture != null)
+        _profile = await UserSessionService.GetAsync();
+
+        if (_profile != null && _profile.ProfilePicture != null)
         {
-            svgMarkup = Encoding.UTF8.GetString(currentUser.ProfilePicture);
+            _svgMarkup = Encoding.UTF8.GetString(_profile.ProfilePicture);
         }
     }
 }

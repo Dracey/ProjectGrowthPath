@@ -1,4 +1,9 @@
-﻿@inherits LayoutComponentBase
+﻿@using ProjectGrowthPath.Application.Interfaces.IServices
+@using ProjectGrowthPath.Domain.Entities
+@using ProjectGrowthPath.Application.DTOs
+@inherits LayoutComponentBase
+@inject IUserSessionService UserSessionService
+
 
 <div class="page">
     <div class="main">
@@ -15,3 +20,11 @@
 </div>
 
 
+@code {
+    private UserProfileDto? _userProfile;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _userProfile = await UserSessionService.GetAsync();
+    }
+}

@@ -1,8 +1,12 @@
 ﻿@implements IDisposable
 @using MudBlazor
+@using ProjectGrowthPath.Application.Interfaces.IServices
+@using ProjectGrowthPath.Application.Service
+@using System.Text
 
 
 @inject NavigationManager NavigationManager
+@inject IUserSessionService UserSessionService
 
 
 
@@ -39,11 +43,21 @@
                     <div class="nav-item">
                         <form action="Account/Logout" method="post">
                             <AntiforgeryToken/>
-                            <input type="hidden" name="ReturnUrl" value="@currentUrl"/>
+                            <input type="hidden" name="ReturnUrl" value="@_currentUrl"/>
                             <button type="submit" class="nav-link">
                                 <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Uitloggen
                             </button>
                         </form>
+                    </div>
+                    <div class="nav-item avatar-placeholder">
+                        @if (!string.IsNullOrEmpty(_profilePictureString))
+                        {
+                            <img class="empty-avatar-placeholder" src="data:image/svg+xml;base64,@_profilePictureString" />
+                        }
+                        else
+                        {
+                            <img class="empty-avatar-placeholder" src="empty-img-cover.jpg" />
+                        }
                     </div>
                 </div>
             </Authorized>
@@ -56,68 +70,37 @@
                         <NavLink class="nav-link" href="Account/Login">Inloggen</NavLink>
                     </div>
                     <div class="nav-item avatar-placeholder">
-                        <img class="empty-avatar-placeholder" src="empty-img-cover.jpg" />
+                        <img class="empty-avatar-placeholder" src="/empty-img-cover.jpg" />
                     </div>
                 </div>
             </NotAuthorized>
         </AuthorizeView>
     </div>
 </nav>
-@* 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="auth">
-                <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Auth Required
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="learning-tools">
-                <span class="bi bi-capsule-nav-menu" aria-hidden="true"></span> Learning Tools
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="competences">
-                <span class="bi bi-capsule-nav-menu" aria-hidden="true"></span> Competences
-            </NavLink>
-        </div>
-    </nav>
-</div> *@
 
 @code {
-    private string? currentUrl;
+    private string? _currentUrl; 
+    private string? _profilePictureString;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        _currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
         NavigationManager.LocationChanged += OnLocationChanged;
+
+        var profile = await UserSessionService.GetAsync();
+        if (profile?.ProfilePicture != null && profile.ProfilePicture.Length > 0)
+        {
+            _profilePictureString = Convert.ToBase64String(profile.ProfilePicture);
+        }
+        else
+        {
+            _profilePictureString = null;
+        }
     }
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
-        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        _currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
         StateHasChanged();
     }
 
