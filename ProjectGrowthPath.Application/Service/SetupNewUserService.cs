@@ -29,6 +29,8 @@ public class SetupNewUserService
         _avatarGenerator = avatarGenerator;
     }
 
+
+    // Afsluiten setup en opslaan in de database
     public async Task FinishUpSetupAsync()
     {
         if (_store.CurrentState == null)
@@ -64,6 +66,8 @@ public class SetupNewUserService
         await _store.ClearAsync();
     }
 
+
+    // Voer een stap uit en log de voortgang
     private async Task<T> ExecuteStepAsync<T>(Func<Task<T>> step, string stepName)
     {
         try
@@ -80,6 +84,8 @@ public class SetupNewUserService
         }
     }
 
+
+    // Maak een doel aan voor de gebruiker
     private Goal CreateGoal(Guid userId)
     {
         if (_store.CurrentState == null)

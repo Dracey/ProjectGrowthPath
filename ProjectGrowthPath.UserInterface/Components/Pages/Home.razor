@@ -1,7 +1,9 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Authorization
 @using ProjectGrowthPath.Application.Interfaces
+@using ProjectGrowthPath.Domain.Entities
 @inject IProfileCheckService ProfileCheckService
+@inject IUserProfileService UserProfileService
 
 @attribute [Authorize]
 
@@ -13,9 +15,15 @@
 Welcome to your new app.
 
 @code {
+
+
     protected override async Task OnInitializedAsync()
     {
         // Voer de profielcontrole uit na de inlog
         await ProfileCheckService.CheckAndRedirectIfNeeded();
+
+        var currentUser = await UserProfileService.GetUserProfileByApplicationContext();
     }
+
+
 }
