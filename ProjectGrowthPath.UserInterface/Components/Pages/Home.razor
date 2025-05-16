@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using ProjectGrowthPath.Application.Interfaces
 @using ProjectGrowthPath.Domain.Entities
+@using System.Text
 @inject IProfileCheckService ProfileCheckService
 @inject IUserProfileService UserProfileService
 
@@ -14,16 +15,29 @@
 
 Welcome to your new app.
 
+@if (svgMarkup == null)
+{
+    <p>Bezig met laden...</p>
+}
+else
+{
+    @((MarkupString)svgMarkup)
+}
+
 @code {
+
+    string? svgMarkup = null;
 
 
     protected override async Task OnInitializedAsync()
     {
-        // Voer de profielcontrole uit na de inlog
         await ProfileCheckService.CheckAndRedirectIfNeeded();
 
         var currentUser = await UserProfileService.GetUserProfileByApplicationContext();
+
+        if (currentUser != null && currentUser.ProfilePicture != null)
+        {
+            svgMarkup = Encoding.UTF8.GetString(currentUser.ProfilePicture);
+        }
     }
-
-
 }
