@@ -1,14 +1,13 @@
 ﻿@implements IDisposable
+@using Microsoft.AspNetCore.Components
 @using MudBlazor
 @using ProjectGrowthPath.Application.Interfaces.IServices
 @using ProjectGrowthPath.Application.Service
 @using System.Text
-
+@using ProjectGrowthPath.Application.DTOs
 
 @inject NavigationManager NavigationManager
 @inject IUserSessionService UserSessionService
-
-
 
 <nav class="nav-main">
     <div class="logo-holder">
@@ -79,6 +78,9 @@
 </nav>
 
 @code {
+    [CascadingParameter(Name = "UserProfile")]
+    public UserProfileDto? UserProfile { get; set; }
+
     private string? _currentUrl; 
     private string? _profilePictureString;
 
@@ -87,10 +89,14 @@
         _currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
         NavigationManager.LocationChanged += OnLocationChanged;
 
-        var profile = await UserSessionService.GetAsync();
-        if (profile?.ProfilePicture != null && profile.ProfilePicture.Length > 0)
+        Console.WriteLine(UserProfile == null
+            ? "Geen profiel gevonden - Nav.razor" 
+            : $"Profiel geladen Nav.razor: {UserProfile.Name}");
+
+        
+        if (UserProfile?.ProfilePicture != null && UserProfile.ProfilePicture.Length > 0)
         {
-            _profilePictureString = Convert.ToBase64String(profile.ProfilePicture);
+            _profilePictureString = Convert.ToBase64String(UserProfile.ProfilePicture);
         }
         else
         {

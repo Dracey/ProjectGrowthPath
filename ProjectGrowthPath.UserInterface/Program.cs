@@ -79,7 +79,6 @@ public class Program
 
         // Application Services 
         builder.Services.AddScoped<IUserProfileService, UserProfileService>();
-        builder.Services.AddScoped<IProfileCheckService, ProfileCheckService>();
         builder.Services.AddScoped<ICompetenceRepository, CompetenceRepository>();
         builder.Services.AddScoped<ISetupStatePersistence, SetupStatePersistenceJsInterop>();
         builder.Services.AddScoped<ILearningToolsRepository, LearningToolsRepository>();

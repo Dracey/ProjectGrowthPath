@@ -1,12 +1,9 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Authorization
 @using ProjectGrowthPath.Application.Interfaces
-@using ProjectGrowthPath.Domain.Entities
 @using System.Text
-@using ProjectGrowthPath.Application.Interfaces.IServices
+@using ProjectGrowthPath.Application.DTOs
 
-@inject IProfileCheckService ProfileCheckService
-@inject IUserSessionService UserSessionService
 @inject NavigationManager _navigation
 
 @attribute [Authorize]
@@ -14,36 +11,43 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-@if (_svgMarkup == null)
+@if (UserProfile == null)
+{
+    <p>Profiel wordt geladen, even geduld...</p>
+}
+else if (_svgMarkup == null)
 {
     <p>Bezig met laden...</p>
 }
 else
 {
-    @((MarkupString)_svgMarkup)
+    <h1>Hello, world!</h1>
+    <p>Welcome to your new app.</p>
+        @((MarkupString)_svgMarkup)
 }
 
 @code {
-    private UserProfile? _profile;
+    [CascadingParameter(Name = "UserProfile")]
+    public UserProfileDto? UserProfile { get; set; }
+
     string? _svgMarkup = null;
 
-
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        await ProfileCheckService.CheckAndRedirectIfNeeded();
-
         if (_navigation.Uri.EndsWith("/profile/setup"))
             return;
 
-        _profile = await UserSessionService.GetAsync();
+        Console.WriteLine(UserProfile == null
+            ? "Geen profiel gevonden - Home.razor" 
+            : $"Profiel geladen Home.razor: {UserProfile.Name}");
 
-        if (_profile != null && _profile.ProfilePicture != null)
+
+        if (UserProfile != null && UserProfile.ProfilePicture != null)
         {
-            _svgMarkup = Encoding.UTF8.GetString(_profile.ProfilePicture);
+            _svgMarkup = Encoding.UTF8.GetString(UserProfile.ProfilePicture);
         }
+
+        StateHasChanged();
+
     }
 }
