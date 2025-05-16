@@ -79,7 +79,6 @@ public class Program
 
         // Application Services 
         builder.Services.AddScoped<IUserProfileService, UserProfileService>();
-        builder.Services.AddScoped<IProfileCheckService, ProfileCheckService>();
         builder.Services.AddScoped<ICompetenceRepository, CompetenceRepository>();
         builder.Services.AddScoped<ISetupStatePersistence, SetupStatePersistenceJsInterop>();
         builder.Services.AddScoped<ILearningToolsRepository, LearningToolsRepository>();
@@ -92,6 +91,7 @@ public class Program
         builder.Services.AddScoped<IUserCompetenceRepository, UserCompetenceRepository>();
         builder.Services.AddScoped<IGoalRepository, GoalRepository>();
         builder.Services.AddScoped<IGoalLearningToolRepository, GoalLearningToolRepository>();
+        builder.Services.AddScoped<IUserSessionService, UserSessionService>();
         builder.Services.AddScoped<SetupStateStore>();
         builder.Services.AddScoped<LearningToolService>();
         builder.Services.AddScoped<CompetenceService>();

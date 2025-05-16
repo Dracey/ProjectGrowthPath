@@ -1,12 +1,18 @@
 ﻿@page "/profile/setup"
 @using ProjectGrowthPath.Application.Interfaces
+@using ProjectGrowthPath.Application.Interfaces.IServices
 @using ProjectGrowthPath.UserInterface.Components.Layout
+@using Microsoft.AspNetCore.Authorization
 
 @inject IFirstTimeSetupService SetupService
+@inject IUserSessionService UserSessionService
 @inject NavigationManager Navigation
 
 @layout LoginAndRegister
 @rendermode InteractiveServer
+
+@attribute [Authorize]
+
 
 <MudThemeProvider />
 <MudPopoverProvider />
@@ -58,6 +64,7 @@
     private async Task FinishSetup()
     {
         await SetupService.FinalizeSetupAsync();
-        Navigation.NavigateTo("/dashboard");
+
+        Navigation.NavigateTo("/");
     }
 }

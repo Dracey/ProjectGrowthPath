@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using ProjectGrowthPath.Application.Interfaces;
 using ProjectGrowthPath.Application.Interfaces.IRepository;
+using ProjectGrowthPath.Application.Interfaces.IServices;
 using ProjectGrowthPath.Application.Service.Exceptions;
 using ProjectGrowthPath.Application.State;
 using ProjectGrowthPath.Domain.Entities;
@@ -16,9 +17,12 @@ public class SetupNewUserService
     private readonly IGoalRepository _goalRepository;
     private readonly IGoalLearningToolRepository _goalLearningToolRepository;
     private readonly IAvatarGenerator _avatarGenerator;
+    private readonly IUserSessionService _sessionService;
     private readonly SetupStateStore _store;
 
-    public SetupNewUserService(ILogger<SetupNewUserService> logger, SetupStateStore store, IUserProfileService userProfileService, IUserCompetenceRepository userCompetenceRepository, IGoalRepository goalRepository, IGoalLearningToolRepository goalLearningToolRepository, IAvatarGenerator avatarGenerator)
+    public SetupNewUserService(ILogger<SetupNewUserService> logger, SetupStateStore store, IUserProfileService userProfileService, 
+        IUserCompetenceRepository userCompetenceRepository, IGoalRepository goalRepository, IGoalLearningToolRepository goalLearningToolRepository, 
+        IAvatarGenerator avatarGenerator, IUserSessionService sessionService)
     {
         _store = store;
         _logger = logger;
@@ -27,8 +31,11 @@ public class SetupNewUserService
         _goalRepository = goalRepository;
         _goalLearningToolRepository = goalLearningToolRepository;
         _avatarGenerator = avatarGenerator;
+        _sessionService = sessionService;
     }
 
+
+    // Afsluiten setup en opslaan in de database
     public async Task FinishUpSetupAsync()
     {
         if (_store.CurrentState == null)
@@ -45,6 +52,8 @@ public class SetupNewUserService
         // Eerste stap, gebruiker aanmaken.
          UserProfile savedUser = await ExecuteStepAsync(() =>
                 _userProfileService.CreateProfileAsync(_store.CurrentState.NewUser, avatar), "Gebruikersprofiel aanmaken");
+
+        await _sessionService.SetAsync(savedUser);
 
         // Voeg interesses toe aan gebruiker
         _ = await ExecuteStepAsync(() => _userCompetenceRepository.AddUserCompetenceAsync(_store.CurrentState.SelectedInterests, savedUser.UserID, 0), "Interesses toevoegen aan gebruiker");
@@ -64,6 +73,8 @@ public class SetupNewUserService
         await _store.ClearAsync();
     }
 
+
+    // Voer een stap uit en log de voortgang
     private async Task<T> ExecuteStepAsync<T>(Func<Task<T>> step, string stepName)
     {
         try
@@ -80,6 +91,8 @@ public class SetupNewUserService
         }
     }
 
+
+    // Maak een doel aan voor de gebruiker
     private Goal CreateGoal(Guid userId)
     {
         if (_store.CurrentState == null)

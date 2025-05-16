@@ -1,12 +1,25 @@
 ﻿@inherits LayoutComponentBase
+@using ProjectGrowthPath.Application.DTOs
+@using ProjectGrowthPath.Application.Interfaces.IServices
+@inject IUserSessionService UserSessionService
+@inject NavigationManager _navigation
 
-<div class="page">
-    <div class="main">
-        <NavMenu/>
-        @Body
-        <Footer/>
+@if (!_initialLoadDone)
+{
+    <p>Profiel wordt geladen...</p>
+}
+else
+{
+    <div class="page">
+        <div class="main">
+            <CascadingValue Value="_userProfile" Name="UserProfile">
+                <NavMenu />
+                @Body
+                <Footer />
+            </CascadingValue>
+        </div>
     </div>
-</div>
+}
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.
@@ -14,4 +27,30 @@
     <span class="dismiss">🗙</span>
 </div>
 
+@code {
+    private UserProfileDto? _userProfile;
+    private bool _initialLoadDone = false;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var currentUri = _navigation.ToBaseRelativePath(_navigation.Uri);
+
+        if (!currentUri.StartsWith("profile/setup", StringComparison.OrdinalIgnoreCase))
+        {
+            _userProfile = await UserSessionService.GetAsync();
+
+            Console.WriteLine(_userProfile == null
+                ? "Geen profiel gevonden - MainLayout"
+                : $"Profiel geladen - MainLayout: {_userProfile.Name}");
+
+            if (_userProfile == null)
+            {
+                _navigation.NavigateTo("/profile/setup", forceLoad: true);
+                return;
+            }
+        }
+
+        _initialLoadDone = true;
+        StateHasChanged();
+    }
+}
