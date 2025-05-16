@@ -92,6 +92,7 @@ public class Program
         builder.Services.AddScoped<IUserCompetenceRepository, UserCompetenceRepository>();
         builder.Services.AddScoped<IGoalRepository, GoalRepository>();
         builder.Services.AddScoped<IGoalLearningToolRepository, GoalLearningToolRepository>();
+        builder.Services.AddScoped<IUserSessionService, UserSessionService>();
         builder.Services.AddScoped<SetupStateStore>();
         builder.Services.AddScoped<LearningToolService>();
         builder.Services.AddScoped<CompetenceService>();
