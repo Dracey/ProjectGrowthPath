@@ -21,9 +21,42 @@ else if (_svgMarkup == null)
 }
 else
 {
-    <h1>Hello, world!</h1>
-    <p>Welcome to your new app.</p>
-        @((MarkupString)_svgMarkup)
+    <div class="component-layout-home">
+        <div class="home-image">
+            <div class="login-button-holder">
+                <a class="login-button" href="/">Aan de slag!</a>
+            </div>
+        </div>
+    </div>
+    <div class="homepage-content">
+        <h1>Jouw recente activiteit</h1>
+        <div class="homepage-boxes">
+            <div class="left-box">
+                <div class="profile-picture">
+                    @((MarkupString)_svgMarkup)
+                </div>
+                <h2>@UserProfile.Name</h2>
+            </div>
+            <div class="right-box">
+                <div class="content-boxes">
+                    <div class="little-boxes-right">
+                        <h3>Content Content</h3>
+                        <p>Balblablablabla</p>
+                    </div>
+                    <div class="little-boxes-right">
+                        <h3>Content Content</h3>
+                        <p>Balblablablabla</p>
+                    </div>
+                    <div class="little-boxes-right">
+                        <h3>Content Content</h3>
+                        <p>Balblablablabla</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
 }
 
 @code {

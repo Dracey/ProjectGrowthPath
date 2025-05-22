@@ -30,23 +30,8 @@
                     @* Algemene knoppen voor ingelogde gebruikers *@
                     <div class="nav-item">
                         <NavLink class="nav-link" href="Account/Manage">
-                            <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
+                            <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @(UserProfile?.Name ?? "")
                         </NavLink>
-                    </div>
-
-                    <div class="nav-item avatar-placeholder">
-                        <img class="empty-avatar-placeholder" src="empty-img-cover.jpg"/>
-                    </div>
-
-                    @* Uitlogknop *@
-                    <div class="nav-item">
-                        <form action="Account/Logout" method="post">
-                            <AntiforgeryToken/>
-                            <input type="hidden" name="ReturnUrl" value="@_currentUrl"/>
-                            <button type="submit" class="nav-link">
-                                <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Uitloggen
-                            </button>
-                        </form>
                     </div>
                     <div class="nav-item avatar-placeholder">
                         @if (!string.IsNullOrEmpty(_profilePictureString))
@@ -58,6 +43,18 @@
                             <img class="empty-avatar-placeholder" src="empty-img-cover.jpg" />
                         }
                     </div>
+                
+                    @* Uitlogknop *@
+                    <div class="nav-item">
+                        <form action="Account/Logout" method="post">
+                            <AntiforgeryToken/>
+                            <input type="hidden" name="ReturnUrl" value="@_currentUrl"/>
+                            <button type="submit" class="nav-link">
+                                <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Uitloggen
+                            </button>
+                        </form>
+                    </div>
+                   
                 </div>
             </Authorized>
             <NotAuthorized>
