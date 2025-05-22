@@ -73,6 +73,7 @@ else
         </div>
     </div>
     <div class="homepage-content">
+        <h1>Leaderboard</h1>
         <div class="leaderboard">
             <MudTable Items="@users" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info" Class="homepage-table">
                 <HeaderContent>
@@ -88,52 +89,35 @@ else
             </MudTable>
         </div>
     </div>
-    <div class="homepage-content dark">
+@*     <div class="homepage-content dark">
         <h1>Jouw recente activiteit</h1>
-        <div class="homepage-boxes">
-            <div class="left-box">
-                <div class="profile-picture">
-                    @((MarkupString)_svgMarkup)
-                    <h2>@UserProfile.Name</h2>
-                    <h3>Project coördinator</h3>
-                </div>
-                <div>
-                    <h4>Meer info</h4>
-                </div>
+        <div class="activity-container">
+            <div class="sidebar">
+                <img src="alex.jpg" alt="Alex B." class="avatar">
+                <img src="eva.jpg" alt="Eva V." class="avatar">
+                <img src="monkey.png" alt="Heer Fitzgerald avatar" class="avatar">
             </div>
-            <div class="right-box">
-                <div class="little-boxes-right">
-                    <div class="little-boxes-right-image">
-                        <div class="course-image"></div>
-                        <div class="progress-bar"></div>
-                    </div>
-                    <div class="course-title">
-                        <h3>Course title</h3>
-                    </div>
+            <div class="activity-feed">
+                <div class="activity">
+                    <p><strong>Alex B.</strong> heeft een nieuwe prestatie behaald. +10 Pts<br>
+                        <a href="#">Bereik Level 4</a></p>
                 </div>
-                <div class="little-boxes-right">
-                    <div class="little-boxes-right-image">
-                        <div class="course-image"></div>
-                        <div class="progress-bar"></div>
-                    </div>
-                    <div class="course-title">
-                        <h3>Course title</h3>
-                    </div>
+                <div class="activity">
+                    <p><strong>Eva V.</strong> is een nieuwe training gestart.<br>
+                        <a href="#">Bekijk training →</a></p>
                 </div>
-                <div class="little-boxes-right">
-                    <div class="little-boxes-right-image">
-                        <div class="course-image"></div>
-                        <div class="progress-bar"></div>
-                    </div>
-                    <div class="course-title">
-                        <h3>Course title</h3>
-                    </div>
+                <div class="activity badge-activity">
+                    <p><strong>Heer Fitzgerald de 4e</strong> heeft een nieuwe badge behaald.</p>
+                    <img src="badge-icon.png" alt="Badge icon" class="badge-icon">
+                </div>
+                <div class="more-activity">
+                    <a href="#">Meer activiteit →</a>
                 </div>
             </div>
         </div>
     </div>
     
-    
+     *@
 }
 
 @code {

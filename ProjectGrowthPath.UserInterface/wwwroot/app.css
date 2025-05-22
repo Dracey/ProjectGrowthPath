@@ -266,3 +266,75 @@ h1:focus {
 .homepage-table tr:last-child td {
     border: 1px solid white;
 }
+
+/*.activity-container {
+    display: flex;
+    max-width: 700px;
+    margin: 0 auto;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #0F2E43;
+    color: white;
+}
+
+.sidebar {
+    background-color: #3A6F6F;
+    padding: 20px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    margin: 15px 0;
+    object-fit: cover;
+    background-color: white;
+}
+
+.activity-feed {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.activity {
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+.activity a {
+    color: #00AEEF;
+    text-decoration: underline;
+}
+
+.badge-activity {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.badge-icon {
+    width: 50px;
+    height: 50px;
+    margin-left: 15px;
+    background-color: white;
+    border-radius: 50%;
+    padding: 5px;
+}
+
+.more-activity {
+    margin-top: 40px;
+}
+
+.more-activity a {
+    color: #00AEEF;
+    font-weight: bold;
+    font-size: 18px;
+    text-decoration: none;
+}*/
