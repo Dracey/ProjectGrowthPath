@@ -28,7 +28,67 @@ else
             </div>
         </div>
     </div>
+    <div class="homepage-content light">
+        <h1>Jouw recente activiteit</h1>
+        <div class="homepage-boxes">
+            <div class="left-box">
+                <div class="profile-picture">
+                    @((MarkupString)_svgMarkup)
+                    <h2>@UserProfile.Name</h2>
+                    <h3>Project coördinator</h3>
+                </div>
+                <div>
+                    <h4>Meer info</h4>
+                </div>
+            </div>
+            <div class="right-box">
+                <div class="little-boxes-right">
+                    <div class="little-boxes-right-image">
+                        <div class="course-image"></div>
+                        <div class="progress-bar"></div>
+                    </div>
+                    <div class="course-title">
+                        <h3>Course title</h3>
+                    </div>
+                </div>
+                <div class="little-boxes-right">
+                    <div class="little-boxes-right-image">
+                        <div class="course-image"></div>
+                        <div class="progress-bar"></div>
+                    </div>
+                    <div class="course-title">
+                        <h3>Course title</h3>
+                    </div>
+                </div>
+                <div class="little-boxes-right">
+                    <div class="little-boxes-right-image">
+                        <div class="course-image"></div>
+                        <div class="progress-bar"></div>
+                    </div>
+                    <div class="course-title">
+                        <h3>Course title</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="homepage-content">
+        <div class="leaderboard">
+            <MudTable Items="@users" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info" Class="homepage-table">
+                <HeaderContent>
+                    <MudTh><b>Positie</b></MudTh>
+                    <MudTh>Naam</MudTh>
+                    <MudTh>Punten</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Nr">@context.Level</MudTd>
+                    <MudTd DataLabel="Sign">@context.Name</MudTd>
+                    <MudTd DataLabel="Name">@context.Points</MudTd>
+                </RowTemplate>
+            </MudTable>
+        </div>
+    </div>
+    <div class="homepage-content dark">
         <h1>Jouw recente activiteit</h1>
         <div class="homepage-boxes">
             <div class="left-box">
@@ -81,6 +141,14 @@ else
     public UserProfileDto? UserProfile { get; set; }
 
     string? _svgMarkup = null;
+
+    List<UserProfileDto> users { get; set; } = new List<UserProfileDto>
+    {
+        new UserProfileDto { Level = 1, Name = "John Doe", Points = 100 },
+        new UserProfileDto { Level = 2, Name = "John Do", Points = 50 },
+        new UserProfileDto { Level = 3, Name = "John D", Points = 25 },
+        new UserProfileDto { Level = 4, Name = "John Doeeeeeeee", Points = 10 },
+    };
 
     protected override async Task OnParametersSetAsync()
     {

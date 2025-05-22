@@ -120,12 +120,20 @@ h1:focus {
 }
 
 .homepage-content {
-    padding-top: 35px;
+    padding: 35px;
     display: flex;
     flex-direction: column;
     align-items: center;
     align-content: center;
     background: #F1F2F1;
+}
+
+.homepage-content.light {
+    background: #c5dbe6;
+}
+
+.homepage-content.dark {
+    background: #183A53
 }
 
 .homepage-content h1 {
@@ -214,4 +222,47 @@ h1:focus {
     background-color: white;
     border-radius: 50%;
     border: 10px solid #FF0000;
+}
+
+.leaderboard {
+    width: 100%;
+}
+
+.homepage-table table {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: sans-serif;
+    text-align: left;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.homepage-table th, td {
+    padding: 12px 16px;
+    border: 1px solid black;
+    text-align: center;
+}
+
+.homepage-table .mud-table-cell {
+    text-align: center;
+}
+
+.homepage-table th {
+    background-color: #2f716e;
+    color: white;
+}
+
+.homepage-table tr:not(:last-child) {
+    background-color: #cce3f1;
+}
+
+.homepage-table tr:last-child {
+    background-color: #0f2c44;
+    color: white;
+    font-weight: 500;
+}
+
+.homepage-table tr:last-child td {
+    border: 1px solid white;
 }
