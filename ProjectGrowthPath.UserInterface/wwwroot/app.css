@@ -143,7 +143,7 @@ h1:focus {
     display: flex;
     flex-direction: column;
     align-items: center;
-    align-content: center;
+    justify-content: stretch;
     margin: 20px;
     width: 350px;
     height: 600px;
@@ -166,6 +166,10 @@ h1:focus {
 }
 
 .little-boxes-right {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: stretch;
     width: 430px;
     margin: 20px 20px 0 0;
     height: 187px;
@@ -176,8 +180,31 @@ h1:focus {
     margin: 0 20px 0 0;
 }
 
-.little-boxes-right:last-child {
-    margin: 20px 0 0 0;
+.little-boxes-right-image {
+    display: flex;
+    flex-direction: column;
+    width: 55%;
+    margin: 5px;
+}
+
+.course-image {
+    background-color: red;
+    height: 157px;
+}
+
+.progress-bar {
+    height: 20px;
+    background-color: green;
+}
+
+.profile-picture {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.course-title {
+    color: white;
 }
 
 .profile-picture svg {
