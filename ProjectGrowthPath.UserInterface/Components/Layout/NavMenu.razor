@@ -28,11 +28,6 @@
                     }
 
                     @* Algemene knoppen voor ingelogde gebruikers *@
-                    <div class="nav-item">
-                        <NavLink class="nav-link" href="Account/Manage">
-                            <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @(UserProfile?.Name ?? "")
-                        </NavLink>
-                    </div>
                     <div class="nav-item avatar-placeholder">
                         @if (!string.IsNullOrEmpty(_profilePictureString))
                         {
@@ -42,6 +37,14 @@
                         {
                             <img class="empty-avatar-placeholder" src="empty-img-cover.jpg" />
                         }
+                        <NavLink class="nav-link" href="Account/Manage">
+                            <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @(UserProfile?.Name ?? "")
+                        </NavLink>
+                    </div>
+
+                    <div class="nav-item">
+                        <img class="coin-image" src="free-coin-icon-2421-thumb.png" />
+                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"> @(UserProfile?.Points ?? 0) </span>
                     </div>
                 
                     @* Uitlogknop *@
