@@ -21,6 +21,7 @@
 
 .login-button-holder {
     position: absolute;
+    display: flex;
     top: 60%;
     left: 62%;
 }

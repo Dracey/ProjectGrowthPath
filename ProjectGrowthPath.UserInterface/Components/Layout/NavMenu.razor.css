@@ -1,3 +1,4 @@
+
 .nav-main, .logo-holder, .logo-holder a {
     display: flex;
     align-items: center;
@@ -36,6 +37,7 @@
     font-size: 1.5rem;
     font-weight: 700;
     margin-left: 10px;
+
 }
 
 .nav-buttons {
@@ -56,20 +58,23 @@
 .nav-item {
     display: flex;
     align-items: center;
+    font-size: larger;
+
 }
 
 .nav-link {
     text-decoration: none;
     padding: 0.5rem 1rem;
-    color: #000000;
+    color: #183A53;
 }
 
 .avatar-placeholder img {
-    width: 40px;
-    height: 40px;
+    width: 55px;
+    height: 55px;
     border-radius: 50%;
     display: flex;
     align-items: center;
+    border: 1px solid #000000;
 }
 
 
@@ -110,26 +115,27 @@
 }
 
 
-    .nav-item ::deep .nav-link {
-        color: #000000;
-        background: none;
-        border: none;
-        border-radius: 4px;
-        height: 3rem;
-        display: flex;
-        align-items: center;
-        line-height: 3rem;
-        width: 100%;
-    }
+.nav-item ::deep .nav-link {
+    color: #000000;
+    background: none;
+    border: none;
+    border-radius: 4px;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    line-height: 3rem;
+    width: 100%;
+    font-weight: 700;
+}
 
 .nav-item ::deep a.active {
     background-color: rgba(255,255,255,0.37);
-    color: white;
+    color: #47877C;
 }
 
 .nav-item ::deep .nav-link:hover {
     background-color: rgba(255,255,255,0.1);
-    color: white;
+    color: #47877C;
 }
 
 .nav-scrollable {
@@ -139,6 +145,13 @@
 .navbar-toggler:checked ~ .nav-scrollable {
     display: block;
 }
+
+.coin-image {
+    width: 8%;
+    height: auto;
+    margin: 10px;
+}
+
 
 @media (min-width: 641px) {
     .navbar-toggler {
