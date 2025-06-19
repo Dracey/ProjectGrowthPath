@@ -1,49 +1,59 @@
 ﻿@page "/profile/setup"
-@using ProjectGrowthPath.UserInterface.Components.Layout
 @using ProjectGrowthPath.Application.Interfaces
+@using ProjectGrowthPath.Application.Interfaces.IServices
+@using ProjectGrowthPath.UserInterface.Components.Layout
+@using Microsoft.AspNetCore.Authorization
 
 @inject IFirstTimeSetupService SetupService
+@inject IUserSessionService UserSessionService
 @inject NavigationManager Navigation
 
 @layout LoginAndRegister
 @rendermode InteractiveServer
 
+@attribute [Authorize]
+
+
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
 <PageTitle>Profile Set-up</PageTitle>
-<div>
+<link rel="stylesheet" href="@Assets["SetupWizard.css"]" />
 
+<div class="content-holder">
+    <SetupLayout>
+        @if (stepIndex == 0)
+        {
+            <NameStep OnNext="NextStep"/>
+        }
+        else if (stepIndex == 1)
+        {
+            <AvatarStep OnNext="NextStep" OnBack="PreviousStep" />
+        }
+        else if (stepIndex == 2)
+        {
+            <SelectCompetencesSteps mode="interests" OnNext="NextStep" OnBack="PreviousStep" />
+        }
+        else if (stepIndex == 3)
+        {
+            <SelectCompetencesSteps mode="skills" OnNext="NextStep" OnBack="PreviousStep" />
+        }
+        else if (stepIndex == 4)
+        {
+            <GoalCompetenceStep OnNext="NextStep" OnBack="PreviousStep" />
+        }
+        else if (stepIndex == 5)
+        {
+            <LearningToolStep OnNext="NextStep" OnBack="PreviousStep" />
+        }
+        else if (stepIndex == 6)
+        {
+            <FinalizeStep OnFinish="FinishSetup" OnBack="PreviousStep" />
+        }
+    </SetupLayout>
 </div>
-
-
-<SetupLayout>
-    @if (stepIndex == 0)
-    {
-        <NameStep OnNext="NextStep"/>
-    }
-    else if (stepIndex == 1)
-    {
-        <AvatarStep OnNext="NextStep" OnBack="PreviousStep" />
-    }
-    else if (stepIndex == 2)
-    {
-        <SelectCompetencesSteps mode="interests" OnNext="NextStep" OnBack="PreviousStep" />
-    }
-    else if (stepIndex == 3)
-    {
-        <SelectCompetencesSteps Mode="skills" OnNext="NextStep" OnBack="PreviousStep" />
-    }
-    else if (stepIndex == 4)
-    {
-        <GoalStep OnNext="NextStep" OnBack="PreviousStep" />
-    }
-    else if (stepIndex == 5)
-    {
-        <LearningToolStep OnNext="NextStep" OnBack="PreviousStep" />
-    }
-    else if (stepIndex == 6)
-    {
-        <FinalizeStep OnFinish="FinishSetup" OnBack="PreviousStep" />
-    }
-</SetupLayout>
 
 @code {
     private int stepIndex = 0;
@@ -54,6 +64,7 @@
     private async Task FinishSetup()
     {
         await SetupService.FinalizeSetupAsync();
-        Navigation.NavigateTo("/dashboard");
+
+        Navigation.NavigateTo("/");
     }
 }

@@ -1,21 +1,155 @@
 ﻿@page "/"
-@using ProjectGrowthPath.Application.Interfaces
 @using Microsoft.AspNetCore.Authorization
-@inject IProfileCheckService ProfileCheckService
+@using ProjectGrowthPath.Application.Interfaces
+@using System.Text
+@using ProjectGrowthPath.Application.DTOs
+
+@inject NavigationManager _navigation
 
 @attribute [Authorize]
 
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
+@if (UserProfile == null)
+{
+    <p>Profiel wordt geladen, even geduld...</p>
+}
+else if (_svgMarkup == null)
+{
+    <p>Bezig met laden...</p>
+}
+else
+{
+    <div class="component-layout-home">
+        <div class="home-image">
+            <div class="login-button-holder">
+                <a class="login-button" href="/">Aan de slag!</a>
+            </div>
+        </div>
+    </div>
+    <div class="homepage-content light">
+        <h1>Jouw recente activiteit</h1>
+        <div class="homepage-boxes">
+            <div class="left-box">
+                <div class="profile-picture">
+                    @((MarkupString)_svgMarkup)
+                    <h2>@UserProfile.Name</h2>
+                    <h3>Project coördinator</h3>
+                </div>
+                <div>
+                    <h4>Meer info</h4>
+                </div>
+            </div>
+            <div class="right-box">
+                <div class="little-boxes-right">
+                    <div class="little-boxes-right-image">
+                        <div class="course-image"></div>
+                        <div class="progress-bar"></div>
+                    </div>
+                    <div class="course-title">
+                        <h3>Course title</h3>
+                    </div>
+                </div>
+                <div class="little-boxes-right">
+                    <div class="little-boxes-right-image">
+                        <div class="course-image"></div>
+                        <div class="progress-bar"></div>
+                    </div>
+                    <div class="course-title">
+                        <h3>Course title</h3>
+                    </div>
+                </div>
+                <div class="little-boxes-right">
+                    <div class="little-boxes-right-image">
+                        <div class="course-image"></div>
+                        <div class="progress-bar"></div>
+                    </div>
+                    <div class="course-title">
+                        <h3>Course title</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="homepage-content">
+        <h1>Leaderboard</h1>
+        <div class="leaderboard">
+            <MudTable Items="@users" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info" Class="homepage-table">
+                <HeaderContent>
+                    <MudTh><b>Positie</b></MudTh>
+                    <MudTh>Naam</MudTh>
+                    <MudTh>Punten</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Nr">@context.Level</MudTd>
+                    <MudTd DataLabel="Sign">@context.Name</MudTd>
+                    <MudTd DataLabel="Name">@context.Points</MudTd>
+                </RowTemplate>
+            </MudTable>
+        </div>
+    </div>
+@*     <div class="homepage-content dark">
+        <h1>Jouw recente activiteit</h1>
+        <div class="activity-container">
+            <div class="sidebar">
+                <img src="alex.jpg" alt="Alex B." class="avatar">
+                <img src="eva.jpg" alt="Eva V." class="avatar">
+                <img src="monkey.png" alt="Heer Fitzgerald avatar" class="avatar">
+            </div>
+            <div class="activity-feed">
+                <div class="activity">
+                    <p><strong>Alex B.</strong> heeft een nieuwe prestatie behaald. +10 Pts<br>
+                        <a href="#">Bereik Level 4</a></p>
+                </div>
+                <div class="activity">
+                    <p><strong>Eva V.</strong> is een nieuwe training gestart.<br>
+                        <a href="#">Bekijk training →</a></p>
+                </div>
+                <div class="activity badge-activity">
+                    <p><strong>Heer Fitzgerald de 4e</strong> heeft een nieuwe badge behaald.</p>
+                    <img src="badge-icon.png" alt="Badge icon" class="badge-icon">
+                </div>
+                <div class="more-activity">
+                    <a href="#">Meer activiteit →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+     *@
+}
 
 @code {
-    protected override async Task OnInitializedAsync()
+    [CascadingParameter(Name = "UserProfile")]
+    public UserProfileDto? UserProfile { get; set; }
+
+    string? _svgMarkup = null;
+
+    List<UserProfileDto> users { get; set; } = new List<UserProfileDto>
     {
-        // Voer de profielcontrole uit na de inlog
-        await ProfileCheckService.CheckAndRedirectIfNeeded();
+        new UserProfileDto { Level = 1, Name = "John Doe", Points = 100 },
+        new UserProfileDto { Level = 2, Name = "John Do", Points = 50 },
+        new UserProfileDto { Level = 3, Name = "John D", Points = 25 },
+        new UserProfileDto { Level = 4, Name = "John Doeeeeeeee", Points = 10 },
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_navigation.Uri.EndsWith("/profile/setup"))
+            return;
+
+        Console.WriteLine(UserProfile == null
+            ? "Geen profiel gevonden - Home.razor" 
+            : $"Profiel geladen Home.razor: {UserProfile.Name}");
+
+
+        if (UserProfile != null && UserProfile.ProfilePicture != null)
+        {
+            _svgMarkup = Encoding.UTF8.GetString(UserProfile.ProfilePicture);
+        }
+
+        StateHasChanged();
+
     }
 }

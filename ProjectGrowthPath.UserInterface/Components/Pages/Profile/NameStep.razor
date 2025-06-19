@@ -1,25 +1,32 @@
-﻿@using ProjectGrowthPath.Application.Service
-@using System.ComponentModel.DataAnnotations
+﻿@using System.ComponentModel.DataAnnotations
 @using ProjectGrowthPath.Application.Interfaces
+@using ProjectGrowthPath.Application.Service
 @using ProjectGrowthPath.Application.State
 @inject IFirstTimeSetupService SetupService
 @inject SetupStateStore StateStorage
 <!-- Eerste stap van de SetupWizard -->
 <!-- Simpele naam invullen form -->
-<div class="mb-4">
-    <h3 class="mb-2">Welkom bij GrowthPath</h3>
-    <p class="text-muted">Vul hieronder jouw naam in om verder te gaan:</p>
+<div class="name-hold">
+    <h3 class="mb-2">Welkom op GrowthPath!</h3>
+    <div class="name-content">
+        <div>
+            <p class="text">Voordat we aan de slag gaan, wil ik eerst iets over jou leren.</p>
+            <p class="text">Allereerst, wat is jouw naam?</p>
+            <EditForm Model="model" OnValidSubmit="Submit">
+                <DataAnnotationsValidator/>
+                <ValidationSummary class="text-danger small mb-2"/>
 
-    <EditForm Model="model" OnValidSubmit="Submit">
-        <DataAnnotationsValidator />
-        <ValidationSummary class="text-danger small mb-2" />
+                <div class="mb-3">
+                    <InputText @bind-Value="model.Name" placeholder="Voornaam" class="form-control"/>
+                </div>
 
-        <div class="mb-3">
-            <InputText @bind-Value="model.Name" placeholder="Je naam" class="form-control" />
+                <button type="submit" class="button-setup">Verder</button>
+            </EditForm>
         </div>
-
-        <button type="submit" class="btn btn-success">Volgende</button>
-    </EditForm>
+        <div class="image-holder">
+            <img src="Benjamin-OG.png" class="benjamin-image"/>
+        </div>
+    </div>
 </div>
 @code {
     [Parameter] public EventCallback OnNext { get; set; }

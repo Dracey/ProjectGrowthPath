@@ -1,0 +1,52 @@
+﻿@using ProjectGrowthPath.Application.DTOs.LearningTools
+@using ProjectGrowthPath.Application.Interfaces.IServices
+@using ProjectGrowthPath.Domain.Enums.LearningTools
+@inject IDialogService DialogService
+@inject ILearningToolSetupHelper LearingToolSetupHelper
+
+
+<MudDialog>
+    <DialogContent>
+        <MudCard>
+            <MudCardMedia Image="@LearingToolSetupHelper.GetImagePath((CategoryTool)Tool.Category)" Height="140" />
+
+            <MudCardHeader>
+                <MudText Typo="Typo.h5">@Tool.Name</MudText>
+            </MudCardHeader>
+
+            <MudCardContent>
+                <MudText Typo="Typo.body2">@Tool.Description</MudText>
+
+                <MudChip T="string" Color="Color.Info" Variant="Variant.Outlined" Class="mt-2">
+                    Moeilijkheid: @LearingToolSetupHelper.GetDifficultyLabel((DifficultyTool)Tool.Difficulty)
+                </MudChip>
+
+                <MudChip T="string" Color="Color.Info" Variant="Variant.Outlined" Class="ml-1">
+                    Categorie: @LearingToolSetupHelper.GetCategoryOfTool((CategoryTool)Tool.Category)
+                </MudChip>
+
+                <MudChip T="string" Color="Color.Secondary" Variant="Variant.Filled" Class="ml-1">
+                    @if (Tool.Duration < 60)
+                    {
+                        @("<60 minuten")
+                    }
+                    else
+                    {
+                        @($"{Tool.Duration} uur")
+                    }
+                </MudChip>
+            </MudCardContent>
+
+            <MudCardActions>
+                <MudButton Variant="Variant.Filled" Target="_blank" Href="@Tool.Link" Color="Color.Primary">Bekijk</MudButton>
+                <MudButton OnClick="() => MudDialog.Close(DialogResult.Ok(true))" Variant="Variant.Text">Sluiten</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public LearningToolDto Tool { get; set; }
+}

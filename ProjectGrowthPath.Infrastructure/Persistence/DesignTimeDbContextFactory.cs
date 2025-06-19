@@ -13,7 +13,7 @@ namespace ProjectGrowthPath.Infrastructure.Persistence
         {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetParent(Directory.GetCurrentDirectory()).FullName)
-                .AddJsonFile("ProjectGrowthPath.UserInterface/appsettings.json")
+                .AddJsonFile("ProjectGrowthPath.UserInterface/appsettings.Development.json")
                 .Build();
 
             var connectionString = configuration.GetConnectionString("Default");

@@ -75,6 +75,13 @@ public class LearningToolService
         return learningToolsDto;
     }
 
+    public async Task<List<LearningToolDto>> GetByCompetenceId(int competenceId)
+    {
+        var learningTools = await GetList();
+        return learningTools
+            .Where(x => x.Competences.Any(c => c.Id == competenceId)).ToList();
+    }
+
     public async Task<LearningTool> Add(LearningToolCreateDto dto)
     {
         var learningtool =  await _learningToolRepository.Add(dto);

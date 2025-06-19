@@ -1,98 +1,112 @@
 ﻿@implements IDisposable
+@using Microsoft.AspNetCore.Components
+@using MudBlazor
+@using ProjectGrowthPath.Application.Interfaces.IServices
+@using ProjectGrowthPath.Application.Service
+@using System.Text
+@using ProjectGrowthPath.Application.DTOs
 
 @inject NavigationManager NavigationManager
+@inject IUserSessionService UserSessionService
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">ProjectGrowthPath.UserInterface</a>
+<nav class="nav-main">
+    <div class="logo-holder">
+        <a class="" href=""><img src="logosmall.png"/></a>
     </div>
-</div>
-
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="auth">
-                <span class="bi bi-lock-nav-menu" aria-hidden="true"></span> Auth Required
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="learning-tools">
-                <span class="bi bi-capsule-nav-menu" aria-hidden="true"></span> Learning Tools
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="competences">
-                <span class="bi bi-capsule-nav-menu" aria-hidden="true"></span> Competences
-            </NavLink>
-        </div>
-
+    <div class="nav-buttons">
         <AuthorizeView>
             <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Manage">
-                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <form action="Account/Logout" method="post">
-                        <AntiforgeryToken />
-                        <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                        <button type="submit" class="nav-link">
-                            <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
-                        </button>
-                    </form>
+                <div class="nav-buttons-authorized">
+                    @* Admin-only knoppen *@
+                    @if (context.User.IsInRole("Beheerder"))
+                    {
+                        <div class="nav-item">
+                            <NavLink class="nav-link" href="/admin/dashboard">
+                                <span class="bi bi-tools" aria-hidden="true"></span> Admin Dashboard
+                            </NavLink>
+                        </div>
+                    }
+
+                    @* Algemene knoppen voor ingelogde gebruikers *@
+                    <div class="nav-item avatar-placeholder">
+                        @if (!string.IsNullOrEmpty(_profilePictureString))
+                        {
+                            <img class="empty-avatar-placeholder" src="data:image/svg+xml;base64,@_profilePictureString" />
+                        }
+                        else
+                        {
+                            <img class="empty-avatar-placeholder" src="empty-img-cover.jpg" />
+                        }
+                        <NavLink class="nav-link" href="Account/Manage">
+                            <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @(UserProfile?.Name ?? "")
+                        </NavLink>
+                    </div>
+
+                    <div class="nav-item">
+                        <img class="coin-image" src="free-coin-icon-2421-thumb.png" />
+                        <span class="bi bi-person-fill-nav-menu" aria-hidden="true"> @(UserProfile?.Points ?? 0) </span>
+                    </div>
+                
+                    @* Uitlogknop *@
+                    <div class="nav-item">
+                        <form action="Account/Logout" method="post">
+                            <AntiforgeryToken/>
+                            <input type="hidden" name="ReturnUrl" value="@_currentUrl"/>
+                            <button type="submit" class="nav-link">
+                                <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Uitloggen
+                            </button>
+                        </form>
+                    </div>
+                   
                 </div>
             </Authorized>
             <NotAuthorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Register">
-                        <span class="bi bi-person-nav-menu" aria-hidden="true"></span> Register
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="Account/Login">
-                        <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login
-                    </NavLink>
+                <div class="nav-buttons-not-authorized">
+                    <div class="nav-item">
+                        <NavLink class="nav-link" href="Account/Register">Registreren</NavLink>
+                    </div>
+                    <div class="nav-item">
+                        <NavLink class="nav-link" href="Account/Login">Inloggen</NavLink>
+                    </div>
+                    <div class="nav-item avatar-placeholder">
+                        <img class="empty-avatar-placeholder" src="/empty-img-cover.jpg" />
+                    </div>
                 </div>
             </NotAuthorized>
         </AuthorizeView>
-    </nav>
-</div>
+    </div>
+</nav>
 
 @code {
-    private string? currentUrl;
+    [CascadingParameter(Name = "UserProfile")]
+    public UserProfileDto? UserProfile { get; set; }
 
-    protected override void OnInitialized()
+    private string? _currentUrl; 
+    private string? _profilePictureString;
+
+    protected override async Task OnInitializedAsync()
     {
-        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        _currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
         NavigationManager.LocationChanged += OnLocationChanged;
+
+        Console.WriteLine(UserProfile == null
+            ? "Geen profiel gevonden - Nav.razor" 
+            : $"Profiel geladen Nav.razor: {UserProfile.Name}");
+
+        
+        if (UserProfile?.ProfilePicture != null && UserProfile.ProfilePicture.Length > 0)
+        {
+            _profilePictureString = Convert.ToBase64String(UserProfile.ProfilePicture);
+        }
+        else
+        {
+            _profilePictureString = null;
+        }
     }
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
-        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        _currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
         StateHasChanged();
     }
 

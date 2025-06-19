@@ -1,17 +1,21 @@
 ﻿@page "/learning-tools"
+@attribute [Authorize(Roles = "Beheerder")]
+
 @using ProjectGrowthPath.Application.Service
 @using ProjectGrowthPath.Application.DTOs.LearningTools
+@using Microsoft.AspNetCore.Authorization
 @attribute [StreamRendering]
 @inject LearningToolService LearningToolsService
 @rendermode InteractiveServer
 
-<PageTitle>Learning Tools</PageTitle>
 
-<h1>Learning Tools</h1>
+<PageTitle>Leermiddelen</PageTitle>
+
+<h1>Leermiddelen</h1>
 
 @if (!isEditorVisible)
 {
-    <button @onclick="() => ToggleForm()">Add new learning tool</button>
+    <button @onclick="() => ToggleForm()">Voeg nieuw leermiddel toe</button>
 }
 else
 {
@@ -28,14 +32,13 @@ else
         <thead>
             <tr>
                 <th></th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Link</th>
-                <th>Difficulty</th>
-                <th>Category</th>
-                <th>Duration</th>
-                <th>Provider</th>
-                <th>Competences</th>
+                <th>Naam</th>
+                <th>Beschrijving</th>
+                <th>Moeilijkheid</th>
+                <th>Categorie</th>
+                <th>Tijd</th>
+                <th>Aanbieder</th>
+                <th>Competenties</th>
                 <th></th>
             </tr>
         </thead>
@@ -48,7 +51,6 @@ else
                     </td>
                     <td>@learningTool.Name</td>
                     <td>@learningTool.Description</td>
-                    <td>@learningTool.Link</td>
                     <td>@learningTool.Difficulty</td>
                     <td>@learningTool.Category</td>
                     <td>@learningTool.Duration</td>
