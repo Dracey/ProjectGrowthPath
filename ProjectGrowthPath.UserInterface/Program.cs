@@ -143,7 +143,7 @@ public class Program
         app.MapAdditionalIdentityEndpoints();
 
         app.Run("http://0.0.0.0:80");
-
+    }
 
     // Eerste seed data voor development. Weg laten in productie.
     private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
