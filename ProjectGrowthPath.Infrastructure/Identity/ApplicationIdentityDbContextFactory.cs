@@ -15,7 +15,7 @@ namespace ProjectGrowthPath.Infrastructure.Identity
         {
             var config = new ConfigurationBuilder()
                 .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../ProjectGrowthPath.UserInterface"))
-                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.Development.json")
                 .Build();
 
             var connectionString = config.GetConnectionString("Identity");

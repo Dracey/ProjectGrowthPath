@@ -1,0 +1,102 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using System.Net
+@using Humanizer
+@using MudBlazor
+@using ProjectGrowthPath.Application.Interfaces
+@using ProjectGrowthPath.Application.Service
+@using ProjectGrowthPath.Application.State
+@using ProjectGrowthPath.Domain.Entities
+
+
+@inject IFirstTimeSetupService SetupService
+@inject SetupStateStore StateStorage
+
+
+<h3>Kies één competentie die je wilt gaan verbeteren.</h3>
+@if (IsLoading)
+{
+    <MudProgressCircular Indeterminate="true" />
+}
+else
+{
+    <div class="goal-content-holder">
+        <div>
+            <MudText Typo="Typo.h6" Class="mt-6 mb-2">Interesses:</MudText>
+            <MudGrid>
+                @foreach (var interest in _interests.Values)
+                {
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudPaper Elevation="4" Class="pa-4" Style="@GetPaperStyle(interest)" @onclick="() => SelectCompetence(interest)">
+                            <MudText Typo="Typo.body1">@interest.Name</MudText>
+                        </MudPaper>
+                    </MudItem>
+                }
+            </MudGrid>
+
+            <MudText Typo="Typo.h6" Class="mt-4 mb-2">Vaardigheden:</MudText>
+            <MudGrid>
+                @foreach (var skill in _skills.Values)
+                {
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudPaper Elevation="4" Class="pa-4" Style="@GetPaperStyle(skill)" @onclick="() => SelectCompetence(skill)">
+                            <MudText Typo="Typo.body1">@skill.Name</MudText>
+                        </MudPaper>
+                    </MudItem>
+                }
+            </MudGrid>
+        </div>
+        <img class="benjamin-point-image" src="Benjamin-point.png" />
+    </div>
+   
+
+    
+}
+<div class="mt-4">
+    <button class="btn btn-outline-secondary me-2" @onclick="() => OnBack.InvokeAsync()">Terug</button>
+    <button class="btn btn-success" @onclick="() => OnNext.InvokeAsync()" disabled="@(!CanProceed)">Volgende</button>
+</div>
+
+@code {
+    [Parameter] public EventCallback OnNext { get; set; }
+    [Parameter] public EventCallback OnBack { get; set; }
+    private bool IsLoading = true;
+    private bool CanProceed = false;
+
+    // Competenties die zijn geselecteerd door de gebruiker
+    private Competence? SelectedCompetence;
+    private Dictionary<int, Competence> _skills = new();
+    private Dictionary<int, Competence> _interests = new();
+
+  
+
+    protected override async Task OnInitializedAsync()
+    {
+        await StateStorage.LoadAsync();
+
+        if (StateStorage.CurrentState.ChosenCompetence != null)
+        {
+            SelectedCompetence = StateStorage.CurrentState.ChosenCompetence;
+            CanProceed = true;
+        }
+
+        _skills = StateStorage.CurrentState.SelectedSkills;
+        _interests = StateStorage.CurrentState.SelectedInterests;
+
+
+        IsLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private string GetPaperStyle(Competence competence)
+    {
+        var border = SelectedCompetence?.CompetenceID == competence.CompetenceID ? "2px solid green" : "1px solid lightgray";
+        return $"cursor: pointer; border: {border}; padding: 16px;";
+    }
+
+    private async Task SelectCompetence(Competence competence)
+    {
+        await SetupService.SetGoalCompetenceAsync(competence);
+        SelectedCompetence = competence;
+        CanProceed = SelectedCompetence != null;
+    }
+}

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using ProjectGrowthPath.Application.Interfaces;
+using ProjectGrowthPath.Application.Interfaces.IRepository;
+using ProjectGrowthPath.Application.Interfaces.IServices;
 using ProjectGrowthPath.Application.Service;
 using ProjectGrowthPath.Application.State;
 using ProjectGrowthPath.Infrastructure.API;
@@ -68,11 +70,15 @@ public class Program
             .AddSignInManager()
             .AddDefaultTokenProviders();
 
+        builder.Services.ConfigureApplicationCookie(options =>
+        {
+            options.LoginPath = "/Landing";
+        });
+
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
         // Application Services 
         builder.Services.AddScoped<IUserProfileService, UserProfileService>();
-        builder.Services.AddScoped<IProfileCheckService, ProfileCheckService>();
         builder.Services.AddScoped<ICompetenceRepository, CompetenceRepository>();
         builder.Services.AddScoped<ISetupStatePersistence, SetupStatePersistenceJsInterop>();
         builder.Services.AddScoped<ILearningToolsRepository, LearningToolsRepository>();
@@ -81,10 +87,16 @@ public class Program
         builder.Services.AddScoped<ICompetenceSelectionService, CompetenceSelectionService>();
         builder.Services.AddScoped<IAvatarService, AvatarService>();
         builder.Services.AddScoped<IFirstTimeSetupService, FirstTimeSetupService>();
+        builder.Services.AddScoped<ILearningToolSetupHelper, LearningToolSetupHelper>();
+        builder.Services.AddScoped<IUserCompetenceRepository, UserCompetenceRepository>();
+        builder.Services.AddScoped<IGoalRepository, GoalRepository>();
+        builder.Services.AddScoped<IGoalLearningToolRepository, GoalLearningToolRepository>();
+        builder.Services.AddScoped<IUserSessionService, UserSessionService>();
         builder.Services.AddScoped<SetupStateStore>();
         builder.Services.AddScoped<LearningToolService>();
         builder.Services.AddScoped<CompetenceService>();
         builder.Services.AddScoped<LearningToolCompetenceService>();
+        builder.Services.AddScoped<SetupNewUserService>();
 
         // Application Repositories
 
@@ -131,7 +143,6 @@ public class Program
         app.MapAdditionalIdentityEndpoints();
 
         app.Run("http://0.0.0.0:80");
-    }
 
 
     // Eerste seed data voor development. Weg laten in productie.

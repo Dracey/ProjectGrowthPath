@@ -1,0 +1,160 @@
+﻿.content-holder {
+    max-width: 900px;
+    min-width: 700px;
+    margin: auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    max-height: 750px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.text {
+    font-size: 20px;
+}
+
+.button-setup {
+    margin-top: 20px;
+    background: #183A53;
+    width: 120px;
+    height: 30px;
+    color: white;
+    font-size: 20px;
+    border-radius: 20px;
+    font-weight: 700;
+}
+
+.button-setup:hover {
+    background: #183A53;
+
+}
+
+/*Name step*/
+.name-hold {
+    margin: auto;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+}
+
+.name-content, .goal-content-holder {
+    margin: auto;
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+}
+
+.image-holder {
+    position: relative;
+    bottom: -14px;
+    right: -6px;
+}
+
+.benjamin-image {
+    width: 200px;
+    Margin: -10px;
+}
+
+/* Avatar step*/
+
+.btn {
+    font-weight: 700;
+}
+
+.btn-secondary {
+    background-color: #183A53 !important;
+    color: white !important;
+    border-radius: 20px;
+}
+
+    .btn-secondary:hover, .back-button:hover {
+        background-color: aliceblue!important; 
+        color: #183A53 !important;
+    }
+
+.btn-success {
+    background-color: #183A53 !important;
+    border-color: #183A53 !important;
+    border-radius: 20px;
+}
+
+button.btn.btn-success:disabled {
+    background-color: #4A6C89 !important;
+    border-color: #4A6C89 !important;
+    color: #ffffff !important;
+    opacity: 1 !important; 
+    cursor: not-allowed;
+}
+
+.back-button {
+    background-color: #183A53 !important;
+    border: 1px solid #ccc;
+    color: white; 
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}
+
+/* Choose goal step*/
+.goal-content-holder {
+    margin-top: -40px;
+}
+
+
+.benjamin-point-image {
+    position: relative;
+    width: 200px;
+    bottom: -75px;
+    right: -15px;
+}
+
+
+/* Learning tools step*/
+.tool-list-container {
+    min-width: 850px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.image-text-holder {
+    position: relative;
+    height: 140px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.image-tool {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.black-trans-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.tool-header-text {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    color: white;
+}
+
+.tool-content-holder {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+
+
+

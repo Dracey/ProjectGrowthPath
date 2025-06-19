@@ -1,17 +1,20 @@
 ﻿@page "/competences"
+@attribute [Authorize(Roles = "Beheerder")]
+
 @using ProjectGrowthPath.Application.Service
 @using ProjectGrowthPath.Application.DTOs.Competences
+@using Microsoft.AspNetCore.Authorization
 @attribute [StreamRendering]
 @inject CompetenceService CompetenceService
 @rendermode InteractiveServer
 
-<PageTitle>Competences</PageTitle>
+<PageTitle>Competenties toevoegen</PageTitle>
 
-<h1>Competences</h1>
+<h1>Competenties</h1>
 
 @if (!isEditorVisible)
 {
-    <button @onclick="() => isEditorVisible = !isEditorVisible">Add new competence</button>
+    <button @onclick="() => isEditorVisible = !isEditorVisible">Voeg nieuwe competentie toe</button>
 }
 else
 {
@@ -27,9 +30,9 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Category</th>
+                <th>Naam</th>
+                <th>Beschrijving</th>
+                <th>Categorie</th>
                 <th></th>
             </tr>
         </thead>
